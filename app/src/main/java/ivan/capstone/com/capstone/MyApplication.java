@@ -4,6 +4,7 @@ package ivan.capstone.com.capstone;
  * Created by Ivan on 16/02/2016.
  */
 import android.app.Application;
+import android.content.Context;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
@@ -16,9 +17,19 @@ import com.google.android.gms.tagmanager.ContainerHolder;
 public class MyApplication extends Application {
 
     public Tracker mTracker;
-
+    private static Context mContext;
     public ContainerHolder mContainerHolder;
     public TagManager mTagManager;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        mContext = this;
+    }
+
+    public static Context getContext(){
+        return mContext;
+    }
 
     // Get the Tag Manager
     public TagManager getTagManager () {

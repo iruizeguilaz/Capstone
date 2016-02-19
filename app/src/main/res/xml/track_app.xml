@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
+
 <resources>
     <string name="ga_trackingId">UA-XXXXXXXX-1</string>
     <bool name="ga_autoActivityTracking">false</bool>
-    <screenName name="ivan.capstone.com.capstone.SearchActivity">
+    <screenName name="ivan.capstone.com.capstone.MySeriesActivity">
         Main screen
     </screenName>
 </resources>
