@@ -9,7 +9,12 @@ public class Serie {
     private String name;
     private String image_url;
     private String overView;
+    private String dateReleased;
+    private String network;
 
+    public Serie(){
+
+    }
 
     public String getId() {
         return id;
@@ -41,5 +46,21 @@ public class Serie {
 
     public void setOverView(String overView) {
         this.overView = overView;
+    }
+
+    public String getDateReleased() {
+        return dateReleased;
+    }
+
+    public void setDateReleased(String dateReleased) {
+        this.dateReleased = dateReleased;
+    }
+
+    public String getNetwork() {
+        return network;
+    }
+
+    public void setNetwork(String network) {
+        this.network = network;
     }
 }

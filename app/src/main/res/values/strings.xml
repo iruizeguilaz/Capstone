@@ -7,6 +7,11 @@
     <string name="action_settings">Settings</string>
     <string name="title_search">Search series</string>
 
+    <string name="edittext_message">Introdce the name of the serie here...</string>
+
+    <string name="noseries_message">There are no seires for this name. Please, refine the search..</string>
+    <string name="nonetwork_message">There are problems with the network.</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
