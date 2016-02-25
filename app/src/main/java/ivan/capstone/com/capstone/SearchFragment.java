@@ -1,5 +1,6 @@
 package ivan.capstone.com.capstone;
 
+
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -16,11 +17,21 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import ivan.capstone.com.capstone.Adapter.SeriesAdapter;
 import ivan.capstone.com.capstone.DataObjects.Serie;
+import ivan.capstone.com.capstone.XML.XMLManager;
 
 
 public class SearchFragment extends Fragment implements SeriesAdapter.OnItemClickListener{
@@ -129,18 +140,19 @@ public class SearchFragment extends Fragment implements SeriesAdapter.OnItemClic
         @Override
         protected  List<Serie> doInBackground(String... params) {
             try {
-                Thread.sleep(300);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             try {
+                List<Serie> result= new ArrayList<Serie>();
                 /*SpotifyApi api = new SpotifyApi();
                 SpotifyService spotify = api.getService();
                 ArtistsPager results = spotify.searchArtists(params[0]);
                 Pager<Artist> artist =  results.artists;
-                List<Serie> lista = artist.items;*/
+                List<Serie> lista = artist.items;
 
-                List<Serie> result= new ArrayList<Serie>();
+
                 Serie serie = new Serie();
                 serie.setId("280619");
                 serie.setName("The Expanse");
@@ -154,7 +166,57 @@ public class SearchFragment extends Fragment implements SeriesAdapter.OnItemClic
                 serie.setNetwork("HBO");
                 serie.setDateReleased("2011-04-17");
                 serie.setImage_url("http://thetvdb.com//banners/graphical/121361-g37.jpg");
-                result.add(serie);
+                result.add(serie);*/
+
+
+                HttpURLConnection urlConnection = null;
+                BufferedReader reader = null;
+                String bookJsonString = null;
+
+                try {
+                    final String SERIES_BASE_URL = "http://thetvdb.com/api/GetSeries.php?";
+                    final String QUERY_PARAM = "seriesname";
+
+                    Uri builtUri = Uri.parse(SERIES_BASE_URL).buildUpon()
+                            .appendQueryParameter(QUERY_PARAM,  params[0] )
+                            .build();
+
+                    URL url = new URL(builtUri.toString());
+
+                    urlConnection = (HttpURLConnection) url.openConnection();
+                    //urlConnection.setRequestMethod("GET");
+                    //urlConnection.connect();
+
+                    InputStream inputStream = urlConnection.getInputStream();
+                    StringBuffer buffer = new StringBuffer();
+                    if (inputStream == null) {
+                        return null;
+                    }
+                    XmlPullParserFactory pullParserFactory = XmlPullParserFactory.newInstance();
+                    XmlPullParser parser = pullParserFactory.newPullParser();
+                    parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+                    parser.setInput(inputStream, null);
+                    result = XMLManager.parseXML(parser);
+                } catch ( Exception e){
+
+                    Log.e(LOG_TAG, "Error:" + e.getMessage());
+                } finally {
+                    if (urlConnection != null) {
+                        urlConnection.disconnect();
+                    }
+                    if (reader != null) {
+                        try {
+                            reader.close();
+                        } catch (final IOException e) {
+                            Log.e(LOG_TAG, "Error closing stream", e);
+                            return null;
+                        }
+
+                    }
+
+                }
+
+
 
                 //Log.v(LOG_TAG, lista.toString());
                 return result;
