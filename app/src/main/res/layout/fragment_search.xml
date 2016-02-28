@@ -33,6 +33,8 @@
                 android:gravity="center"
                 android:fontFamily="sans-serif-condensed"
                 android:hint="@string/edittext_message"
+                android:singleLine="true"
+                android:imeOptions="actionSearch"
                 android:inputType="textVisiblePassword"/>
 
         </LinearLayout>
@@ -44,7 +46,7 @@
             android:layout_height="wrap_content"
             app:layoutManager="LinearLayoutManager"
             android:background="@color/grey"
-            tools:listitem="@layout/item_list_series" />
+            tools:listitem="@layout/item_list_search" />
     </LinearLayout>
 
 </FrameLayout>

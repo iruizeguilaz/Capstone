@@ -31,16 +31,16 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.ViewHolder
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_list_series, parent, false);
+                .inflate(R.layout.item_list_search, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.item = series.get(position);
-        holder.viewTitulo.setText(series.get(position).getName());
-        //holder.viewResumen.setText(series.get(position).descripcion);
-        holder.viewFecha.setText(series.get(position).getDateReleased());
+        holder.viewTitle.setText(series.get(position).getName());
+        holder.viewReleaseDate.setText(series.get(position).getDateReleased());
+        holder.viewNetwork.setText(series.get(position).getNetwork());
         Glide.with(holder.itemView.getContext())
                 .load(holder.item.getImage_url())
                 .thumbnail(0.1f)
@@ -69,20 +69,22 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
-            public final TextView viewTitulo;
+            public final TextView viewTitle;
             //public final TextView viewResumen;
-            public final TextView viewFecha;
+            public final TextView viewReleaseDate;
             public final ImageView viewMiniatura;
+            public final TextView viewNetwork;
 
         public Serie item;
 
         public ViewHolder(View view) {
             super(view);
             view.setClickable(true);
-            viewTitulo = (TextView) view.findViewById(R.id.name_serie);
+            viewTitle = (TextView) view.findViewById(R.id.name_serie);
             //viewResumen = (TextView) view.findViewById(R.id.resumen);
-            viewFecha = (TextView) view.findViewById(R.id.date_serie);
+            viewReleaseDate = (TextView) view.findViewById(R.id.date_serie);
             viewMiniatura = (ImageView) view.findViewById(R.id.image_serie);
+            viewNetwork = (TextView) view.findViewById(R.id.network_serie);
 
             view.setOnClickListener(this);
         }

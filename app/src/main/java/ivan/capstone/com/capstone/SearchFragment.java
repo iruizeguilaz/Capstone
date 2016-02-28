@@ -11,10 +11,13 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -98,7 +101,27 @@ public class SearchFragment extends Fragment implements SeriesAdapter.OnItemClic
 
     private void doSearch(View rootView) {
         inputSearch = (EditText)rootView.findViewById(R.id.searchListSeries);
-        inputSearch.addTextChangedListener(new TextWatcher() {
+
+        inputSearch.setOnEditorActionListener(
+                new TextView.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                        if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                            if (serieByNameTask != null) serieByNameTask.cancel(true);
+                            if (!inputSearch.getText().toString().equals("")) {
+                                serieByNameTask = new FetchSerieByNameTask();
+                                serieByNameTask.execute(inputSearch.getText().toString());
+                            } else {
+                                //if(mSpotifyAdapter!= null) mSpotifyAdapter.clear();
+                            }
+                            return true; // consume.
+
+                        }
+                        return false; // pass on to other listeners.
+                    }
+                });
+
+       /* inputSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
@@ -117,7 +140,7 @@ public class SearchFragment extends Fragment implements SeriesAdapter.OnItemClic
                     //if(mSpotifyAdapter!= null) mSpotifyAdapter.clear();
                 }
             }
-        });
+        });*/
     }
 
     @Override
@@ -140,39 +163,10 @@ public class SearchFragment extends Fragment implements SeriesAdapter.OnItemClic
         @Override
         protected  List<Serie> doInBackground(String... params) {
             try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            try {
                 List<Serie> result= new ArrayList<Serie>();
-                /*SpotifyApi api = new SpotifyApi();
-                SpotifyService spotify = api.getService();
-                ArtistsPager results = spotify.searchArtists(params[0]);
-                Pager<Artist> artist =  results.artists;
-                List<Serie> lista = artist.items;
-
-
-                Serie serie = new Serie();
-                serie.setId("280619");
-                serie.setName("The Expanse");
-                serie.setNetwork("Syfy");
-                serie.setDateReleased("2015-11-23");
-                serie.setImage_url("http://thetvdb.com//banners/graphical/280619-g6.jpg");
-                result.add(serie);
-                serie = new Serie();
-                serie.setId("273385");
-                serie.setName("Game of Thrones");
-                serie.setNetwork("HBO");
-                serie.setDateReleased("2011-04-17");
-                serie.setImage_url("http://thetvdb.com//banners/graphical/121361-g37.jpg");
-                result.add(serie);*/
-
-
                 HttpURLConnection urlConnection = null;
                 BufferedReader reader = null;
                 String bookJsonString = null;
-
                 try {
                     final String SERIES_BASE_URL = "http://thetvdb.com/api/GetSeries.php?";
                     final String QUERY_PARAM = "seriesname";
@@ -184,11 +178,9 @@ public class SearchFragment extends Fragment implements SeriesAdapter.OnItemClic
                     URL url = new URL(builtUri.toString());
 
                     urlConnection = (HttpURLConnection) url.openConnection();
-                    //urlConnection.setRequestMethod("GET");
-                    //urlConnection.connect();
-
+                    urlConnection.setRequestMethod("GET");
+                    urlConnection.connect();
                     InputStream inputStream = urlConnection.getInputStream();
-                    StringBuffer buffer = new StringBuffer();
                     if (inputStream == null) {
                         return null;
                     }
@@ -196,7 +188,36 @@ public class SearchFragment extends Fragment implements SeriesAdapter.OnItemClic
                     XmlPullParser parser = pullParserFactory.newPullParser();
                     parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
                     parser.setInput(inputStream, null);
-                    result = XMLManager.parseXML(parser);
+                    result = XMLManager.GetSeriesFromXML(parser);
+                    // this query return a url of a banner image, is better to get the poster
+                    // so we will do more queries to bring the posters
+                    /*for (Serie serie: result){
+                        final String BANNERS_BASE_URL = "http://thetvdb.com/api/31700C7EECC0878D/series/" + serie.getId() + "/banners.xml" ;
+                        builtUri = Uri.parse(BANNERS_BASE_URL).buildUpon()
+                                .build();
+
+                        url = new URL(builtUri.toString());
+
+                        urlConnection = (HttpURLConnection) url.openConnection();
+                        urlConnection.setRequestMethod("GET");
+                        urlConnection.connect();
+
+                        inputStream = urlConnection.getInputStream();
+                        if (inputStream == null) {
+                            return null;
+                        }
+                        pullParserFactory = XmlPullParserFactory.newInstance();
+                        parser = pullParserFactory.newPullParser();
+                        parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+                        parser.setInput(inputStream, null);
+                        String url_poster = XMLManager.GetPosrterFromXML(parser);
+                        if (!url_poster.equals("")){
+                            serie.setImage_url("http://thetvdb.com//banners/" + url_poster);
+                        }
+                    }
+                    */
+
+
                 } catch ( Exception e){
 
                     Log.e(LOG_TAG, "Error:" + e.getMessage());
@@ -216,9 +237,6 @@ public class SearchFragment extends Fragment implements SeriesAdapter.OnItemClic
 
                 }
 
-
-
-                //Log.v(LOG_TAG, lista.toString());
                 return result;
             }
             catch (Exception ex)
