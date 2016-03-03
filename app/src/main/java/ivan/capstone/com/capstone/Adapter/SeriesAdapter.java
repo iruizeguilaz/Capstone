@@ -91,12 +91,12 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.ViewHolder
 
         @Override
         public void onClick(View v) {
-            externalListernetClick.onClick(this, getIdArticulo(getAdapterPosition()));
+            externalListernetClick.onClick(this, getAdapterPosition());
         }
     }
 
     public interface OnItemClickListener {
-        public void onClick(ViewHolder viewHolder, String idSerie);
+        public void onClick(ViewHolder viewHolder, int position);
     }
 
     private OnItemClickListener externalListernetClick;

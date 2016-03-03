@@ -34,7 +34,10 @@ public class XMLManager {
     private static final String TAG_SERIE_NETWORK = "Network";
     private static final String TAG_SERIE_BANNER_URL = "banner";
     private static final String TAG_SERIE_RELEASE_DATE = "FirstAired";
-
+    private static final String TAG_SERIE_RATING = "Rating";
+    private static final String TAG_SERIE_POSTER_URL = "poster";
+    private static final String TAG_SERIE_GENRE = "Genre";
+    private static final String TAG_SERIE_OVERVIEW = "Overview";
 
     // This method manage the series in XML format that are brought with the query by name
     public static List<Serie> GetSeriesFromXML(XmlPullParser parser) throws XmlPullParserException,IOException
@@ -76,6 +79,45 @@ public class XMLManager {
             eventType = parser.next();
         }
         return series;
+    }
+
+    public static Serie GetSerieFromXML(XmlPullParser parser) throws XmlPullParserException,IOException
+    {
+        int eventType = parser.getEventType();
+        Serie serie = new Serie();
+        while (eventType != XmlPullParser.END_DOCUMENT){
+            String name = null;
+            switch (eventType){
+                case XmlPullParser.START_TAG:
+                    name = parser.getName();
+                    if (name.equals(TAG_SERIE_ID)){
+                        serie.setId(parser.nextText());
+                    } else if (name.equals(TAG_SERIE_NAME)){
+                        serie.setName(parser.nextText());
+                    } else if (name.equals(TAG_SERIE_NETWORK)){
+                        serie.setNetwork(parser.nextText());
+                    } else if (name.equals(TAG_SERIE_BANNER_URL)){
+                        serie.setImage_url(URL + parser.nextText());
+                    } else if (name.equals(TAG_SERIE_RELEASE_DATE)){
+                        serie.setDateReleased(parser.nextText());
+                    }
+                    else if (name.equals(TAG_SERIE_OVERVIEW)){
+                        serie.setOverView(parser.nextText());
+                    }
+                    else if (name.equals(TAG_SERIE_GENRE)){
+                        serie.setGenre(parser.nextText());
+                    }
+                    else if (name.equals(TAG_SERIE_POSTER_URL)){
+                        serie.setPoster_url(URL + parser.nextText());
+                    }
+                    else if (name.equals(TAG_SERIE_RATING)){
+                        serie.setRating(parser.nextText());
+                    }
+                    break;
+            }
+            eventType = parser.next();
+        }
+        return serie;
     }
 
     private static final String TAG_BANNER = "Banner";

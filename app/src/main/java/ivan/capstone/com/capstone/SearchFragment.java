@@ -1,15 +1,12 @@
 package ivan.capstone.com.capstone;
 
 
-import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -21,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.BufferedReader;
@@ -60,14 +56,20 @@ public class SearchFragment extends Fragment implements SeriesAdapter.OnItemClic
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View rootView =  inflater.inflate(R.layout.fragment_search, container, false);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.search_recycler);
 
         // TODO declarar el adapter para reusarlo
-
-        prepararLista();
-
+        if (savedInstanceState != null && savedInstanceState.getParcelableArrayList("ListSeries") != null) {
+            series = savedInstanceState.getParcelableArrayList("ListSeries");
+            seriesAdapter = new SeriesAdapter(series, this);
+            recyclerView.setAdapter(seriesAdapter);
+            seriesAdapter.notifyDataSetChanged();
+        } else {
+            series= new ArrayList<Serie>();
+            seriesAdapter = new SeriesAdapter(series, this);
+            recyclerView.setAdapter(seriesAdapter);
+        }
 
         try {
             doSearch(rootView);
@@ -79,25 +81,13 @@ public class SearchFragment extends Fragment implements SeriesAdapter.OnItemClic
         return rootView;
     }
 
-    private void prepararLista() {
-        series= new ArrayList<Serie>();
-        Serie serie = new Serie();
-        serie.setId("280619");
-        serie.setName("The Expanse");
-        serie.setNetwork("Syfy");
-        serie.setDateReleased("2015-11-23");
-        serie.setImage_url("http://thetvdb.com//banners/graphical/280619-g6.jpg");
-        series.add(serie);
-        /*serie = new Serie();
-        serie.setId("273385");
-        serie.setName("Game of Thrones");
-        serie.setNetwork("HBO");
-        serie.setDateReleased("2011-04-17");
-        serie.setImage_url("http://thetvdb.com//banners/graphical/121361-g37.jpg");
-        series.add(serie);*/
-        seriesAdapter = new SeriesAdapter(series, this);
-        recyclerView.setAdapter(seriesAdapter);
+    @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        outState.putParcelableArrayList("ListSeries", new ArrayList<Serie>(series));
+        super.onSaveInstanceState(outState);
     }
+
 
     private void doSearch(View rootView) {
         inputSearch = (EditText)rootView.findViewById(R.id.searchListSeries);
@@ -144,11 +134,12 @@ public class SearchFragment extends Fragment implements SeriesAdapter.OnItemClic
     }
 
     @Override
-    public void onClick(SeriesAdapter.ViewHolder viewHolder, String idArticulo) {
-        // TODO cargar detalle
-        int duration = Toast.LENGTH_SHORT;
-        Toast.makeText(getActivity(),idArticulo , duration).show();
-        //cargarDetalle(idArticulo);
+    public void onClick(SeriesAdapter.ViewHolder viewHolder, int position) {
+
+        Intent intent = new Intent(getActivity(), DetailSerieSearchedActivity.class);
+        intent.putExtra("Serie", series.get(position));
+        startActivity(intent);
+
     }
 
 
