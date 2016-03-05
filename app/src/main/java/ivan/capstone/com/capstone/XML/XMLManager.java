@@ -35,10 +35,11 @@ public class XMLManager {
     private static final String TAG_SERIE_BANNER_URL = "banner";
     private static final String TAG_SERIE_RELEASE_DATE = "FirstAired";
     private static final String TAG_SERIE_RATING = "Rating";
+    private static final String TAG_SERIE_VOTES = "RatingCount";
     private static final String TAG_SERIE_POSTER_URL = "poster";
     private static final String TAG_SERIE_GENRE = "Genre";
     private static final String TAG_SERIE_OVERVIEW = "Overview";
-
+    private static final String TAG_ID = "id";
     // This method manage the series in XML format that are brought with the query by name
     public static List<Serie> GetSeriesFromXML(XmlPullParser parser) throws XmlPullParserException,IOException
     {
@@ -90,14 +91,15 @@ public class XMLManager {
             switch (eventType){
                 case XmlPullParser.START_TAG:
                     name = parser.getName();
-                    if (name.equals(TAG_SERIE_ID)){
+                    if (name.equals(TAG_ID)){
                         serie.setId(parser.nextText());
                     } else if (name.equals(TAG_SERIE_NAME)){
                         serie.setName(parser.nextText());
                     } else if (name.equals(TAG_SERIE_NETWORK)){
                         serie.setNetwork(parser.nextText());
                     } else if (name.equals(TAG_SERIE_BANNER_URL)){
-                        serie.setImage_url(URL + parser.nextText());
+                        String banner = parser.nextText();
+                        if (!banner.equals((""))) serie.setImage_url(URL + banner);
                     } else if (name.equals(TAG_SERIE_RELEASE_DATE)){
                         serie.setDateReleased(parser.nextText());
                     }
@@ -108,10 +110,14 @@ public class XMLManager {
                         serie.setGenre(parser.nextText());
                     }
                     else if (name.equals(TAG_SERIE_POSTER_URL)){
-                        serie.setPoster_url(URL + parser.nextText());
+                        String poster = parser.nextText();
+                        if (!poster.equals((""))) serie.setPoster_url(URL + poster);
                     }
                     else if (name.equals(TAG_SERIE_RATING)){
                         serie.setRating(parser.nextText());
+                    }
+                    else if (name.equals(TAG_SERIE_VOTES)){
+                        serie.setVotes(parser.nextText());
                     }
                     break;
             }

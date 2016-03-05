@@ -12,8 +12,23 @@
     <string name="noseries_message">There are no seires for this name. Please, refine the search..</string>
     <string name="nonetwork_message">There are problems with the network.</string>
 
+
+    <string name="save_serie">Save the serie</string>
+    <string name="unsave_serie">Unsave the serie</string>
+    <string name="votes_serie">votes</string>
+    <string name="rating_serie">/10</string>
+    <string name="year_serie">Year</string>
+    <string name="network_serie">Network</string>
+    <string name="genre_serie">Genre</string>
+    <string name="overview_serie">Overview</string>
+    <string name="detail_serie">Detail</string>
+    <string name="check_serie">Check out </string>
+
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_detail_serie">DetailSerieActivity</string>
     <string name="title_activity_detail_serie_searched">DetailSerieSearchedActivity</string>
-</resources>
+
+
+  </resources>

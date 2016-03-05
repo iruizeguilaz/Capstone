@@ -15,6 +15,7 @@ public class Serie implements Parcelable {
     private String dateReleased;
     private String network;
     private String rating;
+    private String votes;
     private String genre;
     private String poster_url;
 
@@ -30,11 +31,12 @@ public class Serie implements Parcelable {
         dateReleased = in.readString();
         network = in.readString();
         rating = in.readString();
+        votes = in.readString();
         genre = in.readString();
         poster_url = in.readString();
     }
 
-    public Serie(String id, String name, String image_url, String overView, String dateReleased, String network, String rating, String genre, String poster_url) {
+    public Serie(String id, String name, String image_url, String overView, String dateReleased, String network, String rating, String votes, String genre, String poster_url) {
 
         this.id = id;
         this.name = name;
@@ -43,6 +45,7 @@ public class Serie implements Parcelable {
         this.dateReleased = dateReleased;
         this.network = network;
         this.rating = rating;
+        this.votes = votes;
         this.genre = genre;
         this.poster_url = poster_url;
     }
@@ -61,6 +64,7 @@ public class Serie implements Parcelable {
         dest.writeString(dateReleased);
         dest.writeString(network);
         dest.writeString(rating);
+        dest.writeString(votes);
         dest.writeString(genre);
         dest.writeString(poster_url);
     }
@@ -128,6 +132,14 @@ public class Serie implements Parcelable {
 
     public String getRating() {
         return rating;
+    }
+
+    public String getVotes() {
+        return votes;
+    }
+
+    public void setVotes(String votes) {
+        this.votes = votes;
     }
 
     public void setRating(String rating) {

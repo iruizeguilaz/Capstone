@@ -18,16 +18,7 @@ public class SearchActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         mToolbar = (Toolbar) findViewById(R.id.search_toolbar);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
 
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                // Set refresh to false so the refresh icon doesn't just spin indefinitely
-                // This is just a placeholder.
-                mSwipeRefreshLayout.setRefreshing(false);
-            }
-        });
 
         setSupportActionBar(mToolbar);
         //getSupportLoaderManager().initLoader(0, null, this);
@@ -47,11 +38,6 @@ public class SearchActivity extends AppCompatActivity  {
 
     }
 
-    private void refresh() {
-        //startService(new Intent(this, UpdaterService.class));
-        // TODO relanzar la lista
-
-    }
 
 
 }
