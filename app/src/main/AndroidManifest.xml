@@ -35,6 +35,12 @@
             android:parentActivityName=".SearchActivity"
             android:label="@string/title_activity_detail_serie_searched"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <provider
+            android:authorities="@string/content_authority"
+            android:name=".Data.SeriesProvider"
+            android:exported="false"
+            android:syncable="true" />
     </application>
 
 </manifest>

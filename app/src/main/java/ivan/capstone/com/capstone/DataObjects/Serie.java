@@ -1,14 +1,23 @@
 package ivan.capstone.com.capstone.DataObjects;
 
+import android.content.ContentUris;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import ivan.capstone.com.capstone.Data.SeriesContract;
+import ivan.capstone.com.capstone.MyApplication;
 
 /**
  * Created by Ivan on 19/02/2016.
  */
 public class Serie implements Parcelable {
 
-    private String id;
+    private int _id; // databaseID
+
+    private String id;  // server series id
     private String name;
     private String image_url;
     private String overView;
@@ -24,6 +33,7 @@ public class Serie implements Parcelable {
     }
 
     protected Serie(Parcel in) {
+        _id = in.readInt();
         id = in.readString();
         name = in.readString();
         image_url = in.readString();
@@ -36,8 +46,8 @@ public class Serie implements Parcelable {
         poster_url = in.readString();
     }
 
-    public Serie(String id, String name, String image_url, String overView, String dateReleased, String network, String rating, String votes, String genre, String poster_url) {
-
+    public Serie(int _id, String id, String name, String image_url, String overView, String dateReleased, String network, String rating, String votes, String genre, String poster_url) {
+        this._id = _id;
         this.id = id;
         this.name = name;
         this.image_url = image_url;
@@ -57,6 +67,7 @@ public class Serie implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(_id);
         dest.writeString(id);
         dest.writeString(name);
         dest.writeString(image_url);
@@ -81,6 +92,14 @@ public class Serie implements Parcelable {
             return new Serie[size];
         }
     };
+
+    public int get_id() {
+        return _id;
+    }
+
+    public void set_id(int _id) {
+        this._id = _id;
+    }
 
     public String getId() {
         return id;
@@ -160,5 +179,44 @@ public class Serie implements Parcelable {
 
     public void setPoster_url(String poster_url) {
         this.poster_url = poster_url;
+    }
+
+
+
+    public void Save() {
+        long seriesId;
+        Cursor seriesCursor = MyApplication.getContext().getContentResolver().query(
+                SeriesContract.SeriesEntry.CONTENT_URI,
+                new String[]{SeriesContract.SeriesEntry._ID},
+                SeriesContract.SeriesEntry.COLUMN_ID + " = ?",
+                new String[]{id},
+                null);
+
+        if (seriesCursor.moveToFirst()) {
+            int seriesIdIndex = seriesCursor.getColumnIndex(SeriesContract.SeriesEntry._ID);
+            seriesId = seriesCursor.getLong(seriesIdIndex);
+        } else {
+            ContentValues locationValues = new ContentValues();
+            // Then add the data, along with the corresponding name of the data type,
+            // so the content provider knows what kind of value is being inserted.
+            locationValues.put(SeriesContract.SeriesEntry.COLUMN_ID, id);
+            locationValues.put(SeriesContract.SeriesEntry.COLUMN_NAME, name);
+            locationValues.put(SeriesContract.SeriesEntry.COLUMN_NETWORK, network);
+            locationValues.put(SeriesContract.SeriesEntry.COLUMN_POSTER_URL, poster_url);
+            locationValues.put(SeriesContract.SeriesEntry.COLUMN_BANNER_URL, image_url);
+            locationValues.put(SeriesContract.SeriesEntry.COLUMN_OVERVIEW, overView);
+            locationValues.put(SeriesContract.SeriesEntry.COLUMN_RATING, rating);
+            locationValues.put(SeriesContract.SeriesEntry.COLUMN_VOTES, votes);
+            locationValues.put(SeriesContract.SeriesEntry.COLUMN_REALSED_DATE, dateReleased);
+            locationValues.put(SeriesContract.SeriesEntry.COLUMN_GENRE, genre);
+            // Finally, insert location data into the database.
+            Uri insertedUri = MyApplication.getContext().getContentResolver().insert(
+                    SeriesContract.SeriesEntry.CONTENT_URI,
+                    locationValues
+            );
+
+            // The resulting URI contains the ID for the row.  Extract the locationId from the Uri.
+            seriesId = ContentUris.parseId(insertedUri);
+        }
     }
 }

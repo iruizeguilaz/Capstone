@@ -18,12 +18,25 @@ public class SeriesProvider  extends ContentProvider {
     private SeriesDbHelper mOpenHelper;
 
     static final int SERIES = 100;
+    static final int SERIES_ID = 101;
 
+
+    //location.location_setting = ?
+    private static final String sSeriesIDSelection =
+            SeriesContract.SeriesEntry.TABLE_NAME+
+                    "." + SeriesContract.SeriesEntry.COLUMN_ID + " = ? ";
 
     @Override
     public boolean onCreate() {
         mOpenHelper = new SeriesDbHelper(getContext());
         return true;
+    }
+
+    private static final SQLiteQueryBuilder sSeriesByIdQueryBuilder;
+
+    static{
+        sSeriesByIdQueryBuilder = new SQLiteQueryBuilder();
+        sSeriesByIdQueryBuilder.setTables( SeriesContract.SeriesEntry.TABLE_NAME );
     }
 
     static UriMatcher buildUriMatcher() {
@@ -32,6 +45,7 @@ public class SeriesProvider  extends ContentProvider {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String autorithy = SeriesContract.CONTENT_AUTHORITY;
         matcher.addURI(autorithy, SeriesContract.PATH_SERIES, SERIES);
+        matcher.addURI(autorithy, SeriesContract.PATH_SERIES + "/*", SERIES_ID);
         // 2) Use the addURI function to match each of the types.  Use the constants from
         // WeatherContract to help define the types to the UriMatcher.
 
@@ -54,6 +68,22 @@ public class SeriesProvider  extends ContentProvider {
         }
     }
 
+    private Cursor getSeriesByID(Uri uri, String[] projection, String sortOrder) {
+        String locationSetting = SeriesContract.SeriesEntry.getIDFromUri(uri);
+
+
+        String[] selectionArgs = new String[]{locationSetting};
+        String selection = sSeriesIDSelection;
+         return sSeriesByIdQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder
+        );
+    }
+
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
                         String sortOrder) {
@@ -67,7 +97,10 @@ public class SeriesProvider  extends ContentProvider {
                         projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             }
-
+            case SERIES_ID: {
+                retCursor = getSeriesByID(uri, projection, sortOrder);
+                break;
+            }
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
 

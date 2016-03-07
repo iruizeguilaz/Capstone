@@ -35,6 +35,7 @@ public class SeriesDbHelper extends SQLiteOpenHelper {
                 SeriesEntry.COLUMN_POSTER_URL+ " TEXT NOT NULL, " +
                 SeriesEntry.COLUMN_REALSED_DATE + " TEXT NOT NULL, " +
                 SeriesEntry.COLUMN_OVERVIEW + " TEXT NOT NULL, " +
+                SeriesEntry.COLUMN_GENRE + " TEXT NOT NULL, " +
                 SeriesEntry.COLUMN_NETWORK + " TEXT NOT NULL " +
 
                 " );";

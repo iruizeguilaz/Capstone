@@ -190,7 +190,7 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
             save_text.setVisibility(View.GONE);
             unsave_button.setVisibility(View.VISIBLE);
             unsave_text.setVisibility(View.VISIBLE);
-
+            if (serie != null && !serie.getId().equals("")) serie.Save();
         }
         if (button.getId() == R.id.iv_tick_on) {
             unsave_button.setVisibility(View.GONE);

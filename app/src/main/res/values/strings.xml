@@ -24,6 +24,8 @@
     <string name="detail_serie">Detail</string>
     <string name="check_serie">Check out </string>
 
+    <string name="content_authority">ivan.capstone.com.capstone</string>
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

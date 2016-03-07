@@ -54,12 +54,18 @@ public class SeriesContract {
         public static final String COLUMN_BANNER_URL = "banner";
         public static final String COLUMN_POSTER_URL = "poster";
         public static final String COLUMN_OVERVIEW = "overview";
-
+        public static final String COLUMN_GENRE = "genre";
 
         public static Uri buildSeriesUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
+
+        public static String getIDFromUri(Uri uri) {
+            return uri.getPathSegments().get(1);
+        }
     }
+
+
 
 
 
