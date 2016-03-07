@@ -45,6 +45,12 @@ public class SearchFragment extends Fragment implements SeriesAdapter.OnItemClic
         // Required empty public constructor
     }
 
+    public interface Callback {
+        /**
+         * DetailFragmentCallback for when an item has been selected.
+         */
+        void onItemSelected(Serie value);
+    }
 
 
     @Override
@@ -58,6 +64,8 @@ public class SearchFragment extends Fragment implements SeriesAdapter.OnItemClic
                              Bundle savedInstanceState) {
         View rootView =  inflater.inflate(R.layout.fragment_search, container, false);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.search_recycler);
+        recyclerView.setNestedScrollingEnabled(false);
+
 
         // TODO declarar el adapter para reusarlo
         if (savedInstanceState != null && savedInstanceState.getParcelableArrayList("ListSeries") != null) {
@@ -135,11 +143,7 @@ public class SearchFragment extends Fragment implements SeriesAdapter.OnItemClic
 
     @Override
     public void onClick(SeriesAdapter.ViewHolder viewHolder, int position) {
-
-        Intent intent = new Intent(getActivity(), DetailSerieSearchedActivity.class);
-        intent.putExtra("Serie", series.get(position));
-        startActivity(intent);
-
+        ((Callback) getActivity()).onItemSelected(series.get(position));
     }
 
 

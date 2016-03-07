@@ -42,6 +42,7 @@ import ivan.capstone.com.capstone.XML.XMLManager;
 
 public class DetailSerieFragment extends Fragment implements View.OnClickListener {
 
+    boolean mTwoPane;
     Serie serie;
     DocumentView overview_text;
     TextView genre_text;
@@ -86,8 +87,15 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
             LoadData();
         }
         else {
-            Intent intent = getActivity().getIntent();
-            serie = intent.getParcelableExtra("Serie");
+            Bundle arguments = getArguments();
+            if (arguments != null) {
+                serie = arguments.getParcelable("Serie");
+                mTwoPane = true;
+            }else {
+                Intent intent = getActivity().getIntent();
+                serie = intent.getParcelableExtra("Serie");
+                mTwoPane = false;
+            }
             FetchSerieByIDTask getSerie = new FetchSerieByIDTask();
             getSerie.execute();
         }

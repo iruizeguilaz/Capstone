@@ -14,6 +14,12 @@ public class DetailSerieSearchedActivity extends AppCompatActivity {
         mToolbar = (Toolbar) findViewById(R.id.detail_toolbar);
 
         setSupportActionBar(mToolbar);
+
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.fragment_detail_serie, new DetailSerieFragment())
+                    .commit();
+        }
     }
 
 }
