@@ -22,6 +22,7 @@
                     android:layout_width="match_parent"
                     android:contentDescription="@string/poster_description"
                     android:layout_height="280dp"
+                    android:maxWidth="@dimen/poster_maxsize"
                     android:transitionName="@string/transition_photo"
                      />
 

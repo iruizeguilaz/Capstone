@@ -1,7 +1,5 @@
 package ivan.capstone.com.capstone;
 
-
-import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -67,8 +65,6 @@ public class SearchFragment extends Fragment implements SeriesAdapter.OnItemClic
         recyclerView = (RecyclerView) rootView.findViewById(R.id.search_recycler);
         recyclerView.setNestedScrollingEnabled(false);
 
-
-        // TODO declarar el adapter para reusarlo
         if (savedInstanceState != null && savedInstanceState.getParcelableArrayList("ListSeries") != null) {
             series = savedInstanceState.getParcelableArrayList("ListSeries");
             seriesAdapter = new SeriesAdapter(series, this, R.layout.item_list_search);
@@ -79,14 +75,12 @@ public class SearchFragment extends Fragment implements SeriesAdapter.OnItemClic
             seriesAdapter = new SeriesAdapter(series, this, R.layout.item_list_search);
             recyclerView.setAdapter(seriesAdapter);
         }
-
         try {
             doSearch(rootView);
         }catch (Exception e)
         {
             Log.e("onCreateView", e.toString() + " " + e.getMessage());
         }
-
         return rootView;
     }
 
@@ -100,46 +94,24 @@ public class SearchFragment extends Fragment implements SeriesAdapter.OnItemClic
 
     private void doSearch(View rootView) {
         inputSearch = (EditText)rootView.findViewById(R.id.searchListSeries);
-
         inputSearch.setOnEditorActionListener(
-                new TextView.OnEditorActionListener() {
-                    @Override
-                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                        if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                            if (serieByNameTask != null) serieByNameTask.cancel(true);
-                            if (!inputSearch.getText().toString().equals("")) {
-                                serieByNameTask = new FetchSerieByNameTask();
-                                serieByNameTask.execute(inputSearch.getText().toString());
-                            } else {
-                                //if(mSpotifyAdapter!= null) mSpotifyAdapter.clear();
-                            }
-                            return true; // consume.
-
+            new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                        if (serieByNameTask != null) serieByNameTask.cancel(true);
+                        if (!inputSearch.getText().toString().equals("")) {
+                            serieByNameTask = new FetchSerieByNameTask();
+                            serieByNameTask.execute(inputSearch.getText().toString());
+                        } else {
+                            series.clear();
+                            seriesAdapter.notifyDataSetChanged();
                         }
-                        return false; // pass on to other listeners.
+                        return true; // consume.
                     }
-                });
-
-       /* inputSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (serieByNameTask != null) serieByNameTask.cancel(true);
-                if (!inputSearch.getText().toString().equals("")) {
-                    serieByNameTask = new FetchSerieByNameTask();
-                    serieByNameTask.execute(inputSearch.getText().toString());
-                } else {
-                    //if(mSpotifyAdapter!= null) mSpotifyAdapter.clear();
+                    return false;
                 }
-            }
-        });*/
+            });
     }
 
     @Override
@@ -162,17 +134,14 @@ public class SearchFragment extends Fragment implements SeriesAdapter.OnItemClic
                 List<Serie> result= new ArrayList<Serie>();
                 HttpURLConnection urlConnection = null;
                 BufferedReader reader = null;
-                String bookJsonString = null;
                 try {
                     final String SERIES_BASE_URL = "http://thetvdb.com/api/GetSeries.php?";
                     final String QUERY_PARAM = "seriesname";
-
                     Uri builtUri = Uri.parse(SERIES_BASE_URL).buildUpon()
                             .appendQueryParameter(QUERY_PARAM,  params[0] )
                             .build();
 
                     URL url = new URL(builtUri.toString());
-
                     urlConnection = (HttpURLConnection) url.openConnection();
                     urlConnection.setRequestMethod("GET");
                     urlConnection.connect();
@@ -185,37 +154,8 @@ public class SearchFragment extends Fragment implements SeriesAdapter.OnItemClic
                     parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
                     parser.setInput(inputStream, null);
                     result = XMLManager.GetSeriesFromXML(parser);
-                    // this query return a url of a banner image, is better to get the poster
-                    // so we will do more queries to bring the posters
-                    /*for (Serie serie: result){
-                        final String BANNERS_BASE_URL = "http://thetvdb.com/api/31700C7EECC0878D/series/" + serie.getId() + "/banners.xml" ;
-                        builtUri = Uri.parse(BANNERS_BASE_URL).buildUpon()
-                                .build();
-
-                        url = new URL(builtUri.toString());
-
-                        urlConnection = (HttpURLConnection) url.openConnection();
-                        urlConnection.setRequestMethod("GET");
-                        urlConnection.connect();
-
-                        inputStream = urlConnection.getInputStream();
-                        if (inputStream == null) {
-                            return null;
-                        }
-                        pullParserFactory = XmlPullParserFactory.newInstance();
-                        parser = pullParserFactory.newPullParser();
-                        parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
-                        parser.setInput(inputStream, null);
-                        String url_poster = XMLManager.GetPosrterFromXML(parser);
-                        if (!url_poster.equals("")){
-                            serie.setImage_url("http://thetvdb.com//banners/" + url_poster);
-                        }
-                    }
-                    */
-
-
                 } catch ( Exception e){
-
+                    result = null;
                     Log.e(LOG_TAG, "Error:" + e.getMessage());
                 } finally {
                     if (urlConnection != null) {
@@ -226,13 +166,9 @@ public class SearchFragment extends Fragment implements SeriesAdapter.OnItemClic
                             reader.close();
                         } catch (final IOException e) {
                             Log.e(LOG_TAG, "Error closing stream", e);
-                            return null;
                         }
-
                     }
-
                 }
-
                 return result;
             }
             catch (Exception ex)
@@ -247,19 +183,21 @@ public class SearchFragment extends Fragment implements SeriesAdapter.OnItemClic
                 if (result.size() == 0) {
                     int duration = Toast.LENGTH_SHORT;
                     Toast.makeText(getActivity(),getString(R.string.noseries_message) , duration).show();
-                    //if (((MainActivity)getActivity()).mTwoPane) ((Callback) getActivity()).onItemSelected(null);
                 } else {
-                    // TODO adaptar adapter
-
-                    // intentar reinciar la lista
                     series.clear();
                     series.addAll(result);
                     seriesAdapter.notifyDataSetChanged();
                 }
-            }else {
-                int duration = Toast.LENGTH_SHORT;
-                Toast.makeText(getActivity(),getString(R.string.nonetwork_message) , duration).show();
-                //if (((MainActivity)getActivity()).mTwoPane) ((Callback) getActivity()).onItemSelected(null);
+            } else {
+                series.clear();
+                seriesAdapter.notifyDataSetChanged();
+                if (!MyApplication.isNetworkAvailable()) {
+                    int duration = Toast.LENGTH_SHORT;
+                    Toast.makeText(MyApplication.getContext(),MyApplication.getContext().getString(R.string.nonetwork_message) , duration).show();
+                } else {
+                    int duration = Toast.LENGTH_SHORT;
+                    Toast.makeText(MyApplication.getContext(),MyApplication.getContext().getString(R.string.noserver_message) , duration).show();
+                }
             }
         }
     }

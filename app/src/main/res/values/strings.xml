@@ -11,7 +11,7 @@
 
     <string name="noseries_message">There are no seires for this name. Please, refine the search..</string>
     <string name="nonetwork_message">There are problems with the network.</string>
-
+    <string name="noserver_message">There are problems with the series source, try again, if the problem persists come later.</string>
 
     <string name="save_serie">Save the serie</string>
     <string name="unsave_serie">Unsave the serie</string>

@@ -3,10 +3,12 @@ package ivan.capstone.com.capstone;
 
 
 
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -80,11 +82,22 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
         View rootView = inflater.inflate(R.layout.fragment_my_series, container, false);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.myseries_recycler);
         recyclerView.setNestedScrollingEnabled(false);
-
-        series= new ArrayList<Serie>();
-        seriesAdapter = new SeriesAdapter(series, this, R.layout.item_list_myseries);
-        recyclerView.setAdapter(seriesAdapter);
-
+        if (!((MySeriesActivity)getActivity()).mTwoPane) {
+            if(getActivity().getResources().getConfiguration().orientation != Configuration.ORIENTATION_PORTRAIT){
+                recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+            }
+        }
+        if (savedInstanceState != null && savedInstanceState.getParcelableArrayList("ListSeries") != null) {
+            series = savedInstanceState.getParcelableArrayList("ListSeries");
+            seriesAdapter = new SeriesAdapter(series, this, R.layout.item_list_myseries);
+            recyclerView.setAdapter(seriesAdapter);
+            seriesAdapter.notifyDataSetChanged();
+        } else {
+            series= new ArrayList<Serie>();
+            seriesAdapter = new SeriesAdapter(series, this, R.layout.item_list_myseries);
+            recyclerView.setAdapter(seriesAdapter);
+            getLoaderManager().initLoader(SERIES_LOADER, null, this);
+        }
         return rootView;
     }
 
@@ -97,7 +110,7 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        getLoaderManager().initLoader(SERIES_LOADER, null, this);
+
         super.onActivityCreated(savedInstanceState);
     }
 

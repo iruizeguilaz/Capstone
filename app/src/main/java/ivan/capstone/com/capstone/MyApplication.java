@@ -5,13 +5,15 @@ package ivan.capstone.com.capstone;
  */
 import android.app.Application;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.analytics.Logger;
-
 import com.google.android.gms.tagmanager.TagManager;
 import com.google.android.gms.tagmanager.ContainerHolder;
+import java.io.IOException;
 
 
 public class MyApplication extends Application {
@@ -29,6 +31,12 @@ public class MyApplication extends Application {
 
     public static Context getContext(){
         return mContext;
+    }
+
+    public static boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(mContext.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
     }
 
     // Get the Tag Manager

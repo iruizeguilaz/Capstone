@@ -46,7 +46,6 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
 
     boolean mTwoPane;
     Serie serie;
-    DocumentView overview_text;
     TextView genre_text;
     TextView rating_text;
     TextView network_text;
@@ -70,7 +69,7 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
         super.onActivityCreated(savedInstanceState);
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         ActionBar actionBar = activity.getSupportActionBar();
-        if (serie != null) actionBar.setTitle(serie.getName());
+        if (actionBar != null && serie != null && !serie.getName().equals("")) actionBar.setTitle(serie.getName());
     }
 
 
@@ -143,7 +142,7 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
             String str[] = date.split("-");
             if (str != null && str.length > 0) releasedDate_text.setText(getResources().getString(R.string.year_serie)+ ": " + str[0]);
         }
-        addOverwiewView(new StringBuilder().append(serie.getOverView().toString()));
+        addOverwiewView(new StringBuilder().append(serie.getOverView()));
         String genre = getResources().getString(R.string.genre_serie) + " " + serie.getGenre();
         genre_text.setText(genre);
         String rating = serie.getRating() + getResources().getString(R.string.rating_serie) + "  " + serie.getVotes()+ " "   + getResources().getString(R.string.votes_serie);
@@ -214,8 +213,6 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
         if (button.getId() == R.id.iv_tick_off) {
             save_button.setVisibility(View.GONE);
             save_text.setVisibility(View.GONE);
-
-
             unsave_button.setVisibility(View.VISIBLE);
             unsave_text.setVisibility(View.VISIBLE);
             if (serie != null && !serie.getId().equals("")) serie.Save();
@@ -239,7 +236,6 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
                 Serie result = null;
                 HttpURLConnection urlConnection = null;
                 BufferedReader reader = null;
-                String bookJsonString = null;
                 try {
                     final String SERIES_BASE_URL = "http://thetvdb.com/api/31700C7EECC0878D/series/" + serie.getId();
                     Uri builtUri = Uri.parse(SERIES_BASE_URL).buildUpon()
@@ -258,8 +254,8 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
                     parser.setInput(inputStream, null);
                     result = XMLManager.GetSerieFromXML(parser);
                 } catch ( Exception e){
-
                     Log.e(LOG_TAG, "Error:" + e.getMessage());
+                    result = null;
                 } finally {
                     if (urlConnection != null) {
                         urlConnection.disconnect();
@@ -285,12 +281,17 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
         protected void onPostExecute(Serie result) {
             if (result != null) {
                 serie = result;
-                LoadData();
             }else {
-                int duration = Toast.LENGTH_SHORT;
-                Toast.makeText(getActivity(),getString(R.string.nonetwork_message) , duration).show();
-                //if (((MainActivity)getActivity()).mTwoPane) ((Callback) getActivity()).onItemSelected(null);
+                if (!MyApplication.isNetworkAvailable()) {
+                    int duration = Toast.LENGTH_SHORT;
+                    Toast.makeText(MyApplication.getContext(),MyApplication.getContext().getString(R.string.nonetwork_message) , duration).show();
+                } else {
+                    // the serie must exist so if we do not find it it is because the server is down or because our connection
+                    int duration = Toast.LENGTH_SHORT;
+                    Toast.makeText(MyApplication.getContext(),MyApplication.getContext().getString(R.string.noserver_message) , duration).show();
+                }
             }
+            LoadData();
         }
     }
 }

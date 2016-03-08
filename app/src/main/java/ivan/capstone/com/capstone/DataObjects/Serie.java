@@ -29,7 +29,17 @@ public class Serie implements Parcelable {
     private String poster_url;
 
     public Serie(){
-
+        _id = 0;
+        id = "";
+        name= "";
+        image_url= "";
+        overView= "";
+        dateReleased= "";
+        network= "";
+        rating= "";
+        votes= "";
+        genre= "";
+        poster_url= "";
     }
 
     protected Serie(Parcel in) {
