@@ -12,17 +12,16 @@
                 xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/card_view"
-                android:layout_width="match_parent"
+                android:layout_width="@dimen/poster_maxsize"
                 android:layout_height="wrap_content"
                 card_view:cardCornerRadius="10dp"
                 card_view:cardElevation="10dp">
 
                 <ImageView
                     android:id="@+id/poster"
-                    android:layout_width="match_parent"
                     android:contentDescription="@string/poster_description"
                     android:layout_height="280dp"
-                    android:maxWidth="@dimen/poster_maxsize"
+                    android:layout_width="@dimen/poster_maxsize"
                     android:transitionName="@string/transition_photo"
                      />
 

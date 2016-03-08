@@ -82,11 +82,7 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
         View rootView = inflater.inflate(R.layout.fragment_my_series, container, false);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.myseries_recycler);
         recyclerView.setNestedScrollingEnabled(false);
-        if (!((MySeriesActivity)getActivity()).mTwoPane) {
-            if(getActivity().getResources().getConfiguration().orientation != Configuration.ORIENTATION_PORTRAIT){
-                recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-            }
-        }
+
         if (savedInstanceState != null && savedInstanceState.getParcelableArrayList("ListSeries") != null) {
             series = savedInstanceState.getParcelableArrayList("ListSeries");
             seriesAdapter = new SeriesAdapter(series, this, R.layout.item_list_myseries);
@@ -110,7 +106,11 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-
+        if (!((MySeriesActivity)getActivity()).mTwoPane) {
+            if(getActivity().getResources().getConfiguration().orientation != Configuration.ORIENTATION_PORTRAIT){
+                recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+            }
+        }
         super.onActivityCreated(savedInstanceState);
     }
 
