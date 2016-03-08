@@ -21,17 +21,19 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.ViewHolder
 
 
     private List<Serie> series;
+    private int layout;
 
-    public SeriesAdapter(List<Serie> items,  OnItemClickListener listener)
+    public SeriesAdapter(List<Serie> items,  OnItemClickListener listener, int layoutData)
     {
         series = items;
         this.externalListernetClick = listener;
+        this.layout = layoutData;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_list_search, parent, false);
+                .inflate(layout, parent, false);
         return new ViewHolder(view);
     }
 
@@ -41,11 +43,23 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.ViewHolder
         holder.viewTitle.setText(series.get(position).getName());
         holder.viewReleaseDate.setText(series.get(position).getDateReleased());
         holder.viewNetwork.setText(series.get(position).getNetwork());
-        Glide.with(holder.itemView.getContext())
-                .load(holder.item.getImage_url())
-                .thumbnail(0.1f)
-                .centerCrop()
-                .into(holder.viewMiniatura);
+
+        if (layout == R.layout.item_list_myseries) {
+            Glide.with(holder.itemView.getContext())
+                    .load(holder.item.getPoster_url())
+                    .thumbnail(0.1f)
+                    .centerCrop()
+                    .into(holder.viewMiniatura);
+
+        } else {
+            Glide.with(holder.itemView.getContext())
+                    .load(holder.item.getImage_url())
+                    .thumbnail(0.1f)
+                    .centerCrop()
+                    .into(holder.viewMiniatura);
+
+        }
+
 
     }
 
@@ -70,7 +84,6 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
             public final TextView viewTitle;
-            //public final TextView viewResumen;
             public final TextView viewReleaseDate;
             public final ImageView viewMiniatura;
             public final TextView viewNetwork;
@@ -81,7 +94,6 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.ViewHolder
             super(view);
             view.setClickable(true);
             viewTitle = (TextView) view.findViewById(R.id.name_serie);
-            //viewResumen = (TextView) view.findViewById(R.id.resumen);
             viewReleaseDate = (TextView) view.findViewById(R.id.date_serie);
             viewMiniatura = (ImageView) view.findViewById(R.id.image_serie);
             viewNetwork = (TextView) view.findViewById(R.id.network_serie);

@@ -70,12 +70,12 @@ public class SearchFragment extends Fragment implements SeriesAdapter.OnItemClic
         // TODO declarar el adapter para reusarlo
         if (savedInstanceState != null && savedInstanceState.getParcelableArrayList("ListSeries") != null) {
             series = savedInstanceState.getParcelableArrayList("ListSeries");
-            seriesAdapter = new SeriesAdapter(series, this);
+            seriesAdapter = new SeriesAdapter(series, this, R.layout.item_list_search);
             recyclerView.setAdapter(seriesAdapter);
             seriesAdapter.notifyDataSetChanged();
         } else {
             series= new ArrayList<Serie>();
-            seriesAdapter = new SeriesAdapter(series, this);
+            seriesAdapter = new SeriesAdapter(series, this, R.layout.item_list_search);
             recyclerView.setAdapter(seriesAdapter);
         }
 

@@ -15,7 +15,7 @@ import ivan.capstone.com.capstone.MyApplication;
  */
 public class Serie implements Parcelable {
 
-    private int _id; // databaseID
+    private long _id; // databaseID
 
     private String id;  // server series id
     private String name;
@@ -33,7 +33,7 @@ public class Serie implements Parcelable {
     }
 
     protected Serie(Parcel in) {
-        _id = in.readInt();
+        _id = in.readLong();
         id = in.readString();
         name = in.readString();
         image_url = in.readString();
@@ -67,7 +67,7 @@ public class Serie implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(_id);
+        dest.writeLong(_id);
         dest.writeString(id);
         dest.writeString(name);
         dest.writeString(image_url);
@@ -93,11 +93,11 @@ public class Serie implements Parcelable {
         }
     };
 
-    public int get_id() {
+    public long get_id() {
         return _id;
     }
 
-    public void set_id(int _id) {
+    public void set_id(long _id) {
         this._id = _id;
     }
 
@@ -181,21 +181,20 @@ public class Serie implements Parcelable {
         this.poster_url = poster_url;
     }
 
-
-
-    public void Save() {
-        long seriesId;
+    public boolean IsSaved() {
+        if (id.equals("")) return false;
         Cursor seriesCursor = MyApplication.getContext().getContentResolver().query(
                 SeriesContract.SeriesEntry.CONTENT_URI,
                 new String[]{SeriesContract.SeriesEntry._ID},
                 SeriesContract.SeriesEntry.COLUMN_ID + " = ?",
                 new String[]{id},
                 null);
+        if (seriesCursor.moveToFirst()) return true;
+        else return false;
+    }
 
-        if (seriesCursor.moveToFirst()) {
-            int seriesIdIndex = seriesCursor.getColumnIndex(SeriesContract.SeriesEntry._ID);
-            seriesId = seriesCursor.getLong(seriesIdIndex);
-        } else {
+    public void Save() {
+        if (!IsSaved()) {
             ContentValues locationValues = new ContentValues();
             // Then add the data, along with the corresponding name of the data type,
             // so the content provider knows what kind of value is being inserted.
@@ -209,14 +208,20 @@ public class Serie implements Parcelable {
             locationValues.put(SeriesContract.SeriesEntry.COLUMN_VOTES, votes);
             locationValues.put(SeriesContract.SeriesEntry.COLUMN_REALSED_DATE, dateReleased);
             locationValues.put(SeriesContract.SeriesEntry.COLUMN_GENRE, genre);
-            // Finally, insert location data into the database.
+            // Finally, insert serie data into the database.
             Uri insertedUri = MyApplication.getContext().getContentResolver().insert(
                     SeriesContract.SeriesEntry.CONTENT_URI,
                     locationValues
             );
-
             // The resulting URI contains the ID for the row.  Extract the locationId from the Uri.
-            seriesId = ContentUris.parseId(insertedUri);
+            _id = ContentUris.parseId(insertedUri);
+        }
+    }
+
+    public void Delete() {
+        if (IsSaved()) {
+            MyApplication.getContext().getContentResolver().delete(SeriesContract.SeriesEntry.CONTENT_URI, SeriesContract.SeriesEntry.COLUMN_ID +"=?", new String[]{id});
+            _id = 0;
         }
     }
 }

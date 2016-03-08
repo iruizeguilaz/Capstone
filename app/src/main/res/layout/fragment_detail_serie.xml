@@ -1,32 +1,31 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="#ffffff">
-
-
+    android:layout_height="fill_parent">
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="@dimen/small_margin"
+            android:padding="@dimen/small_margin">
 
-            >
-
-            <ImageView
-                android:id="@+id/poster"
+            <android.support.v7.widget.CardView
+                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/card_view"
                 android:layout_width="match_parent"
-                android:layout_height="280dp"
-                 />
+                android:layout_height="wrap_content"
+                card_view:cardCornerRadius="5dp"
+                card_view:cardElevation="10dp">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/colorPrimary"/>
+                <ImageView
+                    android:id="@+id/poster"
+                    android:layout_width="match_parent"
+                    android:layout_height="280dp"
+                     />
+
+            </android.support.v7.widget.CardView>
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -34,7 +33,6 @@
 
 
                 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    xmlns:tools="http://schemas.android.com/tools"
                     android:layout_width="0dp"
                     android:layout_weight=".50"
                     android:layout_height="wrap_content"
@@ -54,7 +52,6 @@
                 </LinearLayout>
 
                 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    xmlns:tools="http://schemas.android.com/tools"
                     android:layout_width="0dp"
                     android:layout_weight=".50"
                     android:layout_height="wrap_content"
@@ -177,23 +174,29 @@
                 android:textStyle="bold" />
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:id="@+id/description_wrapper" />
 
-
-
-            <ImageView
-                android:id="@+id/banner"
+            <android.support.v7.widget.CardView
+                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/card_view2"
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:padding="@dimen/small_margin"
-                android:background="@color/light_grey"
-                />
+                android:layout_height="wrap_content"
+                card_view:cardCornerRadius="5dp"
+                card_view:cardElevation="10dp"
+                android:layout_margin="@dimen/small_margin">
 
+                <ImageView
+                    android:id="@+id/banner"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:padding="@dimen/small_margin"
+                    android:background="@color/light_grey"
+                    />
+
+            </android.support.v7.widget.CardView>
         </LinearLayout>
-
-
 </ScrollView>

@@ -5,21 +5,15 @@
     android:layout_height="match_parent"
     tools:context="ivan.capstone.com.capstone.MySeriesFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
-
 
     <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/myseries_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginLeft="@dimen/medium_margin"
+        android:layout_marginRight="@dimen/medium_margin"
         app:layoutManager="LinearLayoutManager"
-        tools:listitem="@layout/item_list_search" />
+        tools:listitem="@layout/item_list_myseries" />
 
 </FrameLayout>

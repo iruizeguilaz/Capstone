@@ -10,10 +10,13 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MySeriesActivity extends AppCompatActivity {
+import ivan.capstone.com.capstone.DataObjects.Serie;
+
+public class MySeriesActivity extends AppCompatActivity implements MySeriesFragment.Callback{
 
     private Toolbar mToolbar;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+    public boolean mTwoPane;
+    private static final String DETAILFRAGMENT_TAG = "PFTAG";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,17 +31,6 @@ public class MySeriesActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MyApplication.getContext(), SearchActivity.class);
                 startActivity(intent);
-            }
-        });
-
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
-
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                // Set refresh to false so the refresh icon doesn't just spin indefinitely
-                // This is just a placeholder.
-                mSwipeRefreshLayout.setRefreshing(false);
             }
         });
 
@@ -76,5 +68,25 @@ public class MySeriesActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public void onItemSelected(Serie value) {
+        if (mTwoPane) {
+            Bundle args = new Bundle();
+            if (value != null) {
+                args.putParcelable("Serie", value);
+            }
+            DetailSerieFragment fragment = new DetailSerieFragment();
+            fragment.setArguments(args);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_detail_serie, fragment, DETAILFRAGMENT_TAG)
+                    .commit();
+        } else {
+            Intent intent = new Intent(this, DetailSerieSearchedActivity.class);
+            intent.putExtra("Serie", value);
+            startActivity(intent);
+        }
     }
 }

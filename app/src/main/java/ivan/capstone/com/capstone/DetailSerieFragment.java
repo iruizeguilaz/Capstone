@@ -137,7 +137,6 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
                     .thumbnail(0.1f)
                     .centerCrop()
                     .into(poster);
-
         }
         else {
             Glide.with(getActivity())
@@ -151,9 +150,15 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
                 .thumbnail(0.1f)
                 .fitCenter()
                 .into(banner);
+        if (serie.IsSaved()) {
+            save_button.setVisibility(View.GONE);
+            save_text.setVisibility(View.GONE);
+            unsave_button.setVisibility(View.VISIBLE);
+            unsave_text.setVisibility(View.VISIBLE);
+        }
     }
 
-    // Custom view chich can be justified
+    // Custom view which is justified
     private void addOverwiewView(CharSequence article) {
         final DocumentView documentView = new DocumentView(getActivity(), DocumentView.PLAIN_TEXT);
         documentView.getDocumentLayoutParams().setTextColor(Color.BLACK);
@@ -170,7 +175,6 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
         documentView.setText(article);
         layout_detail.addView(documentView);
     }
-
 
     @Override
     public void onClick(View view) {
@@ -197,6 +201,7 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
             unsave_text.setVisibility(View.GONE);
             save_button.setVisibility(View.VISIBLE);
             save_text.setVisibility(View.VISIBLE);
+            if (serie != null && !serie.getId().equals("")) serie.Delete();
         }
     }
 
@@ -215,9 +220,7 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
                     final String SERIES_BASE_URL = "http://thetvdb.com/api/31700C7EECC0878D/series/" + serie.getId();
                     Uri builtUri = Uri.parse(SERIES_BASE_URL).buildUpon()
                             .build();
-
                     URL url = new URL(builtUri.toString());
-
                     urlConnection = (HttpURLConnection) url.openConnection();
                     urlConnection.setRequestMethod("GET");
                     urlConnection.connect();
@@ -230,8 +233,6 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
                     parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
                     parser.setInput(inputStream, null);
                     result = XMLManager.GetSerieFromXML(parser);
-
-
                 } catch ( Exception e){
 
                     Log.e(LOG_TAG, "Error:" + e.getMessage());
@@ -246,11 +247,8 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
                             Log.e(LOG_TAG, "Error closing stream", e);
                             return null;
                         }
-
                     }
-
                 }
-
                 return result;
             }
             catch (Exception ex)
