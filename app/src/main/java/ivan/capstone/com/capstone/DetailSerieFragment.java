@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
@@ -15,6 +16,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -58,6 +60,7 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
     TextView unsave_text;
     LinearLayout layout_detail;
 
+
     public DetailSerieFragment() {
         // Required empty public constructor
     }
@@ -73,7 +76,9 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) getActivity().postponeEnterTransition();
     }
 
     @Override
@@ -118,6 +123,20 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
         return rootView;
     }
 
+    private void scheduleStartPostponedTransition(final View sharedElement) {
+        sharedElement.getViewTreeObserver().addOnPreDrawListener(
+                new ViewTreeObserver.OnPreDrawListener() {
+                    @Override
+                    public boolean onPreDraw() {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            sharedElement.getViewTreeObserver().removeOnPreDrawListener(this);
+                            getActivity().startPostponedEnterTransition();
+                        }
+                        return true;
+                    }
+                });
+    }
+
     public void LoadData() {
         String date = serie.getDateReleased();
         if (date != null  && !date.equals("")) {
@@ -131,6 +150,9 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
         rating_text.setText(rating);
         String network = getResources().getString(R.string.network_serie) + "  " + serie.getNetwork();
         network_text.setText(network);
+
+        scheduleStartPostponedTransition(poster);
+
         if (serie.getPoster_url().equals("")) {
             Glide.with(getActivity())
                     .load(R.drawable.old_tv)
@@ -192,6 +214,8 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
         if (button.getId() == R.id.iv_tick_off) {
             save_button.setVisibility(View.GONE);
             save_text.setVisibility(View.GONE);
+
+
             unsave_button.setVisibility(View.VISIBLE);
             unsave_text.setVisibility(View.VISIBLE);
             if (serie != null && !serie.getId().equals("")) serie.Save();

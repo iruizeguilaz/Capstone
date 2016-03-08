@@ -17,16 +17,31 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
+        android:background="@drawable/touch_selector"
         >
 
-        <ImageView
-            android:id="@+id/image_serie"
-            android:layout_width="130dp"
-            android:layout_height="130dp"
-            android:background="@drawable/touch_selector"
-            android:padding="@dimen/medium_margin"
+        <android.support.v7.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/card_view_poster"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            card_view:cardCornerRadius="5dp"
+            card_view:cardElevation="15dp">
 
-            />
+
+            <ImageView
+                android:id="@+id/image_serie"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:background="@drawable/touch_selector"
+                android:contentDescription="@string/poster_description"
+                android:padding="@dimen/small_margin"
+                android:transitionName="@string/transition_photo"
+
+                />
+
+        </android.support.v7.widget.CardView>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="fill_parent"
@@ -53,6 +68,7 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
                 android:paddingLeft="@dimen/small_margin"
+                android:paddingStart="@dimen/small_margin"
                 android:paddingTop="@dimen/activity_vertical_margin">
 
                 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -64,7 +80,7 @@
                     android:fontFamily="sans-serif-condensed"
                     android:padding="@dimen/small_margin"
                     android:textSize="@dimen/test_normal_size"
-                    android:gravity="left"
+                    android:gravity="start"
                     />
 
                 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -74,12 +90,14 @@
                     android:background="@drawable/touch_selector"
                     android:id="@+id/network_serie"
                     android:paddingRight="@dimen/large_margin"
+                    android:paddingEnd="@dimen/large_margin"
                     android:paddingLeft="@dimen/small_margin"
+                    android:paddingStart="@dimen/small_margin"
                     android:paddingTop="@dimen/small_margin"
                     android:paddingBottom="@dimen/small_margin"
                     android:fontFamily="sans-serif-condensed"
                     android:textSize="@dimen/test_normal_size"
-                    android:gravity="right"
+                    android:gravity="end"
                     />
             </LinearLayout>
 

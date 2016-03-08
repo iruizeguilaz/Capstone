@@ -25,7 +25,13 @@
     <string name="check_serie">Check out </string>
 
     <string name="content_authority">ivan.capstone.com.capstone</string>
+    <string name="transition_photo">transition_photo</string>
 
+    <string name="poster_description">The poster of the serie</string>
+    <string name="save_description">The save image button</string>
+    <string name="unsave_description">The delete image button</string>
+    <string name="share_description">The share image button</string>
+    <string name="banner_description">The banner of the serie</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

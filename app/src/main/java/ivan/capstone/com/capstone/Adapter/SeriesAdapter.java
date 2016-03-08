@@ -103,12 +103,12 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.ViewHolder
 
         @Override
         public void onClick(View v) {
-            externalListernetClick.onClick(this, getAdapterPosition());
+            externalListernetClick.onClick(this, getAdapterPosition(), viewMiniatura);
         }
     }
 
     public interface OnItemClickListener {
-        public void onClick(ViewHolder viewHolder, int position);
+        public void onClick(ViewHolder viewHolder, int position, ImageView imageView);
     }
 
     private OnItemClickListener externalListernetClick;

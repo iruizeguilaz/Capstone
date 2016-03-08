@@ -1,6 +1,8 @@
 package ivan.capstone.com.capstone;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -9,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 
 import ivan.capstone.com.capstone.DataObjects.Serie;
 
@@ -35,18 +38,12 @@ public class MySeriesActivity extends AppCompatActivity implements MySeriesFragm
         });
 
         if (savedInstanceState == null) {
-            refresh();
         }
 
 
 
     }
 
-    private void refresh() {
-        //startService(new Intent(this, UpdaterService.class));
-        // TODO relanzar la lista
-
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -72,7 +69,7 @@ public class MySeriesActivity extends AppCompatActivity implements MySeriesFragm
 
 
     @Override
-    public void onItemSelected(Serie value) {
+    public void onItemSelected(Serie value, ImageView imageView) {
         if (mTwoPane) {
             Bundle args = new Bundle();
             if (value != null) {
@@ -81,12 +78,19 @@ public class MySeriesActivity extends AppCompatActivity implements MySeriesFragm
             DetailSerieFragment fragment = new DetailSerieFragment();
             fragment.setArguments(args);
             getSupportFragmentManager().beginTransaction()
+                    .addSharedElement(imageView, getResources().getString(R.string.transition_photo))
                     .replace(R.id.fragment_detail_serie, fragment, DETAILFRAGMENT_TAG)
                     .commit();
         } else {
             Intent intent = new Intent(this, DetailSerieSearchedActivity.class);
             intent.putExtra("Serie", value);
-            startActivity(intent);
+             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                 ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this, imageView, getResources().getString(R.string.transition_photo));
+                 startActivity(intent, options.toBundle());
+             } else {
+                 startActivity(intent);
+             }
+
         }
     }
 }

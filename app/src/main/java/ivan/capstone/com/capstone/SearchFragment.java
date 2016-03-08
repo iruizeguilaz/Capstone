@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,7 +50,7 @@ public class SearchFragment extends Fragment implements SeriesAdapter.OnItemClic
         /**
          * DetailFragmentCallback for when an item has been selected.
          */
-        void onItemSelected(Serie value);
+        void onItemSelected(Serie value, ImageView imageView);
     }
 
 
@@ -142,8 +143,8 @@ public class SearchFragment extends Fragment implements SeriesAdapter.OnItemClic
     }
 
     @Override
-    public void onClick(SeriesAdapter.ViewHolder viewHolder, int position) {
-        ((Callback) getActivity()).onItemSelected(series.get(position));
+    public void onClick(SeriesAdapter.ViewHolder viewHolder, int position, ImageView imageView ) {
+        ((Callback) getActivity()).onItemSelected(series.get(position), imageView);
     }
 
 

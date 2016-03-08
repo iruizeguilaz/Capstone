@@ -29,13 +29,27 @@
             android:background="@drawable/touch_selector"
             >
 
-            <ImageView
-                android:id="@+id/image_serie"
+            <android.support.v7.widget.CardView
+                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/card_view_banner"
                 android:layout_width="match_parent"
-                android:layout_height="130dp"
-                android:background="@drawable/touch_selector"
-                android:elevation="1dp"
-                />
+                android:layout_height="wrap_content"
+                card_view:cardCornerRadius="5dp"
+                card_view:cardElevation="10dp"
+                android:layout_margin="@dimen/medium_margin"
+                >
+
+                <ImageView
+                    android:id="@+id/image_serie"
+                    android:layout_width="match_parent"
+                    android:layout_height="130dp"
+                    android:background="@drawable/touch_selector"
+                    android:contentDescription="@string/banner_description"
+                    android:transitionName="@string/transition_photo"
+                    />
+
+            </android.support.v7.widget.CardView>
 
         </LinearLayout>
 
@@ -78,9 +92,9 @@
                 android:background="@drawable/touch_selector"
                 android:id="@+id/date_serie"
                 android:layout_marginLeft="@dimen/small_margin"
+                android:layout_marginStart="@dimen/small_margin"
                 android:fontFamily="sans-serif-condensed"
-
-                android:gravity="left"
+                android:gravity="start"
                 />
 
             <TextView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -92,7 +106,8 @@
                 android:id="@+id/network_serie"
                 android:fontFamily="sans-serif-condensed"
                 android:layout_marginRight="@dimen/small_margin"
-                android:gravity="right"
+                android:layout_marginEnd="@dimen/small_margin"
+                android:gravity="end"
                 />
         </LinearLayout>
     </LinearLayout>

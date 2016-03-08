@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.content.CursorLoader;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,12 +65,12 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
         /**
          * DetailFragmentCallback for when an item has been selected.
          */
-        void onItemSelected(Serie value);
+        void onItemSelected(Serie value, ImageView imageView);
     }
 
     @Override
-    public void onClick(SeriesAdapter.ViewHolder viewHolder, int position) {
-        ((Callback) getActivity()).onItemSelected(series.get(position));
+    public void onClick(SeriesAdapter.ViewHolder viewHolder, int position, ImageView imageView) {
+        ((Callback) getActivity()).onItemSelected(series.get(position), imageView);
     }
 
     @Override
