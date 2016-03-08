@@ -32,7 +32,6 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".DetailSerieSearchedActivity"
-            android:parentActivityName=".SearchActivity"
             android:label="@string/title_activity_detail_serie_searched"
             android:theme="@style/AppTheme.NoActionBar" />
 

@@ -140,7 +140,7 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
         String date = serie.getDateReleased();
         if (date != null  && !date.equals("")) {
             String str[] = date.split("-");
-            if (str != null && str.length > 0) releasedDate_text.setText(getResources().getString(R.string.year_serie)+ ": " + str[0]);
+            if (str != null && str.length > 0) releasedDate_text.setText(getResources().getString(R.string.year_serie)+ " " + str[0]);
         }
         addOverwiewView(new StringBuilder().append(serie.getOverView()));
         String genre = getResources().getString(R.string.genre_serie) + " " + serie.getGenre();
