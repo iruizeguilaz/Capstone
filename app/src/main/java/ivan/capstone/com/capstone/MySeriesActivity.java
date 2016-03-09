@@ -25,18 +25,8 @@ public class MySeriesActivity extends AppCompatActivity implements MySeriesFragm
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_myseries);
-        if (findViewById(R.id.fragment_detail_serie) != null) {
-            mTwoPane = true;
-        } else {
-            mTwoPane = false;
-            //this will get rid of an unnecessary shadow below the action bar for smaller screen devices like phones.
-            // Then the action bar and Today item will appear to be on the same plane (as opposed to two different planes,
-            // where one casts a shadow on the other).
-            getSupportActionBar().setElevation(0f);
-        }
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,9 +38,15 @@ public class MySeriesActivity extends AppCompatActivity implements MySeriesFragm
 
         if (savedInstanceState == null) {
         }
-
-
-
+        if (findViewById(R.id.fragment_detail_serie) != null) {
+            mTwoPane = true;
+        } else {
+            mTwoPane = false;
+            //this will get rid of an unnecessary shadow below the action bar for smaller screen devices like phones.
+            // Then the action bar and Today item will appear to be on the same plane (as opposed to two different planes,
+            // where one casts a shadow on the other).
+            getSupportActionBar().setElevation(0f);
+        }
     }
 
 
