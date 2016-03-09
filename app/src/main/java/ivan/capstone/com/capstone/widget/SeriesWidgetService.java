@@ -162,8 +162,10 @@ public class SeriesWidgetService extends RemoteViewsService {
 
 
         @Override
-        public int getCount() {
-            return data.getCount();
+        public int getCount()
+        {
+            if (data!= null) return data.getCount();
+            else return 0;
         }
 
 

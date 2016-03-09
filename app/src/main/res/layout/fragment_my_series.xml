@@ -16,4 +16,6 @@
         app:layoutManager="LinearLayoutManager"
         tools:listitem="@layout/item_list_myseries" />
 
+
+
 </FrameLayout>

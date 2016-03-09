@@ -28,6 +28,7 @@ public class MySeriesActivity extends AppCompatActivity implements MySeriesFragm
         setContentView(R.layout.activity_myseries);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -36,7 +37,6 @@ public class MySeriesActivity extends AppCompatActivity implements MySeriesFragm
                 startActivity(intent);
             }
         });
-
         if (findViewById(R.id.fragment_detail_serie) != null) {
             mTwoPane = true;
         } else {

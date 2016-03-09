@@ -1,12 +1,11 @@
 package ivan.capstone.com.capstone;
 
-
-
-
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -94,6 +93,9 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
             recyclerView.setAdapter(seriesAdapter);
             getLoaderManager().initLoader(SERIES_LOADER, null, this);
         }
+
+
+
         return rootView;
     }
 
