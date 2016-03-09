@@ -10,8 +10,6 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.widget.RemoteViews;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.AppWidgetTarget;
 
 import ivan.capstone.com.capstone.MySeriesActivity;
 import ivan.capstone.com.capstone.R;

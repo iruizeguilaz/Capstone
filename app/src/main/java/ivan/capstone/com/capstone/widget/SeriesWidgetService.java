@@ -1,34 +1,26 @@
 package ivan.capstone.com.capstone.widget;
 
 import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Binder;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
+
 import com.bumptech.glide.request.target.AppWidgetTarget;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.bumptech.glide.request.target.SimpleTarget;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.net.URLConnection;
 
 import ivan.capstone.com.capstone.Data.SeriesContract;
 import ivan.capstone.com.capstone.DataObjects.Serie;
-import ivan.capstone.com.capstone.MyApplication;
 import ivan.capstone.com.capstone.R;
 
 /**
@@ -109,7 +101,6 @@ public class SeriesWidgetService extends RemoteViewsService {
         @Override
         public RemoteViews getViewAt(int position) {
 
-            AppWidgetTarget appWidgetTarget;
             if (position == AdapterView.INVALID_POSITION ||
                     data == null || !data.moveToPosition(position)) {
                 return null;
@@ -159,11 +150,6 @@ public class SeriesWidgetService extends RemoteViewsService {
 
         }
 
-        public Bitmap imageWithText() {
-            Bitmap testB = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
-            Canvas c = new Canvas(testB);
-            return testB;
-        }
 
 
         @Override
