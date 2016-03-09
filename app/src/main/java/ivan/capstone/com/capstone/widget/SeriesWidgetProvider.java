@@ -15,9 +15,10 @@ import ivan.capstone.com.capstone.MySeriesActivity;
 import ivan.capstone.com.capstone.R;
 
 /**
+ * provider for the widget
  * Created by Ivan on 09/03/2016.
  */
-public class SeriesWidgetProvider extends AppWidgetProvider {
+    public class SeriesWidgetProvider extends AppWidgetProvider {
 
 
 

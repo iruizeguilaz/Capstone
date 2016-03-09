@@ -11,6 +11,7 @@ import ivan.capstone.com.capstone.Data.SeriesContract;
 import ivan.capstone.com.capstone.MyApplication;
 
 /**
+ * Data object Serie, it is parcelble, it also has methods to bring data from database, to save, and delete
  * Created by Ivan on 19/02/2016.
  */
 public class Serie implements Parcelable {
@@ -191,6 +192,54 @@ public class Serie implements Parcelable {
         this.poster_url = poster_url;
     }
 
+    private static final String[] SERIES_COLUMNS = {
+            SeriesContract.SeriesEntry._ID,
+            SeriesContract.SeriesEntry.COLUMN_ID,
+            SeriesContract.SeriesEntry.COLUMN_NAME,
+            SeriesContract.SeriesEntry.COLUMN_RATING,
+            SeriesContract.SeriesEntry.COLUMN_VOTES,
+            SeriesContract.SeriesEntry.COLUMN_BANNER_URL,
+            SeriesContract.SeriesEntry.COLUMN_POSTER_URL,
+            SeriesContract.SeriesEntry.COLUMN_REALSED_DATE,
+            SeriesContract.SeriesEntry.COLUMN_OVERVIEW,
+            SeriesContract.SeriesEntry.COLUMN_GENRE,
+            SeriesContract.SeriesEntry.COLUMN_NETWORK
+    };
+    static final int COL__ID = 0;
+    static final int COL_ID = 1;
+    static final int COL_NAME = 2;
+    static final int COL_RATING = 3;
+    static final int COL_VOTES = 4;
+    static final int COL_BANNER = 5;
+    static final int COL_POSTER = 6;
+    static final int COL_RELEASED_DATE = 7;
+    static final int COL_OVERVIEW = 8;
+    static final int COL_GENRE = 9;
+    static final int COL_NETWORK = 10;
+
+    // get the data from the database by id
+    public void LoadData(){
+        if (id.equals("")) return;
+        Cursor data = MyApplication.getContext().getContentResolver().query(
+                SeriesContract.SeriesEntry.CONTENT_URI,
+                SERIES_COLUMNS,
+                SeriesContract.SeriesEntry.COLUMN_ID + " = ?",
+                new String[]{id},
+                null);
+        if (data != null && data.moveToFirst()) {
+            _id = data.getLong(COL__ID);
+            name = data.getString(COL_NAME);
+            rating = data.getString(COL_RATING);
+            votes = data.getString(COL_VOTES);
+            image_url = data.getString(COL_BANNER);
+            poster_url = data.getString(COL_POSTER);
+            dateReleased = data.getString(COL_RELEASED_DATE);
+            overView = data.getString(COL_OVERVIEW);
+            genre = data.getString(COL_GENRE);
+           network = data.getString(COL_NETWORK);
+        }
+    }
+
     public boolean IsSaved() {
         if (id.equals("")) return false;
         Cursor seriesCursor = MyApplication.getContext().getContentResolver().query(
@@ -199,7 +248,7 @@ public class Serie implements Parcelable {
                 SeriesContract.SeriesEntry.COLUMN_ID + " = ?",
                 new String[]{id},
                 null);
-        if (seriesCursor.moveToFirst()) return true;
+        if (seriesCursor != null && seriesCursor.moveToFirst()) return true;
         else return false;
     }
 

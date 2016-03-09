@@ -58,6 +58,8 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
     ImageButton unsave_button;
     TextView unsave_text;
     LinearLayout layout_detail;
+    private String activityOrigin;
+
 
 
     public DetailSerieFragment() {
@@ -86,23 +88,6 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
 
 
         View rootView = inflater.inflate(R.layout.fragment_detail_serie, container, false);
-        if (savedInstanceState != null && savedInstanceState.getParcelable("Serie")!= null) {
-            serie = savedInstanceState.getParcelable("Serie");
-            LoadData();
-        }
-        else {
-            Bundle arguments = getArguments();
-            if (arguments != null) {
-                serie = arguments.getParcelable("Serie");
-                mTwoPane = true;
-            }else {
-                Intent intent = getActivity().getIntent();
-                serie = intent.getParcelableExtra("Serie");
-                mTwoPane = false;
-            }
-            FetchSerieByIDTask getSerie = new FetchSerieByIDTask();
-            getSerie.execute();
-        }
 
         genre_text = (TextView)rootView.findViewById(R.id.genre_serie);
         rating_text = (TextView)rootView.findViewById(R.id.rating_serie);
@@ -119,6 +104,42 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
         unsave_button = (ImageButton)rootView.findViewById(R.id.iv_tick_on);
         unsave_button.setOnClickListener(this);
         unsave_text = (TextView)rootView.findViewById(R.id.unsave_serie);
+
+        if (savedInstanceState != null && savedInstanceState.getParcelable("Serie")!= null) {
+            serie = savedInstanceState.getParcelable("Serie");
+            LoadData();
+        }
+        else {
+            Bundle arguments = getArguments();
+            if (arguments != null) {
+                serie = arguments.getParcelable("Serie");
+                activityOrigin = arguments.getString("ActivityOrigin");
+                mTwoPane = true;
+            }else {
+                Intent intent = getActivity().getIntent();
+                serie = intent.getParcelableExtra("Serie");
+                activityOrigin = intent.getStringExtra("ActivityOrigin");
+                mTwoPane = false;
+            }
+            // if the sere has all the information we need, it is not neccesary to load it again from internet
+            // the thing is we could come from the search activity, and there, the object serie has not all information
+            // so even if we have it stored, we should get it again if we come from the search activity
+            // if we come from my series activiy, we can realy on we have all information loaded on the sere object.
+            if (activityOrigin!= null && activityOrigin.equals(MySeriesActivity.Name)) {
+                LoadData();
+            }else {
+                // if we come from search activity, and we choose a serie that we have already stored.
+                // we could avoid and internet call by get the information from the database
+                if (serie != null && serie.IsSaved()) {
+                    // if serie is saved, load the information of it from the database
+                    serie.LoadData();
+                    LoadData();
+                } else {
+                    FetchSerieByIDTask getSerie = new FetchSerieByIDTask();
+                    getSerie.execute();
+                }
+            }
+        }
         return rootView;
     }
 
@@ -265,7 +286,7 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
                             reader.close();
                         } catch (final IOException e) {
                             Log.e(LOG_TAG, "Error closing stream", e);
-                            return null;
+                            result = null;
                         }
                     }
                 }

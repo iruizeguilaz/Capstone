@@ -20,6 +20,7 @@ public class SearchActivity extends AppCompatActivity implements SearchFragment.
     private SwipeRefreshLayout mSwipeRefreshLayout;
     public boolean mTwoPane;
     private static final String DETAILFRAGMENT_TAG = "PFTAG";
+    public static final String Name = "Search";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +61,7 @@ public class SearchActivity extends AppCompatActivity implements SearchFragment.
             Bundle args = new Bundle();
             if (value != null) {
                 args.putParcelable("Serie", value);
+                args.putString("ActivityOrigin", Name);
             }
             DetailSerieFragment fragment = new DetailSerieFragment();
             fragment.setArguments(args);
@@ -70,6 +72,7 @@ public class SearchActivity extends AppCompatActivity implements SearchFragment.
         } else {
             Intent intent = new Intent(this, DetailSerieSearchedActivity.class);
             intent.putExtra("Serie", value);
+            intent.putExtra("ActivityOrigin", Name);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this, imageView, getResources().getString(R.string.transition_photo));
                 startActivity(intent, options.toBundle());

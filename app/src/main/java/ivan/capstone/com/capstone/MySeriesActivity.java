@@ -20,6 +20,7 @@ public class MySeriesActivity extends AppCompatActivity implements MySeriesFragm
     private Toolbar mToolbar;
     public boolean mTwoPane;
     private static final String DETAILFRAGMENT_TAG = "PFTAG";
+    public static final String Name = "MySeries";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +37,6 @@ public class MySeriesActivity extends AppCompatActivity implements MySeriesFragm
             }
         });
 
-        if (savedInstanceState == null) {
-        }
         if (findViewById(R.id.fragment_detail_serie) != null) {
             mTwoPane = true;
         } else {
@@ -79,6 +78,7 @@ public class MySeriesActivity extends AppCompatActivity implements MySeriesFragm
             Bundle args = new Bundle();
             if (value != null) {
                 args.putParcelable("Serie", value);
+                args.putString("ActivityOrigin", Name);
             }
             DetailSerieFragment fragment = new DetailSerieFragment();
             fragment.setArguments(args);
@@ -89,6 +89,7 @@ public class MySeriesActivity extends AppCompatActivity implements MySeriesFragm
         } else {
             Intent intent = new Intent(this, DetailSerieSearchedActivity.class);
             intent.putExtra("Serie", value);
+            intent.putExtra("ActivityOrigin", Name);
              if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                  ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this, imageView, getResources().getString(R.string.transition_photo));
                  startActivity(intent, options.toBundle());
