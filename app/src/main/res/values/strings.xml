@@ -24,6 +24,9 @@
     <string name="detail_serie">Detail</string>
     <string name="check_serie">Check out </string>
 
+    <string name="data_not_found">No data found.</string>
+    <string name="series_widget" translatable="false">My Series</string>
+
     <string name="content_authority">ivan.capstone.com.capstone</string>
     <string name="transition_photo">transition_photo</string>
 
