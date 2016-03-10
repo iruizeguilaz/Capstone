@@ -44,6 +44,8 @@ import ivan.capstone.com.capstone.XML.XMLManager;
 
 public class DetailSerieFragment extends Fragment implements View.OnClickListener {
 
+    private static final String API_SERIES_KEY = BuildConfig.API_SERIES_KEY;
+
     boolean mTwoPane;
     Serie serie;
     TextView genre_text;
@@ -256,7 +258,7 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
                 HttpURLConnection urlConnection = null;
                 BufferedReader reader = null;
                 try {
-                    final String SERIES_BASE_URL = "http://thetvdb.com/api/31700C7EECC0878D/series/" + serie.getId();
+                    final String SERIES_BASE_URL = "http://thetvdb.com/api/" + API_SERIES_KEY + "/series/" + serie.getId();
                     Uri builtUri = Uri.parse(SERIES_BASE_URL).buildUpon()
                             .build();
                     URL url = new URL(builtUri.toString());
