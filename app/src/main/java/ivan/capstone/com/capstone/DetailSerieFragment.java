@@ -28,6 +28,10 @@ import com.bluejamesbond.text.style.TextAlignment;
 
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.google.android.gms.analytics.ecommerce.Product;
+import com.google.android.gms.analytics.ecommerce.ProductAction;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -139,6 +143,9 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
                     getSerie.execute();
                 }
             }
+            // hit analytics
+            sendViewSerie();
+
         }
         return rootView;
     }
@@ -314,5 +321,19 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
             }
             LoadData();
         }
+    }
+
+
+    private void sendViewSerie(){
+
+        Tracker tracker = ((MyApplication)getActivity().getApplication()).getTracker();
+        tracker.setScreenName("DetailSerieFragment");
+        tracker.send(new HitBuilders.ScreenViewBuilder().build());
+        tracker.send(new HitBuilders.EventBuilder()
+                .setCategory("Detail series")
+                .setAction("View serie")
+                .setLabel(serie.getName())
+                .build());
+
     }
 }

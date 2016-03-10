@@ -13,6 +13,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
 import ivan.capstone.com.capstone.DataObjects.Serie;
 
 public class MySeriesActivity extends AppCompatActivity implements MySeriesFragment.Callback{
@@ -26,6 +29,7 @@ public class MySeriesActivity extends AppCompatActivity implements MySeriesFragm
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_myseries);
+
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
@@ -46,6 +50,9 @@ public class MySeriesActivity extends AppCompatActivity implements MySeriesFragm
             // where one casts a shadow on the other).
             getSupportActionBar().setElevation(0f);
         }
+        Tracker tracker = ((MyApplication)getApplication()).getTracker();
+        tracker.setScreenName("DetailSerieFragment");
+        tracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
 

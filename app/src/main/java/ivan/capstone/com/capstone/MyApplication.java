@@ -13,7 +13,6 @@ import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.analytics.Logger;
 import com.google.android.gms.tagmanager.TagManager;
 import com.google.android.gms.tagmanager.ContainerHolder;
-import java.io.IOException;
 
 
 public class MyApplication extends Application {

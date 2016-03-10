@@ -1,8 +1,14 @@
 
 <resources>
-    <string name="ga_trackingId">UA-XXXXXXXX-1</string>
+    <string name="ga_trackingId">UA-xxxxx-2</string>
     <bool name="ga_autoActivityTracking">false</bool>
     <screenName name="ivan.capstone.com.capstone.MySeriesActivity">
         Main screen
+    </screenName>
+    <screenName name="ivan.capstone.com.capstone.DetailSerieSearchedActivity">
+        Detail
+    </screenName>
+    <screenName name="ivan.capstone.com.capstone.SearchActivity">
+        Search screen
     </screenName>
 </resources>
