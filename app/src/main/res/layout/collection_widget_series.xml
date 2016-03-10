@@ -5,23 +5,52 @@
     android:layout_height="wrap_content">
 
 
-    <ListView
+    <LinearLayout
+        android:id="@+id/contentContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/listview_widget"
-        android:layout_gravity="center"
         android:background="@color/grey"
-        />
+        android:orientation="vertical"
+        >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/data_not_found"
-        android:id="@+id/emptyTextView"
-        android:layout_gravity="center"
-        android:textIsSelectable="false"
-        />
+        <TextView
+            android:id="@+id/title"
+            android:layout_alignParentTop="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/large_margin"
+            android:gravity="center"
+            android:background="@color/colorPrimary"
+            android:text="@string/app_name_upper"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/listview_widget"
+            android:layout_gravity="center"
+            android:background="@color/grey"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/data_not_found"
+            android:id="@+id/emptyTextView"
+            android:layout_gravity="center"
+            android:textColor="@color/black"
+            android:textIsSelectable="false"
+            />
+
+    </LinearLayout>
+
+
+
+
 
 
 

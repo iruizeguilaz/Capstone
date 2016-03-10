@@ -1,5 +1,6 @@
 <resources>
-    <string name="app_name">Awesome series</string>
+    <string name="app_name" translatable="false">Awesome series</string>
+    <string name="app_name_upper" translatable="false">AWESOME SERIES</string>
 
     <string name="myseries_name">My series</string>
     <string name="search_name">Search</string>

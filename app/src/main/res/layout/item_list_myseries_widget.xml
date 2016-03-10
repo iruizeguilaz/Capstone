@@ -1,35 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:paddingBottom="@dimen/small_margin"
+    android:elevation="8dp"
+    android:background="@color/white"
     android:id="@+id/linearlayaout_widget" >
-
-
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
-
+                android:orientation="horizontal">
 
                 <ImageView
                     android:id="@+id/image_serie"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:contentDescription="@string/poster_description"
-                    android:padding="@dimen/small_margin"
-                    />
-
+                    android:padding="@dimen/small_margin" />
 
                 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:orientation="vertical"
-                    >
+                    android:orientation="vertical" >
 
                     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
                         android:layout_width="match_parent"
@@ -40,8 +34,7 @@
                         android:padding="@dimen/small_margin"
                         android:textSize="@dimen/test_title_size"
                         android:textColor="@color/black"
-                        android:gravity="center"
-                        />
+                        android:gravity="center"  />
 
                     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                         android:layout_width="match_parent"
