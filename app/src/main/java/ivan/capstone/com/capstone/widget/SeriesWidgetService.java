@@ -106,9 +106,6 @@ public class SeriesWidgetService extends RemoteViewsService {
             }
             RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.item_list_myseries_widget);
 
-            Intent fillInIntent = new Intent();
-            fillInIntent.putExtra("EXTRA_ITEM", position);
-            remoteViews.setOnClickFillInIntent(R.id.linearlayaout_widget, fillInIntent);
             Serie mySerie = new Serie();
             mySerie.set_id(data.getLong(COL__ID));
             mySerie.setId(data.getString(COL_ID));
@@ -122,7 +119,10 @@ public class SeriesWidgetService extends RemoteViewsService {
             mySerie.setGenre(data.getString(COL_GENRE));
             mySerie.setNetwork(data.getString(COL_NETWORK));
 
-
+            Intent fillInIntent = new Intent();
+            fillInIntent.putExtra("EXTRA_ITEM", position);
+            fillInIntent.putExtra("Serie", mySerie);
+            remoteViews.setOnClickFillInIntent(R.id.linearlayaout_widget, fillInIntent);
             remoteViews.setTextViewText(R.id.name_serie, mySerie.getName());
             remoteViews.setTextViewText(R.id.date_serie, mySerie.getDateReleased());
             remoteViews.setTextViewText(R.id.network_serie, mySerie.getNetwork());

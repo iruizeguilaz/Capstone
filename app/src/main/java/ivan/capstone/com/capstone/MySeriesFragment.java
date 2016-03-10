@@ -5,7 +5,6 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,6 +28,7 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
     private SeriesAdapter seriesAdapter;
     List<Serie> series;
     RecyclerView recyclerView;
+    boolean widgetSource = false;
 
     private static final int SERIES_LOADER = 0;
 
@@ -81,21 +81,29 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
         View rootView = inflater.inflate(R.layout.fragment_my_series, container, false);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.myseries_recycler);
         recyclerView.setNestedScrollingEnabled(false);
-
+        widgetSource = false;
         if (savedInstanceState != null && savedInstanceState.getParcelableArrayList("ListSeries") != null) {
             series = savedInstanceState.getParcelableArrayList("ListSeries");
             seriesAdapter = new SeriesAdapter(series, this, R.layout.item_list_myseries);
             recyclerView.setAdapter(seriesAdapter);
             seriesAdapter.notifyDataSetChanged();
         } else {
+            // check if we come from the widget (to load the serie, even if we come from widget, we have to load
+            // from the database if we are in a tablet mode (because we show both framents, list and detai)
+            Intent intent = getActivity().getIntent();
+            if (intent!= null) {
+                Serie serie = intent.getParcelableExtra("Serie");
+                if (serie != null) {
+                    widgetSource = true;
+                    ((Callback) getActivity()).onItemSelected(serie, null);
+                }
+            }
+// TODO check it in tblet mode ( if it loads correctly)
             series= new ArrayList<Serie>();
             seriesAdapter = new SeriesAdapter(series, this, R.layout.item_list_myseries);
             recyclerView.setAdapter(seriesAdapter);
             getLoaderManager().initLoader(SERIES_LOADER, null, this);
         }
-
-
-
         return rootView;
     }
 
@@ -148,6 +156,10 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
             series.add((mySerie));
         }
         seriesAdapter.notifyDataSetChanged();
+        // load the firs item on the rigt side if we have a tablet version parent detail
+        if (((MySeriesActivity)getActivity()).mTwoPane && series.size() > 0 && !widgetSource) {
+            ((Callback) getActivity()).onItemSelected(series.get(0), null);
+        }
     }
 
     @Override

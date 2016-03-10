@@ -14,15 +14,12 @@ public class DetailSerieSearchedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_serie);
         mToolbar = (Toolbar) findViewById(R.id.detail_toolbar);
-
         setSupportActionBar(mToolbar);
-
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment_detail_serie, new DetailSerieFragment())
                     .commit();
         }
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 

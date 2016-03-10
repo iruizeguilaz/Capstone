@@ -187,6 +187,9 @@ public class SearchFragment extends Fragment implements SeriesAdapter.OnItemClic
                     series.clear();
                     series.addAll(result);
                     seriesAdapter.notifyDataSetChanged();
+                    if (((SearchActivity)getActivity()).mTwoPane && series.size() > 0) {
+                        ((Callback) getActivity()).onItemSelected(result.get(0), null);
+                    }
                 }
             } else {
                 series.clear();

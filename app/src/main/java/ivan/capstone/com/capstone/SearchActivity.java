@@ -38,21 +38,6 @@ public class SearchActivity extends AppCompatActivity implements SearchFragment.
             // where one casts a shadow on the other).
             getSupportActionBar().setElevation(0f);
         }
-        //getSupportLoaderManager().initLoader(0, null, this);
-        /*SearchFragment fragment = (SearchFragment) getFragmentManager().findFragmentById(R.id.fragment_search);
-
-        if (fragment == null) {
-            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            fragmentTransaction.add(R.id.fragment_search, new SearchFragment());
-            fragmentTransaction.commit();
-        }
-        if (getFragmentManager().findFragmentByTag("test_fragment") == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_search, new SearchFragment(), "test_fragment")
-                    .commit();
-        }*/
-
-
     }
 
     @Override
@@ -65,18 +50,28 @@ public class SearchActivity extends AppCompatActivity implements SearchFragment.
             }
             DetailSerieFragment fragment = new DetailSerieFragment();
             fragment.setArguments(args);
-            getSupportFragmentManager().beginTransaction()
-                    .addSharedElement(imageView, getResources().getString(R.string.transition_photo))
-                    .replace(R.id.fragment_detail_serie, fragment, DETAILFRAGMENT_TAG)
-                    .commit();
+            if (imageView != null) {
+                getSupportFragmentManager().beginTransaction()
+                        .addSharedElement(imageView, getResources().getString(R.string.transition_photo))
+                        .replace(R.id.fragment_detail_serie, fragment, DETAILFRAGMENT_TAG)
+                        .commit();
+            } else {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_detail_serie, fragment, DETAILFRAGMENT_TAG)
+                        .commit();
+            }
         } else {
             Intent intent = new Intent(this, DetailSerieSearchedActivity.class);
             intent.putExtra("Serie", value);
             intent.putExtra("ActivityOrigin", Name);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this, imageView, getResources().getString(R.string.transition_photo));
-                startActivity(intent, options.toBundle());
-            } else {
+            if (imageView != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this, imageView, getResources().getString(R.string.transition_photo));
+                    startActivity(intent, options.toBundle());
+                } else {
+                    startActivity(intent);
+                }
+            }else {
                 startActivity(intent);
             }
         }

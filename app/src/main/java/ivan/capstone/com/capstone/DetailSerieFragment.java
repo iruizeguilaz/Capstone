@@ -77,7 +77,6 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) getActivity().postponeEnterTransition();
     }
@@ -88,7 +87,6 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
 
 
         View rootView = inflater.inflate(R.layout.fragment_detail_serie, container, false);
-
         genre_text = (TextView)rootView.findViewById(R.id.genre_serie);
         rating_text = (TextView)rootView.findViewById(R.id.rating_serie);
         network_text = (TextView)rootView.findViewById(R.id.network_serie);
