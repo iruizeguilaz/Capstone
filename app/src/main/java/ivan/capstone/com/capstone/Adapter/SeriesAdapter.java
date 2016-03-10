@@ -48,14 +48,14 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.ViewHolder
             Glide.with(holder.itemView.getContext())
                     .load(holder.item.getPoster_url())
                     .thumbnail(0.1f)
-                    .centerCrop()
+                    .fitCenter()
                     .into(holder.viewMiniatura);
 
         } else {
             Glide.with(holder.itemView.getContext())
                     .load(holder.item.getImage_url())
                     .thumbnail(0.1f)
-                    .centerCrop()
+                    .fitCenter()
                     .into(holder.viewMiniatura);
 
         }

@@ -33,8 +33,9 @@
                         <ImageView
                             android:id="@+id/poster"
                             android:contentDescription="@string/poster_description"
-                            android:layout_height="400dp"
-                            android:layout_width="600dp"
+                            android:layout_width="450dp"
+                            android:layout_height="600dp"
+                            android:scaleType="fitXY"
                             android:background="@drawable/old_tv"
                             android:transitionName="@string/transition_photo"
                              />

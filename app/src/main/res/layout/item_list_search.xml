@@ -43,7 +43,8 @@
                 <ImageView
                     android:id="@+id/image_serie"
                     android:layout_width="match_parent"
-                    android:layout_height="130dp"
+                    android:layout_height="110dp"
+                    android:scaleType="fitXY"
                     android:background="@drawable/touch_selector"
                     android:contentDescription="@string/banner_description"
                     android:transitionName="@string/transition_photo"
@@ -71,10 +72,6 @@
                 android:gravity="center"
                 android:textAllCaps="true"
                 />
-
-
-
-
         </LinearLayout>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

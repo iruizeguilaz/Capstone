@@ -20,8 +20,9 @@
                 <ImageView
                     android:id="@+id/poster"
                     android:contentDescription="@string/poster_description"
-                    android:layout_height="300dp"
+                    android:layout_height="350dp"
                     android:layout_width="match_parent"
+                    android:scaleType="fitXY"
                     android:transitionName="@string/transition_photo"
                      />
 

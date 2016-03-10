@@ -168,21 +168,21 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
         rating_text.setText(rating);
         String network = getResources().getString(R.string.network_serie) + "  " + serie.getNetwork();
         network_text.setText(network);
-
         scheduleStartPostponedTransition(poster);
-
         if (serie.getPoster_url().equals("")) {
             Glide.with(getActivity())
                     .load(R.drawable.old_tv)
                     .thumbnail(0.1f)
                     .centerCrop()
-                    .into(poster);
+            .into(poster);
         }
         else {
+            //poster.getLayoutParams().height = poster.getWidth() * 4 / 3;
+            //poster.requestLayout();
             Glide.with(getActivity())
                     .load(serie.getPoster_url())
                     .thumbnail(0.1f)
-                    .centerCrop()
+                    .fitCenter()
                     .into(poster);
         }
         Glide.with(getActivity())
