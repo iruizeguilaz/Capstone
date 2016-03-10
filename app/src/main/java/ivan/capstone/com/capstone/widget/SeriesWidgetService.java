@@ -14,6 +14,7 @@ import android.widget.RemoteViewsService;
 
 
 import com.bumptech.glide.request.target.AppWidgetTarget;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -96,8 +97,6 @@ public class SeriesWidgetService extends RemoteViewsService {
 
         }
 
-
-
         @Override
         public RemoteViews getViewAt(int position) {
 
@@ -110,7 +109,6 @@ public class SeriesWidgetService extends RemoteViewsService {
             Intent fillInIntent = new Intent();
             fillInIntent.putExtra("EXTRA_ITEM", position);
             remoteViews.setOnClickFillInIntent(R.id.linearlayaout_widget, fillInIntent);
-
             Serie mySerie = new Serie();
             mySerie.set_id(data.getLong(COL__ID));
             mySerie.setId(data.getString(COL_ID));
@@ -128,29 +126,19 @@ public class SeriesWidgetService extends RemoteViewsService {
             remoteViews.setTextViewText(R.id.name_serie, mySerie.getName());
             remoteViews.setTextViewText(R.id.date_serie, mySerie.getDateReleased());
             remoteViews.setTextViewText(R.id.network_serie, mySerie.getNetwork());
-           // remoteViews.setImageViewUri(R.id.image_serie, mySerie.getPoster_url())
-
-            /*appWidgetTarget = new AppWidgetTarget( MyApplication.getContext(), remoteViews, R.id.image_serie, id_widget );
-            Glide
-                    .with(SeriesWidgetService.this) // safer!
-                    .load(mySerie.getPoster_url())
-                    .asBitmap()
-                    .into(appWidgetTarget);*/
-
-            InputStream input;
             try {
-                input = new URL(mySerie.getPoster_url()).openStream();
-                Bitmap bit = BitmapFactory.decodeStream(input);
+                Bitmap bit =
+                Picasso.with(SeriesWidgetService.this)
+                        .load(mySerie.getPoster_url())
+                        .resize(100, 100)
+                        .centerCrop()
+                        .get();
                 remoteViews.setImageViewBitmap(R.id.image_serie, bit);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
             return remoteViews;
-
         }
-
-
 
         @Override
         public void onDestroy() {
@@ -167,10 +155,6 @@ public class SeriesWidgetService extends RemoteViewsService {
             if (data!= null) return data.getCount();
             else return 0;
         }
-
-
-
-
 
         @Override
         public RemoteViews getLoadingView() {
