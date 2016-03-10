@@ -16,6 +16,9 @@ import android.support.v4.content.Loader;
 import android.support.v4.content.CursorLoader;
 import android.widget.ImageView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +32,7 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
     List<Serie> series;
     RecyclerView recyclerView;
     boolean widgetSource = false;
+    AdView mAdView;
 
     private static final int SERIES_LOADER = 0;
 
@@ -104,7 +108,19 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
             recyclerView.setAdapter(seriesAdapter);
             getLoaderManager().initLoader(SERIES_LOADER, null, this);
         }
+        mAdView = (AdView) rootView.findViewById(R.id.adView);
         return rootView;
+    }
+
+    public class LoadBannerRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            AdRequest adRequest = new AdRequest.Builder()
+                    //.addTestDevice(deviceId)
+                    .build();
+            mAdView.loadAd(adRequest);
+        }
     }
 
     @Override
@@ -121,6 +137,8 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
                 recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
             }
         }
+        LoadBannerRunnable loadView = new LoadBannerRunnable();
+        loadView.run();
         super.onActivityCreated(savedInstanceState);
     }
 

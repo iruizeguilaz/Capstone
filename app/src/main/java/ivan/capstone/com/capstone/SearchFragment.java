@@ -16,6 +16,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
@@ -39,6 +42,7 @@ public class SearchFragment extends Fragment implements SeriesAdapter.OnItemClic
     FetchSerieByNameTask serieByNameTask;
     SeriesAdapter seriesAdapter;
     List<Serie> series;
+    AdView mAdView;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -81,6 +85,7 @@ public class SearchFragment extends Fragment implements SeriesAdapter.OnItemClic
         {
             Log.e("onCreateView", e.toString() + " " + e.getMessage());
         }
+        mAdView = (AdView) rootView.findViewById(R.id.adView);
         return rootView;
     }
 
@@ -89,6 +94,24 @@ public class SearchFragment extends Fragment implements SeriesAdapter.OnItemClic
     {
         outState.putParcelableArrayList("ListSeries", new ArrayList<Serie>(series));
         super.onSaveInstanceState(outState);
+    }
+
+    public class LoadBannerRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            AdRequest adRequest = new AdRequest.Builder()
+                    //.addTestDevice(deviceId)
+                    .build();
+            mAdView.loadAd(adRequest);
+        }
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        LoadBannerRunnable loadView = new LoadBannerRunnable();
+        loadView.run();
+        super.onActivityCreated(savedInstanceState);
     }
 
 
