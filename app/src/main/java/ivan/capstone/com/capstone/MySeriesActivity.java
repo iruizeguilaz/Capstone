@@ -28,14 +28,7 @@ public class MySeriesActivity extends AppCompatActivity implements MySeriesFragm
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MyApplication.getContext(), SearchActivity.class);
-                startActivity(intent);
-            }
-        });
+
         if (findViewById(R.id.fragment_detail_serie) != null) {
             mTwoPane = true;
         } else {

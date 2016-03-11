@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -106,12 +107,19 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
 
                 }
             }
-// TODO check it in tblet mode ( if it loads correctly)
             series= new ArrayList<Serie>();
             seriesAdapter = new SeriesAdapter(series, this, R.layout.item_list_myseries);
             recyclerView.setAdapter(seriesAdapter);
             getLoaderManager().initLoader(SERIES_LOADER, null, this);
         }
+        FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MyApplication.getContext(), SearchActivity.class);
+                startActivity(intent);
+            }
+        });
         mAdView = (AdView) rootView.findViewById(R.id.adView);
         return rootView;
     }
