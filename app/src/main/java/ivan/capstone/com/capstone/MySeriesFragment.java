@@ -18,6 +18,8 @@ import android.widget.ImageView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,6 +99,7 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
             Intent intent = getActivity().getIntent();
             if (intent!= null) {
                 Serie serie = intent.getParcelableExtra("Serie");
+                sendWidgetSerie(serie.getName()); //analytics, if come from widget
                 if (serie != null) {
                     widgetSource = true;
                     ((Callback) getActivity()).onItemSelected(serie, null);
@@ -186,5 +189,14 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
         seriesAdapter.notifyDataSetChanged();
     }
 
-
+    //analytics
+    public void sendWidgetSerie(String name){
+        Tracker tracker = ((MyApplication)getActivity().getApplication()).getTracker();
+        tracker.setScreenName("SearchFragment");
+        tracker.send(new HitBuilders.EventBuilder()
+                .setCategory("Widget")
+                .setAction("View")
+                .setLabel(name)
+                .build());
+    }
 }

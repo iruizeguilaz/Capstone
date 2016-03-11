@@ -5,16 +5,11 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.ImageView;
 
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
 
 import ivan.capstone.com.capstone.DataObjects.Serie;
 
@@ -50,9 +45,6 @@ public class MySeriesActivity extends AppCompatActivity implements MySeriesFragm
             // where one casts a shadow on the other).
             getSupportActionBar().setElevation(0f);
         }
-        Tracker tracker = ((MyApplication)getApplication()).getTracker();
-        tracker.setScreenName("DetailSerieFragment");
-        tracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
 
@@ -92,4 +84,5 @@ public class MySeriesActivity extends AppCompatActivity implements MySeriesFragm
             }
         }
     }
+
 }
