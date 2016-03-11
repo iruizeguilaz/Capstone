@@ -190,10 +190,12 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
                     .fit().centerCrop()
                     .into(poster);
         }
-        Picasso.with(getActivity())
-                .load(serie.getImage_url())
-                .fit().centerCrop()
-                .into(banner);
+        if (!serie.getImage_url().equals("")) {
+            Picasso.with(getActivity())
+                    .load(serie.getImage_url())
+                    .fit().centerCrop()
+                    .into(banner);
+        }
         if (serie.IsSaved()) {
             save_button.setVisibility(View.GONE);
             save_text.setVisibility(View.GONE);
@@ -238,14 +240,20 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
             save_text.setVisibility(View.GONE);
             unsave_button.setVisibility(View.VISIBLE);
             unsave_text.setVisibility(View.VISIBLE);
-            if (serie != null && !serie.getId().equals("")) serie.Save();
+            if (serie != null && !serie.getId().equals("")) {
+                serie.Save();
+                sendSaveSerie(); //Analytics
+            }
         }
         if (button.getId() == R.id.iv_tick_on) {
             unsave_button.setVisibility(View.GONE);
             unsave_text.setVisibility(View.GONE);
             save_button.setVisibility(View.VISIBLE);
             save_text.setVisibility(View.VISIBLE);
-            if (serie != null && !serie.getId().equals("")) serie.Delete();
+            if (serie != null && !serie.getId().equals("")) {
+                serie.Delete();
+                sendDeleteSerie(); //Analytics
+            }
         }
     }
 
@@ -323,10 +331,32 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
 
         Tracker tracker = ((MyApplication)getActivity().getApplication()).getTracker();
         tracker.setScreenName("DetailSerieFragment");
-        tracker.send(new HitBuilders.ScreenViewBuilder().build());
+         tracker.send(new HitBuilders.EventBuilder()
+                .setCategory("Serie")
+                .setAction("View")
+                .setLabel(serie.getName())
+                .build());
+    }
+
+    private void sendSaveSerie(){
+
+        Tracker tracker = ((MyApplication)getActivity().getApplication()).getTracker();
+        tracker.setScreenName("DetailSerieFragment");
         tracker.send(new HitBuilders.EventBuilder()
-                .setCategory("Detail series")
-                .setAction("View serie")
+                .setCategory("Serie")
+                .setAction("Save")
+                .setLabel(serie.getName())
+                .build());
+
+    }
+
+    private void sendDeleteSerie(){
+
+        Tracker tracker = ((MyApplication)getActivity().getApplication()).getTracker();
+        tracker.setScreenName("DetailSerieFragment");
+        tracker.send(new HitBuilders.EventBuilder()
+                .setCategory("Serie")
+                .setAction("Delete")
                 .setLabel(serie.getName())
                 .build());
 

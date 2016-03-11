@@ -18,6 +18,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -126,6 +128,7 @@ public class SearchFragment extends Fragment implements SeriesAdapter.OnItemClic
                         if (!inputSearch.getText().toString().equals("")) {
                             serieByNameTask = new FetchSerieByNameTask();
                             serieByNameTask.execute(inputSearch.getText().toString());
+                            sendSearchSerie(inputSearch.getText().toString());
                         } else {
                             series.clear();
                             seriesAdapter.notifyDataSetChanged();
@@ -224,6 +227,17 @@ public class SearchFragment extends Fragment implements SeriesAdapter.OnItemClic
                 }
             }
         }
+    }
+
+    //analytics
+    public void sendSearchSerie(String name){
+        Tracker tracker = ((MyApplication)getActivity().getApplication()).getTracker();
+        tracker.setScreenName("SearchFragment");
+        tracker.send(new HitBuilders.EventBuilder()
+                .setCategory("List Series")
+                .setAction("Search")
+                .setLabel(name)
+                .build());
     }
 
 }

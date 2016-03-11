@@ -45,16 +45,21 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.ViewHolder
         holder.viewNetwork.setText(series.get(position).getNetwork());
 
         if (layout == R.layout.item_list_myseries) {
-            Picasso.with(holder.itemView.getContext())
-                    .load(holder.item.getPoster_url())
-                    .fit().centerCrop()
-                    .into(holder.viewMiniatura);
+            if (!holder.item.getPoster_url().equals("")) {
+                Picasso.with(holder.itemView.getContext())
+                        .load(holder.item.getPoster_url())
+                        .fit().centerCrop()
+                        .into(holder.viewMiniatura);
+            }
+
 
         } else {
-            Picasso.with(holder.itemView.getContext())
-                    .load(holder.item.getImage_url())
-                    .fit().centerCrop()
-                    .into(holder.viewMiniatura);
+            if (!holder.item.getImage_url().equals("")) {
+                Picasso.with(holder.itemView.getContext())
+                        .load(holder.item.getImage_url())
+                        .fit().centerCrop()
+                        .into(holder.viewMiniatura);
+            }
         }
     }
 
