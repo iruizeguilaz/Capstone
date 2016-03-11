@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -45,22 +45,17 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.ViewHolder
         holder.viewNetwork.setText(series.get(position).getNetwork());
 
         if (layout == R.layout.item_list_myseries) {
-            Glide.with(holder.itemView.getContext())
+            Picasso.with(holder.itemView.getContext())
                     .load(holder.item.getPoster_url())
-                    .thumbnail(0.1f)
-                    .fitCenter()
+                    .fit().centerCrop()
                     .into(holder.viewMiniatura);
 
         } else {
-            Glide.with(holder.itemView.getContext())
+            Picasso.with(holder.itemView.getContext())
                     .load(holder.item.getImage_url())
-                    .thumbnail(0.1f)
-                    .fitCenter()
+                    .fit().centerCrop()
                     .into(holder.viewMiniatura);
-
         }
-
-
     }
 
     @Override

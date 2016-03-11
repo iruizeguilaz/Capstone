@@ -27,11 +27,9 @@ import com.bluejamesbond.text.DocumentView;
 import com.bluejamesbond.text.style.TextAlignment;
 
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
-import com.google.android.gms.analytics.ecommerce.Product;
-import com.google.android.gms.analytics.ecommerce.ProductAction;
+import com.squareup.picasso.Picasso;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -179,25 +177,22 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
         network_text.setText(network);
         scheduleStartPostponedTransition(poster);
         if (serie.getPoster_url().equals("")) {
-            Glide.with(getActivity())
+            Picasso.with(getActivity())
                     .load(R.drawable.old_tv)
-                    .thumbnail(0.1f)
                     .centerCrop()
             .into(poster);
         }
         else {
             //poster.getLayoutParams().height = poster.getWidth() * 4 / 3;
             //poster.requestLayout();
-            Glide.with(getActivity())
+            Picasso.with(getActivity())
                     .load(serie.getPoster_url())
-                    .thumbnail(0.1f)
-                    .fitCenter()
+                    .fit().centerCrop()
                     .into(poster);
         }
-        Glide.with(getActivity())
+        Picasso.with(getActivity())
                 .load(serie.getImage_url())
-                .thumbnail(0.1f)
-                .fitCenter()
+                .fit().centerCrop()
                 .into(banner);
         if (serie.IsSaved()) {
             save_button.setVisibility(View.GONE);

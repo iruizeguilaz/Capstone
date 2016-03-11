@@ -1,11 +1,8 @@
 package ivan.capstone.com.capstone.widget;
 
-import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Binder;
 import android.widget.AdapterView;
@@ -13,23 +10,19 @@ import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 
-import com.bumptech.glide.request.target.AppWidgetTarget;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-
 import ivan.capstone.com.capstone.Data.SeriesContract;
 import ivan.capstone.com.capstone.DataObjects.Serie;
 import ivan.capstone.com.capstone.R;
 
 /**
+ * Service for the widget
  * Created by Ivan on 09/03/2016.
  */
 public class SeriesWidgetService extends RemoteViewsService {
 
-    private int id_widget;
     private static final int ID_INDEX = 0;
 
     private static final String[] SERIES_COLUMNS = {
@@ -60,7 +53,6 @@ public class SeriesWidgetService extends RemoteViewsService {
 
     @Override
     public RemoteViewsService.RemoteViewsFactory onGetViewFactory(Intent intent) {
-        id_widget = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
         return new CollectionSeriesWidgetService();
     }
 
