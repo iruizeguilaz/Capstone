@@ -277,6 +277,11 @@ public class Serie implements Parcelable {
         }
     }
 
+    public void Update() {
+        if (IsSaved()) Delete();
+        Save();
+    }
+
     public void Delete() {
         if (IsSaved()) {
             MyApplication.getContext().getContentResolver().delete(SeriesContract.SeriesEntry.CONTENT_URI, SeriesContract.SeriesEntry.COLUMN_ID +"=?", new String[]{id});

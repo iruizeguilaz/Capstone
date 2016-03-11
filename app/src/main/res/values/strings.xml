@@ -35,6 +35,7 @@
     <string name="save_description">The save image button</string>
     <string name="unsave_description">The delete image button</string>
     <string name="share_description">The share image button</string>
+    <string name="refresh_description">Refresh data from internet</string>
     <string name="banner_description">The banner of the serie</string>
 
     <!-- This id es por tests puurpose. If the app goes to production mode, then we should change this -->

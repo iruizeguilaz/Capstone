@@ -63,8 +63,8 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
     TextView unsave_text;
     LinearLayout layout_detail;
     private String activityOrigin;
-
-
+    boolean isRefreshing;
+    ImageButton refresh_button;
 
     public DetailSerieFragment() {
         // Required empty public constructor
@@ -75,7 +75,13 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
         super.onActivityCreated(savedInstanceState);
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         ActionBar actionBar = activity.getSupportActionBar();
-        if (actionBar != null && serie != null && !serie.getName().equals("")) actionBar.setTitle(serie.getName());
+        if (actionBar != null && serie != null && !serie.getName().equals("")) {
+            if (getActivity().getClass().getSimpleName().equals(MySeriesActivity.class.getSimpleName())
+                    || getActivity().getClass().getSimpleName().equals(SearchActivity.class.getSimpleName())){
+                actionBar.setSubtitle(serie.getName());
+            }
+            else actionBar.setTitle(serie.getName());
+        }
     }
 
 
@@ -93,6 +99,7 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
 
 
         View rootView = inflater.inflate(R.layout.fragment_detail_serie, container, false);
+        isRefreshing = false;
         genre_text = (TextView)rootView.findViewById(R.id.genre_serie);
         rating_text = (TextView)rootView.findViewById(R.id.rating_serie);
         network_text = (TextView)rootView.findViewById(R.id.network_serie);
@@ -108,6 +115,8 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
         unsave_button = (ImageButton)rootView.findViewById(R.id.iv_tick_on);
         unsave_button.setOnClickListener(this);
         unsave_text = (TextView)rootView.findViewById(R.id.unsave_serie);
+        refresh_button = (ImageButton)rootView.findViewById(R.id.refresh);
+        refresh_button.setOnClickListener(this);
 
         if (savedInstanceState != null && savedInstanceState.getParcelable("Serie")!= null) {
             serie = savedInstanceState.getParcelable("Serie");
@@ -186,7 +195,7 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
         if (serie.getPoster_url().equals("")) {
             Picasso.with(getActivity())
                     .load(R.drawable.old_tv)
-                    .centerCrop()
+                    .fit().centerCrop()
             .into(poster);
         }
         else {
@@ -262,6 +271,16 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
                 sendDeleteSerie(); //Analytics
             }
         }
+        if (button.getId() == R.id.refresh) {
+            if (serie != null && !serie.getId().equals("")) {
+                isRefreshing = true;
+                FetchSerieByIDTask getSerie = new FetchSerieByIDTask();
+                getSerie.execute();
+            }
+        }
+
+
+
     }
 
     public class FetchSerieByIDTask extends AsyncTask<String, Void,  Serie> {
@@ -319,6 +338,10 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
         protected void onPostExecute(Serie result) {
             if (result != null) {
                 serie = result;
+                if (isRefreshing){
+                    serie.Update();
+                    isRefreshing = false;
+                }
             }else {
                 if (!MyApplication.isNetworkAvailable()) {
                     int duration = Toast.LENGTH_SHORT;

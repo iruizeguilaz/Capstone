@@ -26,7 +26,7 @@
         android:id="@+id/fragment_my_series"
         android:name="ivan.capstone.com.capstone.MySeriesFragment"
         android:layout_width="400dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         />
 

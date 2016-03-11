@@ -59,7 +59,7 @@ public class MySeriesActivity extends AppCompatActivity implements MySeriesFragm
             } else {
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_detail_serie, fragment, DETAILFRAGMENT_TAG)
-                        .commit();
+                        .commitAllowingStateLoss();
 
             }
         } else {

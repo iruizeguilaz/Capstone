@@ -5,6 +5,8 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -168,6 +170,10 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
                 sortOrder);
     }
 
+
+
+
+
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         series.clear();
@@ -189,7 +195,7 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
         seriesAdapter.notifyDataSetChanged();
         // load the firs item on the rigt side if we have a tablet version parent detail
         if (((MySeriesActivity)getActivity()).mTwoPane && series.size() > 0 && !widgetSource) {
-            //((Callback) getActivity()).onItemSelected(series.get(0), null);
+            ((Callback) getActivity()).onItemSelected(series.get(0), null);
             //recyclerView.findViewHolderForAdapterPosition(0).itemView.performClick();
         }
     }

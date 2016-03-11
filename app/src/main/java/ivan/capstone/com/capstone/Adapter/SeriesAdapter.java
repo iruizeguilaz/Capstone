@@ -19,7 +19,7 @@ import ivan.capstone.com.capstone.R;
  */
 public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.ViewHolder> {
 
-
+    private int selectedItem;
     private List<Serie> series;
     private int layout;
 
@@ -28,6 +28,7 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.ViewHolder
         series = items;
         this.externalListernetClick = listener;
         this.layout = layoutData;
+        selectedItem = 0;
     }
 
     @Override
@@ -112,5 +113,8 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.ViewHolder
     }
 
     private OnItemClickListener externalListernetClick;
+
+
+
 
 }
