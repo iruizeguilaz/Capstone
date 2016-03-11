@@ -35,6 +35,7 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
     RecyclerView recyclerView;
     boolean widgetSource = false;
     AdView mAdView;
+    Serie serie;
 
     private static final int SERIES_LOADER = 0;
 
@@ -98,11 +99,11 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
             // from the database if we are in a tablet mode (because we show both framents, list and detai)
             Intent intent = getActivity().getIntent();
             if (intent!= null) {
-                Serie serie = intent.getParcelableExtra("Serie");
+                serie = intent.getParcelableExtra("Serie");
                 if (serie != null) {
                     sendWidgetSerie(serie.getName()); //analytics, if come from widget
                     widgetSource = true;
-                    ((Callback) getActivity()).onItemSelected(serie, null);
+
                 }
             }
 // TODO check it in tblet mode ( if it loads correctly)
@@ -142,6 +143,7 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
         }
         LoadBannerRunnable loadView = new LoadBannerRunnable();
         loadView.run();
+        if (widgetSource)((Callback) getActivity()).onItemSelected(serie, null);
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -179,7 +181,8 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
         seriesAdapter.notifyDataSetChanged();
         // load the firs item on the rigt side if we have a tablet version parent detail
         if (((MySeriesActivity)getActivity()).mTwoPane && series.size() > 0 && !widgetSource) {
-            ((Callback) getActivity()).onItemSelected(series.get(0), null);
+            //((Callback) getActivity()).onItemSelected(series.get(0), null);
+            //recyclerView.findViewHolderForAdapterPosition(0).itemView.performClick();
         }
     }
 

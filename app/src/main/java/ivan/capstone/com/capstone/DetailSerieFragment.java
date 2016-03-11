@@ -82,7 +82,9 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) getActivity().postponeEnterTransition();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getActivity().postponeEnterTransition();
+        }
     }
 
     @Override
@@ -155,7 +157,12 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
                     public boolean onPreDraw() {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             sharedElement.getViewTreeObserver().removeOnPreDrawListener(this);
-                            getActivity().startPostponedEnterTransition();
+                            try {
+                                getActivity().startPostponedEnterTransition();
+                            }catch (Exception e){
+                                Log.e( "Error closing stream", e.toString());
+                            }
+
                         }
                         return true;
                     }

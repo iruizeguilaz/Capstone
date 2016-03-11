@@ -67,6 +67,7 @@ public class MySeriesActivity extends AppCompatActivity implements MySeriesFragm
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_detail_serie, fragment, DETAILFRAGMENT_TAG)
                         .commit();
+
             }
         } else {
             Intent intent = new Intent(this, DetailSerieSearchedActivity.class);
