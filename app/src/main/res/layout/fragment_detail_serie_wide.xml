@@ -12,14 +12,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:background="@color/grey"
                 android:padding="@dimen/small_margin">
-
-                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.25"
-                    android:orientation="horizontal"/>
 
                     <android.support.v7.widget.CardView
                         xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -36,18 +29,80 @@
                             android:layout_width="400dp"
                             android:layout_height="450dp"
                             android:scaleType="fitXY"
-                            android:background="@drawable/old_tv"
                             android:transitionName="@string/transition_photo"
                              />
                     </android.support.v7.widget.CardView>
 
                 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.25"
-                    android:orientation="horizontal"/>
+                    android:orientation="vertical"
+                    android:padding="@dimen/large_margin">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:id="@+id/text_detail_serie"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/test_title_size"
+                        android:paddingTop="@dimen/large_margin"
+                        android:text="@string/detail_serie"
+                        android:gravity="center"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:id="@+id/rating_serie"
+                        android:textColor="@color/black"
+                        android:padding="@dimen/large_margin"
+                        android:textSize="@dimen/test_title_size"
+                        />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:id="@+id/network_serie"
+                        android:padding="@dimen/large_margin"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/test_title_size" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:id="@+id/releasedDate_serie"
+                        android:textColor="@color/black"
+                        android:padding="@dimen/large_margin"
+                        android:textSize="@dimen/test_title_size" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:id="@+id/genre_serie"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/test_title_size"
+                        android:paddingLeft="@dimen/large_margin"
+                        android:paddingTop="@dimen/large_margin"
+                        android:paddingRight="@dimen/large_margin"
+                        android:paddingBottom="@dimen/large_margin"
+
+                        />
+
+               </LinearLayout>
 
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:paddingTop="@dimen/medium_margin"
+                android:background="@color/colorPrimary"/>
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
@@ -126,66 +181,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@color/colorPrimary"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:textAppearanceMedium"
-                android:id="@+id/text_detail_serie"
-                android:textColor="@color/black"
-                android:textSize="@dimen/test_title_size"
-                android:paddingTop="@dimen/medium_margin"
-                android:text="@string/detail_serie"
-                android:gravity="center"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:textAppearanceMedium"
-                android:id="@+id/rating_serie"
-                android:textColor="@color/black"
-                android:padding="@dimen/small_margin"
-                android:textSize="@dimen/test_normal_size"
-                 />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:textAppearanceMedium"
-                android:id="@+id/network_serie"
-                android:padding="@dimen/small_margin"
-                android:textColor="@color/black"
-                android:textSize="@dimen/test_normal_size" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:textAppearanceMedium"
-                android:id="@+id/releasedDate_serie"
-                android:textColor="@color/black"
-                android:padding="@dimen/small_margin"
-                android:textSize="@dimen/test_normal_size" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:textAppearanceMedium"
-                android:id="@+id/genre_serie"
-                android:textColor="@color/black"
-                android:textSize="@dimen/test_normal_size"
-                android:paddingLeft="@dimen/small_margin"
-                android:paddingTop="@dimen/small_margin"
-                android:paddingRight="@dimen/small_margin"
-                android:paddingBottom="@dimen/large_margin"
-
-                />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
+                android:layout_height="3dp"
                 android:background="@color/colorPrimary"/>
 
             <TextView
