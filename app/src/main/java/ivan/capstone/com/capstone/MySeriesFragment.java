@@ -99,8 +99,8 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
             Intent intent = getActivity().getIntent();
             if (intent!= null) {
                 Serie serie = intent.getParcelableExtra("Serie");
-                sendWidgetSerie(serie.getName()); //analytics, if come from widget
                 if (serie != null) {
+                    sendWidgetSerie(serie.getName()); //analytics, if come from widget
                     widgetSource = true;
                     ((Callback) getActivity()).onItemSelected(serie, null);
                 }
