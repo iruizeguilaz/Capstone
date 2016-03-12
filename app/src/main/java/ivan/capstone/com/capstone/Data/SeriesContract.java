@@ -20,6 +20,8 @@ public class SeriesContract {
 
     public static final String PATH_SERIES = "series";
 
+    public static final String PATH_EPISODES = "episodes";
+
     // To make it easy to query for the exact date, we normalize all dates that go into
     // the database to the start of the the Julian day at UTC.
     public static long normalizeDate(long startDate) {
@@ -30,7 +32,7 @@ public class SeriesContract {
         return time.setJulianDay(julianDay);
     }
 
-    /* Inner class that defines the table contents of the location table */
+    /* Inner class that defines the table contents of the series table */
     public static final class SeriesEntry implements BaseColumns {
 
         public static final Uri CONTENT_URI =
@@ -66,7 +68,48 @@ public class SeriesContract {
     }
 
 
+    /* Inner class that defines the table contents of the episodes table */
+    public static final class EpisodesEntry implements BaseColumns {
 
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_EPISODES).build();
+
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_EPISODES;
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_EPISODES;
+
+        // Table name
+        public static final String TABLE_NAME = "episodes";
+
+        //fields
+        public static final String COLUMN_SERIE_ID = "serie_id";
+        public static final String COLUMN_SEASON_ID = "season_id";
+        public static final String COLUMN_EPISODE_ID = "episode_id";
+
+        public static final String COLUMN_SEASON_NUMBER = "sesion_number";
+        public static final String COLUMN_EPISODE_NUMBER = "episode_number";
+        public static final String COLUMN_NAME= "name";
+        public static final String COLUMN_DATE = "date";
+        public static final String COLUMN_OVERVIEW = "overview";
+        public static final String COLUMN_VOTES = "votes";
+        public static final String COLUMN_RATING = "rating";
+        public static final String COLUMN_IMAGE_URL = "image_url";
+
+
+
+        public static Uri buildEpisodesUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        public static String getEpisodeIDFromUri(Uri uri) {
+            return uri.getPathSegments().get(3);
+        }
+
+        public static String getSerieIDFromUri(Uri uri) {
+            return uri.getPathSegments().get(1);
+        }
+    }
 
 
 }

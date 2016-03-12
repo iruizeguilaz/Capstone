@@ -7,6 +7,9 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ivan.capstone.com.capstone.Data.SeriesContract;
 import ivan.capstone.com.capstone.MyApplication;
 
@@ -28,6 +31,7 @@ public class Serie implements Parcelable {
     private String votes;
     private String genre;
     private String poster_url;
+    private ArrayList<Episode> episodes = new ArrayList<Episode>();
 
     public Serie(){
         _id = 0;
@@ -41,6 +45,7 @@ public class Serie implements Parcelable {
         votes= "";
         genre= "";
         poster_url= "";
+        episodes = new ArrayList<Episode>();
     }
 
     protected Serie(Parcel in) {
@@ -55,9 +60,10 @@ public class Serie implements Parcelable {
         votes = in.readString();
         genre = in.readString();
         poster_url = in.readString();
+        in.readTypedList(episodes, Episode.CREATOR);
     }
 
-    public Serie(int _id, String id, String name, String image_url, String overView, String dateReleased, String network, String rating, String votes, String genre, String poster_url) {
+    public Serie(int _id, String id, String name, String image_url, String overView, String dateReleased, String network, String rating, String votes, String genre, String poster_url, ArrayList<Episode> episodes) {
         this._id = _id;
         this.id = id;
         this.name = name;
@@ -69,6 +75,7 @@ public class Serie implements Parcelable {
         this.votes = votes;
         this.genre = genre;
         this.poster_url = poster_url;
+        this.episodes = episodes;
     }
 
     @Override
@@ -89,6 +96,7 @@ public class Serie implements Parcelable {
         dest.writeString(votes);
         dest.writeString(genre);
         dest.writeString(poster_url);
+        dest.writeTypedList(episodes);
     }
 
     @SuppressWarnings("unused")
@@ -192,6 +200,14 @@ public class Serie implements Parcelable {
         this.poster_url = poster_url;
     }
 
+    public ArrayList<Episode> getEpisodes() {
+        return episodes;
+    }
+
+    public void setEpisodes(ArrayList<Episode> episodes) {
+        this.episodes = episodes;
+    }
+
     private static final String[] SERIES_COLUMNS = {
             SeriesContract.SeriesEntry._ID,
             SeriesContract.SeriesEntry.COLUMN_ID,
@@ -217,6 +233,34 @@ public class Serie implements Parcelable {
     static final int COL_GENRE = 9;
     static final int COL_NETWORK = 10;
 
+    private static final String[] EPISODES_COLUMNS = {
+            SeriesContract.EpisodesEntry._ID,
+            SeriesContract.EpisodesEntry.COLUMN_SERIE_ID,
+            SeriesContract.EpisodesEntry.COLUMN_SEASON_ID,
+            SeriesContract.EpisodesEntry.COLUMN_EPISODE_ID,
+            SeriesContract.EpisodesEntry.COLUMN_SEASON_NUMBER,
+            SeriesContract.EpisodesEntry.COLUMN_EPISODE_NUMBER,
+            SeriesContract.EpisodesEntry.COLUMN_NAME,
+            SeriesContract.EpisodesEntry.COLUMN_DATE,
+            SeriesContract.EpisodesEntry.COLUMN_OVERVIEW,
+            SeriesContract.EpisodesEntry.COLUMN_RATING,
+            SeriesContract.EpisodesEntry.COLUMN_VOTES,
+            SeriesContract.EpisodesEntry.COLUMN_IMAGE_URL
+    };
+
+
+    static final int COLUMN_SERIE_ID = 1;
+    static final int COLUMN_SEASON_ID = 2;
+    static final int COLUMN_EPISODE_ID = 3;
+    static final int COLUMN_SEASON_NUMBER = 4;
+    static final int COLUMN_EPISODE_NUMBER = 5;
+    static final int COLUMN_NAME = 6;
+    static final int COLUMN_DATE = 7;
+    static final int COLUMN_OVERVIEW = 8;
+    static final int COLUMN_RATING = 9;
+    static final int COLUMN_VOTES = 10;
+    static final int COLUMN_IMAGE_URL = 11;
+
     // get the data from the database by id
     public void LoadData(){
         if (id.equals("")) return;
@@ -236,20 +280,53 @@ public class Serie implements Parcelable {
             dateReleased = data.getString(COL_RELEASED_DATE);
             overView = data.getString(COL_OVERVIEW);
             genre = data.getString(COL_GENRE);
-           network = data.getString(COL_NETWORK);
+            network = data.getString(COL_NETWORK);
         }
+        if (data != null) data.close();
+        // Load episodes
+        LoadEpisodes();
+    }
+
+    public void LoadEpisodes(){
+        if (id.equals("")) return;
+        Cursor data = MyApplication.getContext().getContentResolver().query(
+                SeriesContract.EpisodesEntry.CONTENT_URI,
+                EPISODES_COLUMNS,
+                SeriesContract.EpisodesEntry.COLUMN_SERIE_ID + " = ?",
+                new String[]{id},
+                null);
+        episodes = new ArrayList<>();
+        while (data.moveToNext()) {
+            Episode myEpisode = new Episode();
+            myEpisode.set_id(COL__ID);
+            myEpisode.setSerie_id(data.getString(COLUMN_SERIE_ID));
+            myEpisode.setSeason_id(data.getString(COLUMN_SEASON_ID));
+            myEpisode.setEpisode_id(data.getString(COLUMN_EPISODE_ID));
+            myEpisode.setSeason_number(data.getInt(COLUMN_SEASON_NUMBER));
+            myEpisode.setEpisode_number(data.getInt(COLUMN_EPISODE_NUMBER));
+            myEpisode.setName(data.getString(COLUMN_NAME));
+            myEpisode.setDate(data.getString(COLUMN_DATE));
+            myEpisode.setOverview(data.getString(COLUMN_OVERVIEW));
+            myEpisode.setRating(data.getString(COLUMN_RATING));
+            myEpisode.setVotes(data.getString(COLUMN_VOTES));
+            myEpisode.setImage_url(data.getString(COLUMN_IMAGE_URL));
+            episodes.add(myEpisode);
+        }
+        data.close();
     }
 
     public boolean IsSaved() {
         if (id.equals("")) return false;
         Cursor seriesCursor = MyApplication.getContext().getContentResolver().query(
-                SeriesContract.SeriesEntry.CONTENT_URI,
-                new String[]{SeriesContract.SeriesEntry._ID},
-                SeriesContract.SeriesEntry.COLUMN_ID + " = ?",
-                new String[]{id},
-                null);
-        if (seriesCursor != null && seriesCursor.moveToFirst()) return true;
-        else return false;
+                    SeriesContract.SeriesEntry.CONTENT_URI,
+                    new String[]{SeriesContract.SeriesEntry._ID},
+                    SeriesContract.SeriesEntry.COLUMN_ID + " = ?",
+                    new String[]{id},
+                    null);
+        boolean saved = false;
+        if (seriesCursor != null && seriesCursor.moveToFirst()) saved = true;
+        if (seriesCursor != null) seriesCursor.close();
+        return saved;
     }
 
     public void Save() {
@@ -274,6 +351,12 @@ public class Serie implements Parcelable {
             );
             // The resulting URI contains the ID for the row.  Extract the locationId from the Uri.
             _id = ContentUris.parseId(insertedUri);
+            if (episodes != null && episodes.size() > 0) {
+                List<Episode> list = episodes;
+                for (Episode episode : list) {
+                    episode.Save();
+                }
+            }
         }
     }
 
@@ -284,6 +367,9 @@ public class Serie implements Parcelable {
 
     public void Delete() {
         if (IsSaved()) {
+            if (episodes!= null && episodes.size() > 0) {
+                MyApplication.getContext().getContentResolver().delete(SeriesContract.EpisodesEntry.CONTENT_URI, SeriesContract.EpisodesEntry.COLUMN_SERIE_ID +"=?", new String[]{id});
+            }
             MyApplication.getContext().getContentResolver().delete(SeriesContract.SeriesEntry.CONTENT_URI, SeriesContract.SeriesEntry.COLUMN_ID +"=?", new String[]{id});
             _id = 0;
         }

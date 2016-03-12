@@ -24,6 +24,8 @@
     <string name="overview_serie">Overview</string>
     <string name="detail_serie">Detail</string>
     <string name="check_serie">Check out </string>
+    <string name="episodes_serie">Episodes</string>
+    <string name="episode_image">Episode image</string>
 
     <string name="data_not_found">No data found.</string>
     <string name="series_widget" translatable="false">My Series</string>

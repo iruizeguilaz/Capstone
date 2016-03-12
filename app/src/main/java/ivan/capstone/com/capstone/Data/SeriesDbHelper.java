@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import ivan.capstone.com.capstone.Data.SeriesContract.SeriesEntry;
+import ivan.capstone.com.capstone.Data.SeriesContract.EpisodesEntry;
 
 /**
  * Created by Ivan on 07/03/2016.
@@ -12,7 +13,7 @@ import ivan.capstone.com.capstone.Data.SeriesContract.SeriesEntry;
 public class SeriesDbHelper extends SQLiteOpenHelper {
 
     // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
     static final String DATABASE_NAME = "series.db";
 
     public SeriesDbHelper(Context context) {
@@ -40,7 +41,24 @@ public class SeriesDbHelper extends SQLiteOpenHelper {
 
                 " );";
 
+        final String SQL_CREATE_EPISODES_TABLE = "CREATE TABLE " + EpisodesEntry.TABLE_NAME + " (" +
+                EpisodesEntry._ID + " INTEGER PRIMARY KEY," +
+                EpisodesEntry.COLUMN_SERIE_ID + " TEXT NOT NULL, " +
+                EpisodesEntry.COLUMN_SEASON_ID + " TEXT NOT NULL, " +
+                EpisodesEntry.COLUMN_EPISODE_ID + " TEXT UNIQUE NOT NULL, " +
+                EpisodesEntry.COLUMN_SEASON_NUMBER + " INTEGER NOT NULL, " +
+                EpisodesEntry.COLUMN_EPISODE_NUMBER + " INTEGER NOT NULL, " +
+                EpisodesEntry.COLUMN_NAME + " TEXT NOT NULL, " +
+                EpisodesEntry.COLUMN_DATE + " TEXT NOT NULL, " +
+                EpisodesEntry.COLUMN_OVERVIEW + " TEXT NOT NULL, " +
+                EpisodesEntry.COLUMN_RATING + " TEXT NOT NULL, " +
+                EpisodesEntry.COLUMN_VOTES + " TEXT NOT NULL, " +
+                EpisodesEntry.COLUMN_IMAGE_URL + " TEXT NOT NULL " +
+
+                " );";
+
         sqLiteDatabase.execSQL(SQL_CREATE_SERIES_TABLE);
+        sqLiteDatabase.execSQL(SQL_CREATE_EPISODES_TABLE);
 
     }
 
@@ -53,6 +71,7 @@ public class SeriesDbHelper extends SQLiteOpenHelper {
         // If you want to update the schema without wiping data, commenting out the next 2 lines
         // should be your top priority before modifying this method.
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + SeriesEntry.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + EpisodesEntry.TABLE_NAME);
         onCreate(sqLiteDatabase);
     }
 }

@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -39,7 +41,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
+import ivan.capstone.com.capstone.Adapter.EpisodesAdapter;
+import ivan.capstone.com.capstone.Adapter.SeriesAdapter;
+import ivan.capstone.com.capstone.DataObjects.Episode;
 import ivan.capstone.com.capstone.DataObjects.Serie;
 import ivan.capstone.com.capstone.XML.XMLManager;
 
@@ -65,6 +72,9 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
     private String activityOrigin;
     boolean isRefreshing;
     ImageButton refresh_button;
+
+    EpisodesAdapter episodesAdapter;
+    RecyclerView recyclerView;
 
     public DetailSerieFragment() {
         // Required empty public constructor
@@ -117,6 +127,11 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
         unsave_text = (TextView)rootView.findViewById(R.id.unsave_serie);
         refresh_button = (ImageButton)rootView.findViewById(R.id.refresh);
         refresh_button.setOnClickListener(this);
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.episodes_recycler);
+
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        recyclerView.setLayoutManager(layoutManager);
 
         if (savedInstanceState != null && savedInstanceState.getParcelable("Serie")!= null) {
             serie = savedInstanceState.getParcelable("Serie");
@@ -157,6 +172,13 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
 
         }
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        outState.putParcelable("Serie", serie);
+        super.onSaveInstanceState(outState);
     }
 
     private void scheduleStartPostponedTransition(final View sharedElement) {
@@ -218,6 +240,12 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
             unsave_button.setVisibility(View.VISIBLE);
             unsave_text.setVisibility(View.VISIBLE);
         }
+
+        // LOAD Episodes
+        episodesAdapter = new EpisodesAdapter(serie.getEpisodes(), R.layout.item_list_episodes);
+        recyclerView.setAdapter(episodesAdapter);
+        episodesAdapter.notifyDataSetChanged();
+
     }
 
     // Custom view which is justified
@@ -294,7 +322,7 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
                 HttpURLConnection urlConnection = null;
                 BufferedReader reader = null;
                 try {
-                    final String SERIES_BASE_URL = "http://thetvdb.com/api/" + API_SERIES_KEY + "/series/" + serie.getId();
+                    final String SERIES_BASE_URL = "http://thetvdb.com/api/" + API_SERIES_KEY + "/series/" + serie.getId() + "/all";
                     Uri builtUri = Uri.parse(SERIES_BASE_URL).buildUpon()
                             .build();
                     URL url = new URL(builtUri.toString());
@@ -310,6 +338,7 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
                     parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
                     parser.setInput(inputStream, null);
                     result = XMLManager.GetSerieFromXML(parser);
+                    result.setEpisodes(XMLManager.GetEpisodesFromXML(parser));
                 } catch ( Exception e){
                     Log.e(LOG_TAG, "Error:" + e.getMessage());
                     result = null;

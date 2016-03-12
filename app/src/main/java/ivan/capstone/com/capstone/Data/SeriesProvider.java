@@ -19,12 +19,22 @@ public class SeriesProvider  extends ContentProvider {
 
     static final int SERIES = 100;
     static final int SERIES_ID = 101;
-
+    static final int EPISODES = 200;
+    static final int EPISODES_ID = 201;
+    static final int EPISODES_SERIEID = 202;
 
     //location.location_setting = ?
     private static final String sSeriesIDSelection =
             SeriesContract.SeriesEntry.TABLE_NAME+
                     "." + SeriesContract.SeriesEntry.COLUMN_ID + " = ? ";
+
+    private static final String sEpisodesIDSelection =
+            SeriesContract.EpisodesEntry.TABLE_NAME+
+                    "." + SeriesContract.EpisodesEntry.COLUMN_EPISODE_ID + " = ? ";
+
+    private static final String sEpisodesSerieSelection =
+            SeriesContract.EpisodesEntry.TABLE_NAME+
+                    "." + SeriesContract.EpisodesEntry.COLUMN_SERIE_ID + " = ? ";
 
     @Override
     public boolean onCreate() {
@@ -37,32 +47,45 @@ public class SeriesProvider  extends ContentProvider {
     static{
         sSeriesByIdQueryBuilder = new SQLiteQueryBuilder();
         sSeriesByIdQueryBuilder.setTables( SeriesContract.SeriesEntry.TABLE_NAME );
+
+
+    }
+
+    private static final SQLiteQueryBuilder sEpisodesByIdQueryBuilder;
+
+    static{
+        sEpisodesByIdQueryBuilder = new SQLiteQueryBuilder();
+        sEpisodesByIdQueryBuilder.setTables( SeriesContract.EpisodesEntry.TABLE_NAME );
+
+
     }
 
     static UriMatcher buildUriMatcher() {
-        // 1) The code passed into the constructor represents the code to return for the root
-        // URI.  It's common to use NO_MATCH as the code for this case. Add the constructor below.
+
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String autorithy = SeriesContract.CONTENT_AUTHORITY;
+
         matcher.addURI(autorithy, SeriesContract.PATH_SERIES, SERIES);
         matcher.addURI(autorithy, SeriesContract.PATH_SERIES + "/*", SERIES_ID);
-        // 2) Use the addURI function to match each of the types.  Use the constants from
-        // WeatherContract to help define the types to the UriMatcher.
 
-        // 3) Return the new matcher!
+        matcher.addURI(autorithy, SeriesContract.PATH_EPISODES, EPISODES);
+        matcher.addURI(autorithy, SeriesContract.PATH_EPISODES + "/*", EPISODES_ID);
+        matcher.addURI(autorithy, SeriesContract.PATH_EPISODES + "/*", EPISODES_SERIEID);
+
         return matcher;
     }
 
 
     @Override
     public String getType(Uri uri) {
-        // Use the Uri Matcher to determine what kind of URI this is.
+
         final int match = sUriMatcher.match(uri);
 
         switch (match) {
-            // Student: Uncomment and fill out these two cases
             case SERIES:
                 return SeriesContract.SeriesEntry.CONTENT_TYPE;
+            case EPISODES:
+                return SeriesContract.EpisodesEntry.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -74,7 +97,37 @@ public class SeriesProvider  extends ContentProvider {
 
         String[] selectionArgs = new String[]{locationSetting};
         String selection = sSeriesIDSelection;
-         return sSeriesByIdQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+        return sSeriesByIdQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder
+        );
+    }
+
+    private Cursor getEpisodesByID(Uri uri, String[] projection, String sortOrder) {
+        String episodeSetting = SeriesContract.EpisodesEntry.getEpisodeIDFromUri(uri);
+
+        String[] selectionArgs = new String[]{episodeSetting};
+        String selection = sEpisodesIDSelection;
+        return sSeriesByIdQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder
+        );
+    }
+
+    private Cursor getEpisodesBySerie(Uri uri, String[] projection, String sortOrder) {
+        String episodeSetting = SeriesContract.EpisodesEntry.getSerieIDFromUri(uri);
+
+        String[] selectionArgs = new String[]{episodeSetting};
+        String selection = sEpisodesSerieSelection;
+        return sSeriesByIdQueryBuilder.query(mOpenHelper.getReadableDatabase(),
                 projection,
                 selection,
                 selectionArgs,
@@ -92,13 +145,27 @@ public class SeriesProvider  extends ContentProvider {
         Cursor retCursor;
         switch (sUriMatcher.match(uri)) {
             case SERIES: {
-                retCursor = mOpenHelper.getReadableDatabase().query(
-                        SeriesContract.SeriesEntry.TABLE_NAME,
-                        projection, selection, selectionArgs, null, null, sortOrder);
+                    retCursor = mOpenHelper.getReadableDatabase().query(
+                            SeriesContract.SeriesEntry.TABLE_NAME,
+                            projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             }
             case SERIES_ID: {
                 retCursor = getSeriesByID(uri, projection, sortOrder);
+                break;
+            }
+            case EPISODES: {
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        SeriesContract.EpisodesEntry.TABLE_NAME,
+                        projection, selection, selectionArgs, null, null, sortOrder);
+                break;
+            }
+            case EPISODES_ID: {
+                retCursor = getEpisodesByID(uri, projection, sortOrder);
+                break;
+            }
+            case EPISODES_SERIEID: {
+                retCursor = getEpisodesBySerie(uri, projection, sortOrder);
                 break;
             }
             default:
@@ -125,6 +192,14 @@ public class SeriesProvider  extends ContentProvider {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             }
+            case EPISODES: {
+                long _id = db.insert(SeriesContract.EpisodesEntry.TABLE_NAME, null, values);
+                if ( _id > 0 )
+                    returnUri = SeriesContract.EpisodesEntry.buildEpisodesUri(_id);
+                else
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
+            }
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -142,6 +217,10 @@ public class SeriesProvider  extends ContentProvider {
         switch (match) {
             case SERIES: {
                 count = db.delete(SeriesContract.SeriesEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            }
+            case EPISODES: {
+                count = db.delete(SeriesContract.EpisodesEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             }
             default:
@@ -164,6 +243,10 @@ public class SeriesProvider  extends ContentProvider {
         switch (match) {
             case SERIES: {
                 count = db.update(SeriesContract.SeriesEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            }
+            case EPISODES: {
+                count = db.update(SeriesContract.EpisodesEntry.TABLE_NAME, values, selection, selectionArgs);
                 break;
             }
             default:

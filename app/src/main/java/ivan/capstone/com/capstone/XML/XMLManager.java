@@ -1,24 +1,14 @@
 package ivan.capstone.com.capstone.XML;
 
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.util.Log;
-import android.widget.Toast;
-
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import ivan.capstone.com.capstone.DataObjects.Episode;
 import ivan.capstone.com.capstone.DataObjects.Serie;
-import ivan.capstone.com.capstone.R;
 
 /**
  * Created by Ivan on 25/02/2016.
@@ -33,12 +23,12 @@ public class XMLManager {
     private static final String TAG_SERIE_NAME = "SeriesName";
     private static final String TAG_SERIE_NETWORK = "Network";
     private static final String TAG_SERIE_BANNER_URL = "banner";
-    private static final String TAG_SERIE_RELEASE_DATE = "FirstAired";
-    private static final String TAG_SERIE_RATING = "Rating";
-    private static final String TAG_SERIE_VOTES = "RatingCount";
+    private static final String TAG_RELEASE_DATE = "FirstAired";
+    private static final String TAG_RATING = "Rating";
+    private static final String TAG_VOTES = "RatingCount";
     private static final String TAG_SERIE_POSTER_URL = "poster";
     private static final String TAG_SERIE_GENRE = "Genre";
-    private static final String TAG_SERIE_OVERVIEW = "Overview";
+    private static final String TAG_OVERVIEW = "Overview";
     private static final String TAG_ID = "id";
     // This method manage the series in XML format that are brought with the query by name
     public static List<Serie> GetSeriesFromXML(XmlPullParser parser) throws XmlPullParserException,IOException
@@ -47,7 +37,7 @@ public class XMLManager {
         int eventType = parser.getEventType();
         Serie currentSerie = null;
         while (eventType != XmlPullParser.END_DOCUMENT){
-            String name = null;
+            String name;
             switch (eventType){
                 case XmlPullParser.START_DOCUMENT:
                     series = new ArrayList();
@@ -64,8 +54,9 @@ public class XMLManager {
                         } else if (name.equals(TAG_SERIE_NETWORK)){
                             currentSerie.setNetwork(parser.nextText());
                         } else if (name.equals(TAG_SERIE_BANNER_URL)){
-                            currentSerie.setImage_url(URL + parser.nextText());
-                        } else if (name.equals(TAG_SERIE_RELEASE_DATE)){
+                            String banner = parser.nextText();
+                            if (!banner.equals((""))) currentSerie.setImage_url(URL + banner);
+                        } else if (name.equals(TAG_RELEASE_DATE)){
                             currentSerie.setDateReleased(parser.nextText());
                         }
                     }
@@ -84,10 +75,11 @@ public class XMLManager {
 
     public static Serie GetSerieFromXML(XmlPullParser parser) throws XmlPullParserException,IOException
     {
+        boolean hasFinishSerie = false;
         int eventType = parser.getEventType();
         Serie serie = new Serie();
-        while (eventType != XmlPullParser.END_DOCUMENT){
-            String name = null;
+        while (eventType != XmlPullParser.END_DOCUMENT && !hasFinishSerie){
+            String name;
             switch (eventType){
                 case XmlPullParser.START_TAG:
                     name = parser.getName();
@@ -100,10 +92,10 @@ public class XMLManager {
                     } else if (name.equals(TAG_SERIE_BANNER_URL)){
                         String banner = parser.nextText();
                         if (!banner.equals((""))) serie.setImage_url(URL + banner);
-                    } else if (name.equals(TAG_SERIE_RELEASE_DATE)){
+                    } else if (name.equals(TAG_RELEASE_DATE)){
                         serie.setDateReleased(parser.nextText());
                     }
-                    else if (name.equals(TAG_SERIE_OVERVIEW)){
+                    else if (name.equals(TAG_OVERVIEW)){
                         serie.setOverView(parser.nextText());
                     }
                     else if (name.equals(TAG_SERIE_GENRE)){
@@ -113,17 +105,88 @@ public class XMLManager {
                         String poster = parser.nextText();
                         if (!poster.equals((""))) serie.setPoster_url(URL + poster);
                     }
-                    else if (name.equals(TAG_SERIE_RATING)){
+                    else if (name.equals(TAG_RATING)){
                         serie.setRating(parser.nextText());
                     }
-                    else if (name.equals(TAG_SERIE_VOTES)){
+                    else if (name.equals(TAG_VOTES)){
                         serie.setVotes(parser.nextText());
+                    }
+                    break;
+                case XmlPullParser.END_TAG:
+                    name = parser.getName();
+                    if (name.equalsIgnoreCase(TAG_SERIES)){
+                        hasFinishSerie = true;
                     }
                     break;
             }
             eventType = parser.next();
         }
         return serie;
+    }
+
+
+    private static final String TAG_EPISODES= "Episode";
+    private static final String TAG_EPISODE_ID = "id";
+    private static final String TAG_EPISODE_SERIEID = "seriesid";
+    private static final String TAG_EPISODE_SEASONID = "seasonid";
+
+    private static final String TAG_EPISODE_NUMBER = "EpisodeNumber";
+    private static final String TAG_SEASON_NUMBER = "SeasonNumber";
+
+    private static final String TAG_EPISODE_NAME = "EpisodeName";
+    private static final String TAG_EPISODE_IMAGE_URL = "filename";
+
+    public static ArrayList<Episode> GetEpisodesFromXML(XmlPullParser parser) throws XmlPullParserException,IOException
+    {
+        ArrayList<Episode> episodes = new ArrayList();
+        int eventType = parser.getEventType();
+        Episode currentEpisode = null;
+        while (eventType != XmlPullParser.END_DOCUMENT){
+            String name;
+            switch (eventType){
+                case XmlPullParser.START_TAG:
+                    name = parser.getName();
+                    if (name.equals(TAG_EPISODES) ){
+                        currentEpisode = new Episode();
+                    } else if (currentEpisode != null){
+                        if (name.equals(TAG_EPISODE_ID)){
+                            currentEpisode.setEpisode_id(parser.nextText());
+                        } else if (name.equals(TAG_EPISODE_SERIEID)){
+                            currentEpisode.setSerie_id(parser.nextText());
+                        } else if (name.equals(TAG_EPISODE_SEASONID)){
+                            currentEpisode.setSeason_id(parser.nextText());
+                        } else if (name.equals(TAG_EPISODE_NUMBER)){
+                            String number = parser.nextText();
+                            currentEpisode.setEpisode_number(Integer.parseInt(number));
+                        } else if (name.equals(TAG_SEASON_NUMBER)){
+                            String number = parser.nextText();
+                            currentEpisode.setSeason_number(Integer.parseInt(number));
+                        } else if (name.equals(TAG_EPISODE_NAME)){
+                            currentEpisode.setName(parser.nextText());
+                        } else if (name.equals(TAG_RELEASE_DATE)){
+                            currentEpisode.setDate(parser.nextText());
+                        } else if (name.equals(TAG_OVERVIEW)){
+                            currentEpisode.setOverview(parser.nextText());
+                        } else if (name.equals(TAG_VOTES)){
+                            currentEpisode.setVotes(parser.nextText());
+                        } else if (name.equals(TAG_RATING)){
+                            currentEpisode.setRating(parser.nextText());
+                        } else if (name.equals(TAG_EPISODE_IMAGE_URL)) {
+                            String image = parser.nextText();
+                            if (!image.equals((""))) currentEpisode.setImage_url(URL + image);
+                        }
+                    }
+                    break;
+                case XmlPullParser.END_TAG:
+                    name = parser.getName();
+                    if (name.equalsIgnoreCase(TAG_EPISODES) && currentEpisode != null && currentEpisode.getSeason_number() > 0){
+                        episodes.add(currentEpisode);
+                    }
+                    break;
+            }
+            eventType = parser.next();
+        }
+        return episodes;
     }
 
     private static final String TAG_BANNER = "Banner";

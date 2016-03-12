@@ -190,6 +190,7 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
             mySerie.setOverView(data.getString(COL_OVERVIEW));
             mySerie.setGenre(data.getString(COL_GENRE));
             mySerie.setNetwork(data.getString(COL_NETWORK));
+            mySerie.LoadEpisodes();
             series.add((mySerie));
         }
         seriesAdapter.notifyDataSetChanged();
