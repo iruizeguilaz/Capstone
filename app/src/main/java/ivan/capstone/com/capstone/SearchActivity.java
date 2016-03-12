@@ -9,6 +9,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.ImageView;
 
 import ivan.capstone.com.capstone.DataObjects.Serie;
@@ -28,9 +29,10 @@ public class SearchActivity extends AppCompatActivity implements SearchFragment.
         setContentView(R.layout.activity_search);
         mToolbar = (Toolbar) findViewById(R.id.search_toolbar);
         setSupportActionBar(mToolbar);
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (findViewById(R.id.fragment_detail_serie) != null) {
             mTwoPane = true;
+
         } else {
             mTwoPane = false;
             //this will get rid of an unnecessary shadow below the action bar for smaller screen devices like phones.
@@ -75,6 +77,17 @@ public class SearchActivity extends AppCompatActivity implements SearchFragment.
                 startActivity(intent);
             }
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

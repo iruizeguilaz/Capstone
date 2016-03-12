@@ -5,8 +5,6 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -39,6 +37,7 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
     boolean widgetSource = false;
     AdView mAdView;
     Serie serie;
+    boolean isFirstLoad;
 
     private static final int SERIES_LOADER = 0;
 
@@ -89,6 +88,7 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_my_series, container, false);
+
         recyclerView = (RecyclerView) rootView.findViewById(R.id.myseries_recycler);
         recyclerView.setNestedScrollingEnabled(false);
         widgetSource = false;
@@ -97,7 +97,10 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
             seriesAdapter = new SeriesAdapter(series, this, R.layout.item_list_myseries);
             recyclerView.setAdapter(seriesAdapter);
             seriesAdapter.notifyDataSetChanged();
+            getLoaderManager().restartLoader(SERIES_LOADER, null, this);
         } else {
+
+            isFirstLoad = true;
             // check if we come from the widget (to load the serie, even if we come from widget, we have to load
             // from the database if we are in a tablet mode (because we show both framents, list and detai)
             Intent intent = getActivity().getIntent();
@@ -171,9 +174,6 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
 
-
-
-
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         series.clear();
@@ -195,8 +195,14 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
         seriesAdapter.notifyDataSetChanged();
         // load the firs item on the rigt side if we have a tablet version parent detail
         if (((MySeriesActivity)getActivity()).mTwoPane && series.size() > 0 && !widgetSource) {
-            ((Callback) getActivity()).onItemSelected(series.get(0), null);
-            //recyclerView.findViewHolderForAdapterPosition(0).itemView.performClick();
+            // I only want to do the first time because I want to avoid realad the detailfragment if
+            // the user unsave the serie... because the serie would dissaper, on the rigth side
+            // and it could be an error of the user... so I prefer to mantein it... that is why I only
+            // do this on the first time.
+            if (isFirstLoad) {
+                ((Callback) getActivity()).onItemSelected(series.get(0), null);
+                isFirstLoad = false;
+            }
         }
     }
 
