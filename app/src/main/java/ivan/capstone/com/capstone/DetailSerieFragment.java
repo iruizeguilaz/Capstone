@@ -51,7 +51,7 @@ import ivan.capstone.com.capstone.XML.XMLManager;
 public class DetailSerieFragment extends Fragment implements View.OnClickListener {
 
     private static final String API_SERIES_KEY = BuildConfig.API_SERIES_KEY;
-
+    int season = 0;
     boolean mTwoPane;
     Serie serie;
     TextView genre_text;
@@ -72,9 +72,17 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
 
     EpisodesAdapter episodesAdapter;
     RecyclerView episodeRecyclerView;
+    TextView empty_Episodes;
 
     ActorsAdapter actorsAdapter;
     RecyclerView actorRecyclerView;
+    TextView empty_Actors;
+
+    ImageButton previous_season;
+    ImageButton previous_season_disable;
+    ImageButton next_season;
+    ImageButton next_season_disable;
+    TextView actual_season;
 
     public DetailSerieFragment() {
         // Required empty public constructor
@@ -128,7 +136,16 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
         refresh_button = (ImageButton)rootView.findViewById(R.id.refresh);
         refresh_button.setOnClickListener(this);
         episodeRecyclerView = (RecyclerView) rootView.findViewById(R.id.episodes_recycler);
+        empty_Episodes = (TextView)rootView.findViewById(R.id.empty_episodes);
         actorRecyclerView = (RecyclerView) rootView.findViewById(R.id.actors_recycler);
+        empty_Actors = (TextView)rootView.findViewById(R.id.empty_actors);
+        next_season = (ImageButton)rootView.findViewById(R.id.next_season);
+        next_season.setOnClickListener(this);
+        next_season_disable = (ImageButton)rootView.findViewById(R.id.next_season_disable);
+        previous_season = (ImageButton)rootView.findViewById(R.id.previous_season);
+        previous_season.setOnClickListener(this);
+        previous_season_disable = (ImageButton)rootView.findViewById(R.id.previous_season_disable);
+        actual_season= (TextView)rootView.findViewById(R.id.text_episode_number);
         // si es movil
         if (getActivity().getClass().getSimpleName().equals(DetailSerieSearchedActivity.class.getSimpleName())){
             LinearLayoutManager layoutManager
@@ -142,13 +159,9 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
         }
 
 
-
-        //LinearLayoutManager layoutManager2
-         //       = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-        //actorRecyclerView.setLayoutManager(layoutManager2);
-
         if (savedInstanceState != null && savedInstanceState.getParcelable("Serie")!= null) {
             serie = savedInstanceState.getParcelable("Serie");
+            season = savedInstanceState.getInt("Season");
             LoadData();
         }
         else {
@@ -192,6 +205,7 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
     public void onSaveInstanceState(Bundle outState)
     {
         outState.putParcelable("Serie", serie);
+        outState.putInt("Season", season);
         super.onSaveInstanceState(outState);
     }
 
@@ -256,14 +270,49 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
         }
 
         // LOAD Episodes
-        episodesAdapter = new EpisodesAdapter(serie.getEpisodes(), R.layout.item_list_episodes);
+
+        season = 1;
+        episodesAdapter = new EpisodesAdapter(serie.getSeason(season), R.layout.item_list_episodes);
         episodeRecyclerView.setAdapter(episodesAdapter);
         episodesAdapter.notifyDataSetChanged();
+
+        if (serie.getEpisodes().size() > 0){
+            episodeRecyclerView.setVisibility(View.VISIBLE);
+            empty_Episodes.setVisibility(View.GONE);
+            previous_season.setVisibility(View.GONE);
+            previous_season_disable.setVisibility(View.VISIBLE);
+            actual_season.setVisibility(View.VISIBLE);
+            actual_season.setText(season + "/" + serie.getSeasonsCount() + " " + getResources().getString(R.string.season_series));
+            if (serie.getSeasonsCount() > 1) {
+                next_season.setVisibility(View.VISIBLE);
+                next_season_disable.setVisibility(View.GONE);
+            }
+            else {
+                next_season.setVisibility(View.GONE);
+                next_season_disable.setVisibility(View.VISIBLE);
+            }
+        } else {
+            episodeRecyclerView.setVisibility(View.GONE);
+            empty_Episodes.setVisibility(View.VISIBLE);
+            previous_season.setVisibility(View.GONE);
+            previous_season_disable.setVisibility(View.GONE);
+            next_season.setVisibility(View.GONE);
+            next_season_disable.setVisibility(View.GONE);
+            actual_season.setVisibility(View.GONE);
+        }
 
         // LOAD Actors
         actorsAdapter = new ActorsAdapter(serie.getActors(), R.layout.item_list_actors);
         actorRecyclerView.setAdapter(actorsAdapter);
         actorsAdapter.notifyDataSetChanged();
+
+        if (serie.getActors().size() > 0){
+            actorRecyclerView.setVisibility(View.VISIBLE);
+            empty_Actors.setVisibility(View.GONE);
+        } else {
+            actorRecyclerView.setVisibility(View.GONE);
+            empty_Actors.setVisibility(View.VISIBLE);
+        }
 
     }
 
@@ -326,6 +375,34 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
             }
         }
 
+        if (button.getId() == R.id.next_season) {
+            season = season + 1;
+            episodesAdapter = new EpisodesAdapter(serie.getSeason(season), R.layout.item_list_episodes);
+            episodeRecyclerView.setAdapter(episodesAdapter);
+            episodesAdapter.notifyDataSetChanged();
+            if (season == serie.getSeasonsCount()) {
+                next_season.setVisibility(View.GONE);
+                next_season_disable.setVisibility(View.VISIBLE);
+            }
+            previous_season.setVisibility(View.VISIBLE);
+            previous_season_disable.setVisibility(View.GONE);
+            actual_season.setText(season + "/" + serie.getSeasonsCount() + " " + getResources().getString(R.string.season_series));
+
+        }
+        if (button.getId() == R.id.previous_season) {
+            season = season - 1;
+            episodesAdapter = new EpisodesAdapter(serie.getSeason(season), R.layout.item_list_episodes);
+            episodeRecyclerView.setAdapter(episodesAdapter);
+            episodesAdapter.notifyDataSetChanged();
+            if (season == 1) {
+                previous_season.setVisibility(View.GONE);
+                previous_season_disable.setVisibility(View.VISIBLE);
+            }
+            next_season.setVisibility(View.VISIBLE);
+            next_season_disable.setVisibility(View.GONE);
+            actual_season.setText(season + "/" + serie.getSeasonsCount() + " " + getResources().getString(R.string.season_series));
+
+        }
 
 
     }

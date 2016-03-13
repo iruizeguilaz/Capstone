@@ -238,6 +238,24 @@ public class Serie implements Parcelable {
         this.modify_date = modify_date;
     }
 
+    public int getSeasonsCount(){
+        if (episodes.size() == 0) return 0;
+        int seasons = episodes.get(episodes.size() -1).getSeason_number();
+        return seasons;
+    }
+
+    public ArrayList<Episode> getSeason(int season){
+        if (season == 0 || season > getSeasonsCount()) return new ArrayList<>();
+        if (episodes.size() == 0) return new ArrayList<>();
+        ArrayList<Episode> seasonEpisodes = new ArrayList<>();
+        List<Episode> list = episodes;
+        for (Episode episode : list) {
+            if (episode.getSeason_number() == season)
+                seasonEpisodes.add(episode);
+        }
+        return seasonEpisodes;
+    }
+
     private static final String[] SERIES_COLUMNS = {
             SeriesContract.SeriesEntry._ID,
             SeriesContract.SeriesEntry.COLUMN_ID,

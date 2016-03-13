@@ -241,9 +241,21 @@
                         <ImageButton
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:contentDescription=""
+                            android:contentDescription="@string/next_season_image"
                             android:backgroundTint="@color/light_grey"
                             android:id="@+id/previous_season"
+                            android:src="@android:drawable/ic_media_rew"
+
+                            />
+
+                        <ImageButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="@string/next_season_image"
+                            android:backgroundTint="@color/light_grey"
+                            android:tint="@color/grey"
+                            android:visibility="gone"
+                            android:id="@+id/previous_season_disable"
                             android:src="@android:drawable/ic_media_rew"
 
                             />
@@ -259,14 +271,26 @@
                              />
 
 
-                            />
+
                         <ImageButton
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:contentDescription=""
+                            android:contentDescription="@string/previous_season_image"
                             android:backgroundTint="@color/light_grey"
                             android:id="@+id/next_season"
                             android:src="@android:drawable/ic_media_ff"/>
+
+                        <ImageButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="@string/next_season_image"
+                            android:backgroundTint="@color/light_grey"
+                            android:tint="@color/grey"
+                            android:visibility="gone"
+                            android:id="@+id/next_season_disable"
+                            android:src="@android:drawable/ic_media_ff"
+
+                            />
 
                         </LinearLayout>
 
@@ -280,6 +304,14 @@
                         android:layout_margin="@dimen/small_margin"
                         app:layoutManager="LinearLayoutManager"
                         tools:listitem="@layout/item_list_episodes" />
+
+                    <TextView
+                        android:id="@+id/empty_episodes"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:visibility="gone"
+                        android:text="@string/no_data_available_episodes" />
 
 
                     </LinearLayout>
@@ -318,6 +350,15 @@
                         android:layout_margin="@dimen/small_margin"
                         app:layoutManager="LinearLayoutManager"
                         tools:listitem="@layout/item_list_actors" />
+
+                    <TextView
+                        android:id="@+id/empty_actors"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:visibility="gone"
+                        android:text="@string/no_data_available_actors" />
+
 
 
                 </LinearLayout>

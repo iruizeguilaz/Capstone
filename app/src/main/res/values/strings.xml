@@ -43,6 +43,13 @@
     <string name="refresh_description">Refresh data from internet</string>
     <string name="banner_description">The banner of the serie</string>
 
+    <string name="next_season_image">Next season image button</string>
+    <string name="previous_season_image">Previous season image button</string>
+
+    <string name="no_data_available_actors">This serie does not have actors info</string>
+    <string name="no_data_available_episodes">This serie does not have episodes info</string>
+
+    <string name="season_series">Seasons</string>
     <!-- This id es por tests puurpose. If the app goes to production mode, then we should change this -->
     <string name="banner_id">ca-app-pub-3940256099942544/6300978111</string>
 
