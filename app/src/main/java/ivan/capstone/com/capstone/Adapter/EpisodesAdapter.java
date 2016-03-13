@@ -71,6 +71,37 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.ViewHo
                     .into(holder.viewMiniatura);
         }
 
+        if (holder.item.IsSaved()) {
+            if (holder.item.getViewed() == 0) {
+                holder.viewed.setVisibility(View.GONE);
+                holder.not_viewed.setVisibility(View.VISIBLE);
+            }else {
+                holder.viewed.setVisibility(View.VISIBLE);
+                holder.not_viewed.setVisibility(View.GONE);
+            }
+            holder.viewed.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    holder.viewed.setVisibility(View.GONE);
+                    holder.not_viewed.setVisibility(View.VISIBLE);
+                    holder.item.setViewed(0);
+                    holder.item.UpdateViewed();
+                }
+            });
+
+            holder.not_viewed.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    holder.viewed.setVisibility(View.VISIBLE);
+                    holder.not_viewed.setVisibility(View.GONE);
+                    holder.item.setViewed(1);
+                    holder.item.UpdateViewed();
+                }
+            });
+        } else {
+            holder.viewed.setVisibility(View.GONE);
+            holder.not_viewed.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -92,6 +123,8 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.ViewHo
             public final ImageView viewMiniatura;
             public final TextView viewRating;
             public final TextView viewOverview;
+            public final ImageView viewed;
+            public final ImageView not_viewed;
 
         public Episode item;
 
@@ -103,6 +136,8 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.ViewHo
             viewMiniatura = (ImageView) view.findViewById(R.id.image_episode);
             viewRating = (TextView) view.findViewById(R.id.rating_episode);
             viewOverview = (TextView) view.findViewById(R.id.name_overview_episode);
+            viewed = (ImageView) view.findViewById(R.id.viewed_episode);
+            not_viewed = (ImageView) view.findViewById(R.id.no_viewed_episode);
         }
 
 

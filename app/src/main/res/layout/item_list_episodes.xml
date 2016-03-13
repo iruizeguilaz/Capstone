@@ -62,11 +62,9 @@
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingLeft="@dimen/small_margin"
-                android:paddingStart="@dimen/small_margin"
-                android:paddingTop="@dimen/activity_vertical_margin">
+                android:paddingTop="@dimen/small_margin">
 
                 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
                     android:layout_width="wrap_content"
@@ -96,8 +94,35 @@
                     />
             </LinearLayout>
 
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/small_margin"
+                android:paddingStart="@dimen/small_margin"
+                android:paddingTop="@dimen/activity_vertical_margin">
 
+                <ImageButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/not_episode_viewed_image"
+                    android:backgroundTint="@color/grey"
+                    android:visibility="visible"
+                    android:gravity="center"
+                    android:id="@+id/no_viewed_episode"
+                    android:src="@android:drawable/checkbox_off_background"/>
 
+                <ImageButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/episode_viewed_image"
+                    android:backgroundTint="@color/grey"
+                    android:visibility="visible"
+                    android:gravity="center"
+                    android:id="@+id/viewed_episode"
+                    android:src="@android:drawable/checkbox_on_background"/>
+
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"

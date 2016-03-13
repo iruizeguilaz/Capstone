@@ -49,14 +49,14 @@
     <string name="no_data_available_actors">This serie does not have actors info</string>
     <string name="no_data_available_episodes">This serie does not have episodes info</string>
 
+    <string name="episode_viewed_image">This image has seen viewed, click to change to unviewed</string>
+    <string name="not_episode_viewed_image">This image has not seen viewed, click to change to viewed</string>
+
     <string name="season_series">Seasons</string>
     <!-- This id es por tests puurpose. If the app goes to production mode, then we should change this -->
-    <string name="banner_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="banner_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_detail_serie">DetailSerieActivity</string>
-    <string name="title_activity_detail_serie_searched">DetailSerieSearchedActivity</string>
+    <string name="title_activity_detail_serie_searched">Detail serie</string>
 
 
   </resources>

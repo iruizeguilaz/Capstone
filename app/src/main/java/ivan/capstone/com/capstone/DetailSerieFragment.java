@@ -490,7 +490,7 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
             if (result != null) {
                 serie = result;
                 if (isRefreshing){
-                    serie.Update();
+                    serie.Update(true);
                     isRefreshing = false;
                 }
             }else {

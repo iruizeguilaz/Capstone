@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+
 import ivan.capstone.com.capstone.Data.SeriesContract;
 import ivan.capstone.com.capstone.MyApplication;
 
@@ -231,7 +233,25 @@ public class Episode implements Parcelable {
         if (seriesCursor != null && seriesCursor.moveToFirst()) return true;
         else return false;
     }
+    private static final String[] VIEWED_COLUMN = {
+            SeriesContract.EpisodesEntry.COLUMN_VIEWED
+    };
 
+    public void LoadViewed()
+    {
+        if (episode_id.equals("")) return;
+        Cursor data = MyApplication.getContext().getContentResolver().query(
+                SeriesContract.EpisodesEntry.CONTENT_URI,
+                VIEWED_COLUMN,
+                SeriesContract.EpisodesEntry.COLUMN_EPISODE_ID + " = ?",
+                new String[]{episode_id},
+                null);
+
+        if (data != null && data.moveToFirst()) {
+            viewed = data.getInt(0);
+        }
+        data.close();
+    }
 
     public void Save() {
         if (!IsSaved()) {
@@ -266,5 +286,28 @@ public class Episode implements Parcelable {
         }
     }
 
+    public void UpdateViewed() {
+        if (IsSaved()) {
+            ContentValues values = new ContentValues();
+            values.put(SeriesContract.EpisodesEntry.COLUMN_VIEWED, viewed);
+            MyApplication.getContext().getContentResolver().update(SeriesContract.EpisodesEntry.CONTENT_URI, values,
+                    SeriesContract.EpisodesEntry.COLUMN_EPISODE_ID +"=?", new String[]{episode_id} );
+            _id = 0;
+        }
+    }
+
+    public void Update() {
+        if (IsSaved()) {
+            ContentValues values = new ContentValues();
+            values.put(SeriesContract.EpisodesEntry.COLUMN_NAME, name);
+            values.put(SeriesContract.EpisodesEntry.COLUMN_DATE, date);
+            values.put(SeriesContract.EpisodesEntry.COLUMN_OVERVIEW, overview);
+            values.put(SeriesContract.EpisodesEntry.COLUMN_VOTES, votes);
+            values.put(SeriesContract.EpisodesEntry.COLUMN_RATING, rating);
+            values.put(SeriesContract.EpisodesEntry.COLUMN_IMAGE_URL, image_url);
+            MyApplication.getContext().getContentResolver().update(SeriesContract.EpisodesEntry.CONTENT_URI, values,
+                    SeriesContract.EpisodesEntry.COLUMN_EPISODE_ID +"=?", new String[]{episode_id} );
+        }
+    }
 
 }

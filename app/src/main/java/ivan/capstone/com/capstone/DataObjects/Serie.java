@@ -347,7 +347,7 @@ public class Serie implements Parcelable {
             SeriesContract.ActorsEntry.COLUMN_SERIE_ID,
             SeriesContract.ActorsEntry.COLUMN_NAME,
             SeriesContract.ActorsEntry.COLUMN_ROLE,
-            SeriesContract.EpisodesEntry.COLUMN_IMAGE_URL
+            SeriesContract.ActorsEntry.COLUMN_IMAGE_URL
     };
 
     static final int COLUMN_ACTOR_ID = 1;
@@ -493,9 +493,55 @@ public class Serie implements Parcelable {
         }
     }
 
-    public void Update() {
-        if (IsSaved()) Delete();
-        Save();
+    public void Update(boolean isRefresing) {
+        // when we refresh the data from the internet, we load again episodes and we neew to get back
+        // to the objects that already exists if the were viewed that is smth we have stored.
+        if (IsSaved()) {
+            ContentValues values = new ContentValues();
+            // Then add the data, along with the corresponding name of the data type,
+            // so the content provider knows what kind of value is being inserted.
+
+            values.put(SeriesContract.SeriesEntry.COLUMN_NAME, name);
+            values.put(SeriesContract.SeriesEntry.COLUMN_NETWORK, network);
+            values.put(SeriesContract.SeriesEntry.COLUMN_POSTER_URL, poster_url);
+            values.put(SeriesContract.SeriesEntry.COLUMN_BANNER_URL, image_url);
+            values.put(SeriesContract.SeriesEntry.COLUMN_OVERVIEW, overView);
+            values.put(SeriesContract.SeriesEntry.COLUMN_RATING, rating);
+            values.put(SeriesContract.SeriesEntry.COLUMN_VOTES, votes);
+            values.put(SeriesContract.SeriesEntry.COLUMN_REALSED_DATE, dateReleased);
+            values.put(SeriesContract.SeriesEntry.COLUMN_GENRE, genre);
+            values.put(SeriesContract.SeriesEntry.COLUMN_MODIFYDATE, modify_date.getTime());
+            values.put(SeriesContract.SeriesEntry.COLUMN_STATUS, status);
+
+            // Finally, insert serie data into the database.
+            MyApplication.getContext().getContentResolver().update(
+                    SeriesContract.SeriesEntry.CONTENT_URI,
+                    values, SeriesContract.SeriesEntry.COLUMN_ID +"=?", new String[]{id}
+            );
+            // The resulting URI contains the ID for the row.  Extract the locationId from the Uri.
+            if (episodes != null && episodes.size() > 0) {
+                List<Episode> list = episodes;
+                for (Episode episode : list) {
+                    if (episode.IsSaved()) {
+                        episode.Update();
+                        if (isRefresing){
+                            // we need to get back the field viewed from database to inflate it properly
+                            episode.LoadViewed();
+                        }
+                    }
+                    else episode.Save();
+                }
+            }
+            if (actors != null && actors.size() > 0) {
+                List<Actor> list = actors;
+                for (Actor actor : list) {
+                    if (actor.IsSaved()) actor.Update();
+                    else actor.Save();
+                }
+            }
+        } else {
+            Save();
+        }
     }
 
     public void Delete() {

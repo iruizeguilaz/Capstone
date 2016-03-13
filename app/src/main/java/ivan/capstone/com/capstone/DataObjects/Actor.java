@@ -161,6 +161,26 @@ public class Actor implements Parcelable {
         }
     }
 
+    public void Update() {
+        if (!IsSaved()) {
+            ContentValues locationValues = new ContentValues();
+            // Then add the data, along with the corresponding name of the data type,
+            // so the content provider knows what kind of value is being inserted.
+            locationValues.put(SeriesContract.ActorsEntry.COLUMN_ACTOR_ID, actor_id);
+            locationValues.put(SeriesContract.ActorsEntry.COLUMN_SERIE_ID, serie_id);
+            locationValues.put(SeriesContract.ActorsEntry.COLUMN_NAME, name);
+            locationValues.put(SeriesContract.ActorsEntry.COLUMN_ROLE, role);
+            locationValues.put(SeriesContract.ActorsEntry.COLUMN_IMAGE_URL, image_url);
+
+            // Finally, insert episode data into the database.
+            MyApplication.getContext().getContentResolver().update(
+                    SeriesContract.ActorsEntry.CONTENT_URI,
+                    locationValues,  SeriesContract.ActorsEntry.COLUMN_ACTOR_ID +"=?", new String[]{actor_id}
+            );
+
+        }
+    }
+
     public void Delete() {
         if (IsSaved()) {
             MyApplication.getContext().getContentResolver().delete(SeriesContract.ActorsEntry.CONTENT_URI, SeriesContract.ActorsEntry.COLUMN_ACTOR_ID +"=?", new String[]{actor_id});
