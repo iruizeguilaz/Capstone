@@ -268,6 +268,17 @@ public class Serie implements Parcelable {
         return seasons;
     }
 
+    public int GetSeasonFistEpisodeNotViewed(){
+        if (episodes.size() == 0) return 0;
+        if (episodes.size() == 1) return 1;
+        List<Episode> list = episodes;
+        for (Episode episode : list) {
+            if (episode.getViewed() == 0)
+                return episode.getSeason_number();
+        }
+        return 1;
+    }
+
     public ArrayList<Episode> getSeason(int season){
         if (season == 0 || season > getSeasonsCount()) return new ArrayList<>();
         if (episodes.size() == 0) return new ArrayList<>();

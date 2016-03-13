@@ -49,8 +49,10 @@
     <string name="no_data_available_actors">This serie does not have actors info</string>
     <string name="no_data_available_episodes">This serie does not have episodes info</string>
 
-    <string name="episode_viewed_image">This image has seen viewed, click to change to unviewed</string>
-    <string name="not_episode_viewed_image">This image has not seen viewed, click to change to viewed</string>
+    <string name="episode_viewed_image">This episode has seen viewed, click to change to unviewed</string>
+    <string name="not_episode_viewed_image">This episode has not seen viewed, click to change to viewed</string>
+    <string name="season_viewed_image">This season has seen viewed, click to change to unviewed</string>
+    <string name="not_season_viewed_image">This season has not seen viewed completaly, click to change to viewed</string>
 
     <string name="season_series">Seasons</string>
     <!-- This id es por tests puurpose. If the app goes to production mode, then we should change this -->
