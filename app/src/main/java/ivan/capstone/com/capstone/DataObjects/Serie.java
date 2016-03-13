@@ -7,8 +7,6 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -36,6 +34,8 @@ public class Serie implements Parcelable {
     private String genre;
     private String poster_url;
     private Date modify_date;
+    private String status; // Ended or Continuing
+    private int viewed;
     private ArrayList<Episode> episodes = new ArrayList<Episode>();
     private ArrayList<Actor> actors = new ArrayList<Actor>();
 
@@ -52,6 +52,8 @@ public class Serie implements Parcelable {
         genre= "";
         poster_url= "";
         modify_date = Calendar.getInstance().getTime();
+        status = "Continuing";
+        viewed = 0;
         episodes = new ArrayList<Episode>();
         actors = new ArrayList<Actor>();
     }
@@ -69,11 +71,13 @@ public class Serie implements Parcelable {
         genre = in.readString();
         poster_url = in.readString();
         modify_date = new Date(in.readLong());
+        status = in.readString();
+        viewed = in.readInt();
         in.readTypedList(episodes, Episode.CREATOR);
         in.readTypedList(actors, Actor.CREATOR);
     }
 
-    public Serie(int _id, String id, String name, String image_url, String overView, String dateReleased, String network, String rating, String votes, String genre, String poster_url, Date modify_date, ArrayList<Episode> episodes, ArrayList<Actor> actors) {
+    public Serie(int _id, String id, String name, String image_url, String overView, String dateReleased, String network, String rating, String votes, String genre, String poster_url, Date modify_date, String status, int viewd, ArrayList<Episode> episodes, ArrayList<Actor> actors) {
         this._id = _id;
         this.id = id;
         this.name = name;
@@ -86,6 +90,8 @@ public class Serie implements Parcelable {
         this.genre = genre;
         this.poster_url = poster_url;
         this.modify_date = modify_date;
+        this.status = status;
+        this.viewed = viewd;
         this.episodes = episodes;
         this.actors = actors;
     }
@@ -109,6 +115,8 @@ public class Serie implements Parcelable {
         dest.writeString(genre);
         dest.writeString(poster_url);
         dest.writeLong(modify_date.getTime());
+        dest.writeString(status);
+        dest.writeInt(viewed);
         dest.writeTypedList(episodes);
         dest.writeTypedList(actors);
     }
@@ -238,6 +246,22 @@ public class Serie implements Parcelable {
         this.modify_date = modify_date;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public int getViewed() {
+        return viewed;
+    }
+
+    public void setViewed(int viewed) {
+        this.viewed = viewed;
+    }
+
     public int getSeasonsCount(){
         if (episodes.size() == 0) return 0;
         int seasons = episodes.get(episodes.size() -1).getSeason_number();
@@ -268,7 +292,9 @@ public class Serie implements Parcelable {
             SeriesContract.SeriesEntry.COLUMN_OVERVIEW,
             SeriesContract.SeriesEntry.COLUMN_GENRE,
             SeriesContract.SeriesEntry.COLUMN_NETWORK,
-            SeriesContract.SeriesEntry.COLUMN_MODIFYDATE
+            SeriesContract.SeriesEntry.COLUMN_MODIFYDATE,
+            SeriesContract.SeriesEntry.COLUMN_STATUS,
+            SeriesContract.SeriesEntry.COLUMN_VIEWED
     };
     static final int COL__ID = 0;
     static final int COL_ID = 1;
@@ -282,6 +308,8 @@ public class Serie implements Parcelable {
     static final int COL_GENRE = 9;
     static final int COL_NETWORK = 10;
     static final int COLUMN_MODIFYDATE = 11;
+    static final int COL_STATUS = 12;
+    static final int COL_VIEWED = 13;
 
     private static final String[] EPISODES_COLUMNS = {
             SeriesContract.EpisodesEntry._ID,
@@ -349,6 +377,8 @@ public class Serie implements Parcelable {
             genre = data.getString(COL_GENRE);
             network = data.getString(COL_NETWORK);
             modify_date =   new Date(data.getLong(COLUMN_MODIFYDATE)*1000);
+            status = data.getString(COL_STATUS);
+            viewed = data.getInt(COL_VIEWED);
         }
         if (data != null) data.close();
         // Load episodes
@@ -425,24 +455,26 @@ public class Serie implements Parcelable {
 
     public void Save() {
         if (!IsSaved()) {
-            ContentValues locationValues = new ContentValues();
+            ContentValues values = new ContentValues();
             // Then add the data, along with the corresponding name of the data type,
             // so the content provider knows what kind of value is being inserted.
-            locationValues.put(SeriesContract.SeriesEntry.COLUMN_ID, id);
-            locationValues.put(SeriesContract.SeriesEntry.COLUMN_NAME, name);
-            locationValues.put(SeriesContract.SeriesEntry.COLUMN_NETWORK, network);
-            locationValues.put(SeriesContract.SeriesEntry.COLUMN_POSTER_URL, poster_url);
-            locationValues.put(SeriesContract.SeriesEntry.COLUMN_BANNER_URL, image_url);
-            locationValues.put(SeriesContract.SeriesEntry.COLUMN_OVERVIEW, overView);
-            locationValues.put(SeriesContract.SeriesEntry.COLUMN_RATING, rating);
-            locationValues.put(SeriesContract.SeriesEntry.COLUMN_VOTES, votes);
-            locationValues.put(SeriesContract.SeriesEntry.COLUMN_REALSED_DATE, dateReleased);
-            locationValues.put(SeriesContract.SeriesEntry.COLUMN_GENRE, genre);
-            locationValues.put(SeriesContract.SeriesEntry.COLUMN_MODIFYDATE, modify_date.getTime());
+            values.put(SeriesContract.SeriesEntry.COLUMN_ID, id);
+            values.put(SeriesContract.SeriesEntry.COLUMN_NAME, name);
+            values.put(SeriesContract.SeriesEntry.COLUMN_NETWORK, network);
+            values.put(SeriesContract.SeriesEntry.COLUMN_POSTER_URL, poster_url);
+            values.put(SeriesContract.SeriesEntry.COLUMN_BANNER_URL, image_url);
+            values.put(SeriesContract.SeriesEntry.COLUMN_OVERVIEW, overView);
+            values.put(SeriesContract.SeriesEntry.COLUMN_RATING, rating);
+            values.put(SeriesContract.SeriesEntry.COLUMN_VOTES, votes);
+            values.put(SeriesContract.SeriesEntry.COLUMN_REALSED_DATE, dateReleased);
+            values.put(SeriesContract.SeriesEntry.COLUMN_GENRE, genre);
+            values.put(SeriesContract.SeriesEntry.COLUMN_MODIFYDATE, modify_date.getTime());
+            values.put(SeriesContract.SeriesEntry.COLUMN_STATUS, status);
+            values.put(SeriesContract.SeriesEntry.COLUMN_VIEWED, viewed);
             // Finally, insert serie data into the database.
             Uri insertedUri = MyApplication.getContext().getContentResolver().insert(
                     SeriesContract.SeriesEntry.CONTENT_URI,
-                    locationValues
+                    values
             );
             // The resulting URI contains the ID for the row.  Extract the locationId from the Uri.
             _id = ContentUris.parseId(insertedUri);

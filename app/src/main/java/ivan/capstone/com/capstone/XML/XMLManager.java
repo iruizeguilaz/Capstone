@@ -31,6 +31,7 @@ public class XMLManager {
     private static final String TAG_SERIE_GENRE = "Genre";
     private static final String TAG_OVERVIEW = "Overview";
     private static final String TAG_ID = "id";
+    private static final String TAG_STATUS = "Status";
     // This method manage the series in XML format that are brought with the query by name
     public static List<Serie> GetSeriesFromXML(XmlPullParser parser) throws XmlPullParserException,IOException
     {
@@ -111,6 +112,9 @@ public class XMLManager {
                     }
                     else if (name.equals(TAG_VOTES)){
                         serie.setVotes(parser.nextText());
+                    }
+                    else if (name.equals(TAG_STATUS)){
+                        serie.setStatus(parser.nextText());
                     }
                     break;
                 case XmlPullParser.END_TAG:
