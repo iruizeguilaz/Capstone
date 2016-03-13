@@ -54,6 +54,10 @@
     <string name="season_viewed_image">This season has seen viewed, click to change to unviewed</string>
     <string name="not_season_viewed_image">This season has not seen viewed completaly, click to change to viewed</string>
 
+    <string name="saving_data">Saving data</string>
+    <string name="downloading_data">Donwloading data</string>
+    <string name="Loading">Loading...</string>
+
     <string name="season_series">Seasons</string>
     <!-- This id es por tests puurpose. If the app goes to production mode, then we should change this -->
     <string name="banner_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>

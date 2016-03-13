@@ -13,7 +13,7 @@ import ivan.capstone.com.capstone.Data.SeriesContract.ActorsEntry;
 public class SeriesDbHelper extends SQLiteOpenHelper {
 
     // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
     static final String DATABASE_NAME = "series.db";
 
     public SeriesDbHelper(Context context) {
@@ -64,7 +64,7 @@ public class SeriesDbHelper extends SQLiteOpenHelper {
                 ActorsEntry._ID + " INTEGER PRIMARY KEY," +
                 ActorsEntry.COLUMN_ACTOR_ID + " TEXT UNIQUE NOT NULL, " +
                 ActorsEntry.COLUMN_SERIE_ID + " TEXT NOT NULL, " +
-                ActorsEntry.COLUMN_NAME + " TEXT UNIQUE NOT NULL, " +
+                ActorsEntry.COLUMN_NAME + " TEXT NOT NULL, " +
                 ActorsEntry.COLUMN_ROLE + " TEXT NOT NULL, " +
                 ActorsEntry.COLUMN_IMAGE_URL + " TEXT NOT NULL " +
                 " );";

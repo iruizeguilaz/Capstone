@@ -1,6 +1,7 @@
 package ivan.capstone.com.capstone;
 
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -88,6 +89,8 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
 
     ImageButton no_viewed_season;
     ImageButton viewed_season;
+
+
 
     public DetailSerieFragment() {
         // Required empty public constructor
@@ -289,7 +292,15 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
 
         // LOAD Episodes
         // we are going to the first episode without been viewed to get the season
+        LoadEpisodes();
 
+
+        // LOAD Actors
+        LoadActors();
+
+    }
+
+    public void LoadEpisodes() {
         season = serie.GetSeasonFistEpisodeNotViewed();
         List<Episode> episodeList = serie.getSeason(season);
         episodesAdapter = new EpisodesAdapter(episodeList, R.layout.item_list_episodes);
@@ -344,8 +355,9 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
             viewed_season.setVisibility(View.GONE);
             no_viewed_season.setVisibility(View.GONE);
         }
+    }
 
-        // LOAD Actors
+    public void LoadActors(){
         actorsAdapter = new ActorsAdapter(serie.getActors(), R.layout.item_list_actors);
         actorRecyclerView.setAdapter(actorsAdapter);
         actorsAdapter.notifyDataSetChanged();
@@ -357,7 +369,6 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
             actorRecyclerView.setVisibility(View.GONE);
             empty_Actors.setVisibility(View.VISIBLE);
         }
-
     }
 
     // Custom view which is justified
@@ -400,8 +411,7 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
                 serie.Save();
                 sendSaveSerie(); //Analytics
             }
-            viewed_season.setVisibility(View.VISIBLE);
-            no_viewed_season.setVisibility(View.GONE);
+            LoadEpisodes();
         }
         if (button.getId() == R.id.iv_tick_on) {
             unsave_button.setVisibility(View.GONE);
@@ -412,8 +422,7 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
                 serie.Delete();
                 sendDeleteSerie(); //Analytics
             }
-            viewed_season.setVisibility(View.GONE);
-            no_viewed_season.setVisibility(View.GONE);
+            LoadEpisodes();
         }
         if (button.getId() == R.id.refresh) {
             if (serie != null && !serie.getId().equals("")) {
@@ -521,6 +530,21 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
 
         private final String LOG_TAG = FetchSerieByIDTask.class.getSimpleName();
 
+
+        private ProgressDialog nDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            nDialog = new ProgressDialog(getActivity());
+            nDialog.setMessage(getActivity().getResources().getString(R.string.Loading));
+            nDialog.setTitle(getActivity().getResources().getString(R.string.downloading_data));
+            nDialog.setIndeterminate(false);
+            nDialog.setCancelable(true);
+            nDialog.show();
+
+        }
+
         @Override
         protected  Serie doInBackground(String... params) {
             try {
@@ -606,6 +630,7 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
                 }
             }
             LoadData();
+            nDialog.dismiss();
         }
     }
 
