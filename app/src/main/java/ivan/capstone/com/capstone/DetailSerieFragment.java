@@ -237,20 +237,23 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
         addOverwiewView(new StringBuilder().append(serie.getOverView()));
         String genre = getResources().getString(R.string.genre_serie) + " " + serie.getGenre();
         genre_text.setText(genre);
-        String rating = serie.getRating() + getResources().getString(R.string.rating_serie) + "  " + serie.getVotes()+ " "   + getResources().getString(R.string.votes_serie);
+        String rating;
+        if (serie.getVotes().equals("0")){
+            rating = serie.getVotes()+ " "   + getResources().getString(R.string.votes_serie);
+        } else {
+            rating = serie.getRating() + getResources().getString(R.string.rating_serie) + "  " + serie.getVotes()+ " "   + getResources().getString(R.string.votes_serie);
+        }
         rating_text.setText(rating);
         String network = getResources().getString(R.string.network_serie) + "  " + serie.getNetwork();
         network_text.setText(network);
         scheduleStartPostponedTransition(poster);
         if (serie.getPoster_url().equals("")) {
             Picasso.with(getActivity())
-                    .load(R.drawable.old_tv)
+                    .load(R.drawable.no_image)
                     .fit().centerCrop()
             .into(poster);
         }
         else {
-            //poster.getLayoutParams().height = poster.getWidth() * 4 / 3;
-            //poster.requestLayout();
             Picasso.with(getActivity())
                     .load(serie.getPoster_url())
                     .fit().centerCrop()
@@ -259,6 +262,11 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
         if (!serie.getImage_url().equals("")) {
             Picasso.with(getActivity())
                     .load(serie.getImage_url())
+                    .fit().centerCrop()
+                    .into(banner);
+        }else {
+            Picasso.with(getActivity())
+                    .load(R.drawable.no_image)
                     .fit().centerCrop()
                     .into(banner);
         }

@@ -23,6 +23,7 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/small_margin"
                 android:orientation="horizontal"
+                android:layout_margin="@dimen/medium_margin"
                 android:background="@color/white">
 
                 <ImageView

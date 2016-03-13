@@ -51,13 +51,21 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.ViewHolder
                         .load(holder.item.getPoster_url())
                         .fit().centerCrop()
                         .into(holder.viewMiniatura);
+            } else {
+                Picasso.with(holder.itemView.getContext())
+                        .load(R.drawable.no_image)
+                        .fit().centerCrop()
+                        .into(holder.viewMiniatura);
             }
-
-
         } else {
             if (!holder.item.getImage_url().equals("")) {
                 Picasso.with(holder.itemView.getContext())
                         .load(holder.item.getImage_url())
+                        .fit().centerCrop()
+                        .into(holder.viewMiniatura);
+            }else {
+                Picasso.with(holder.itemView.getContext())
+                        .load(R.drawable.no_image)
                         .fit().centerCrop()
                         .into(holder.viewMiniatura);
             }

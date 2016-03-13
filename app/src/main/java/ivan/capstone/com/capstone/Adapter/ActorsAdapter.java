@@ -50,6 +50,11 @@ public class ActorsAdapter extends RecyclerView.Adapter<ActorsAdapter.ViewHolder
                     .load(holder.item.getImage_url())
                     .fit().centerCrop()
                     .into(holder.viewMiniatura);
+        } else {
+            Picasso.with(holder.itemView.getContext())
+                    .load(R.drawable.no_image)
+                    .fit().centerCrop()
+                    .into(holder.viewMiniatura);
         }
 
     }

@@ -47,15 +47,26 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.ViewHo
         holder.viewTitle.setText(name);
         holder.viewReleaseDate.setText(episodes.get(position).getDate());
 
-        String rating = episodes.get(position).getRating()
-                + MyApplication.getContext().getResources().getString(R.string.rating_serie)
-                + "  " + episodes.get(position).getVotes()+ " "
-                + MyApplication.getContext().getResources().getString(R.string.votes_serie);
+        String rating;
+        if (episodes.get(position).getVotes().equals(("0"))) {
+            rating = episodes.get(position).getVotes()+ " "
+                    + MyApplication.getContext().getResources().getString(R.string.votes_serie);
+        } else {
+            rating = episodes.get(position).getRating()
+                    + MyApplication.getContext().getResources().getString(R.string.rating_serie)
+                    + "  " + episodes.get(position).getVotes()+ " "
+                    + MyApplication.getContext().getResources().getString(R.string.votes_serie);
+        }
         holder.viewRating.setText(rating);
         holder.viewOverview.setText(episodes.get(position).getOverview());
         if (!holder.item.getImage_url().equals("")) {
             Picasso.with(holder.itemView.getContext())
                     .load(holder.item.getImage_url())
+                    .fit().centerCrop()
+                    .into(holder.viewMiniatura);
+        }else {
+            Picasso.with(holder.itemView.getContext())
+                    .load(R.drawable.no_image)
                     .fit().centerCrop()
                     .into(holder.viewMiniatura);
         }
