@@ -23,6 +23,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import ivan.capstone.com.capstone.Adapter.SeriesAdapter;
@@ -52,7 +53,8 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
             SeriesContract.SeriesEntry.COLUMN_REALSED_DATE,
             SeriesContract.SeriesEntry.COLUMN_OVERVIEW,
             SeriesContract.SeriesEntry.COLUMN_GENRE,
-            SeriesContract.SeriesEntry.COLUMN_NETWORK
+            SeriesContract.SeriesEntry.COLUMN_NETWORK,
+            SeriesContract.SeriesEntry.COLUMN_MODIFYDATE
     };
     static final int COL__ID = 0;
     static final int COL_ID = 1;
@@ -65,7 +67,7 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
     static final int COL_OVERVIEW = 8;
     static final int COL_GENRE = 9;
     static final int COL_NETWORK = 10;
-
+    static final int COL_MODIFYDATE= 11;
 
     public MySeriesFragment() {
         // Required empty public constructor
@@ -190,7 +192,9 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
             mySerie.setOverView(data.getString(COL_OVERVIEW));
             mySerie.setGenre(data.getString(COL_GENRE));
             mySerie.setNetwork(data.getString(COL_NETWORK));
+            mySerie.setModify_date(new Date(data.getLong(COL_MODIFYDATE)*1000));
             mySerie.LoadEpisodes();
+            mySerie.LoadActors();
             series.add((mySerie));
         }
         seriesAdapter.notifyDataSetChanged();

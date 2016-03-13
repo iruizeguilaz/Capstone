@@ -19,9 +19,14 @@ public class SeriesProvider  extends ContentProvider {
 
     static final int SERIES = 100;
     static final int SERIES_ID = 101;
+
     static final int EPISODES = 200;
     static final int EPISODES_ID = 201;
     static final int EPISODES_SERIEID = 202;
+
+    static final int ACTORS = 300;
+    static final int ACTORS_ID = 301;
+    static final int ACTORS_SERIEID = 302;
 
     //location.location_setting = ?
     private static final String sSeriesIDSelection =
@@ -35,6 +40,15 @@ public class SeriesProvider  extends ContentProvider {
     private static final String sEpisodesSerieSelection =
             SeriesContract.EpisodesEntry.TABLE_NAME+
                     "." + SeriesContract.EpisodesEntry.COLUMN_SERIE_ID + " = ? ";
+
+
+    private static final String sActorsIDSelection =
+            SeriesContract.ActorsEntry.TABLE_NAME+
+                    "." + SeriesContract.ActorsEntry.COLUMN_ACTOR_ID + " = ? ";
+
+    private static final String sActorsSerieSelection =
+            SeriesContract.ActorsEntry.TABLE_NAME+
+                    "." + SeriesContract.ActorsEntry.COLUMN_SERIE_ID + " = ? ";
 
     @Override
     public boolean onCreate() {
@@ -60,6 +74,15 @@ public class SeriesProvider  extends ContentProvider {
 
     }
 
+    private static final SQLiteQueryBuilder sActorsByIdQueryBuilder;
+
+    static{
+        sActorsByIdQueryBuilder = new SQLiteQueryBuilder();
+        sActorsByIdQueryBuilder.setTables( SeriesContract.ActorsEntry.TABLE_NAME );
+
+
+    }
+
     static UriMatcher buildUriMatcher() {
 
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -71,6 +94,11 @@ public class SeriesProvider  extends ContentProvider {
         matcher.addURI(autorithy, SeriesContract.PATH_EPISODES, EPISODES);
         matcher.addURI(autorithy, SeriesContract.PATH_EPISODES + "/*", EPISODES_ID);
         matcher.addURI(autorithy, SeriesContract.PATH_EPISODES + "/*", EPISODES_SERIEID);
+
+
+        matcher.addURI(autorithy, SeriesContract.PATH_ACTORS, ACTORS);
+        matcher.addURI(autorithy, SeriesContract.PATH_ACTORS + "/*", ACTORS_ID);
+        matcher.addURI(autorithy, SeriesContract.PATH_ACTORS + "/*", ACTORS_SERIEID);
 
         return matcher;
     }
@@ -86,6 +114,8 @@ public class SeriesProvider  extends ContentProvider {
                 return SeriesContract.SeriesEntry.CONTENT_TYPE;
             case EPISODES:
                 return SeriesContract.EpisodesEntry.CONTENT_TYPE;
+            case ACTORS:
+                return SeriesContract.ActorsEntry.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -112,7 +142,7 @@ public class SeriesProvider  extends ContentProvider {
 
         String[] selectionArgs = new String[]{episodeSetting};
         String selection = sEpisodesIDSelection;
-        return sSeriesByIdQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+        return sEpisodesByIdQueryBuilder.query(mOpenHelper.getReadableDatabase(),
                 projection,
                 selection,
                 selectionArgs,
@@ -127,7 +157,38 @@ public class SeriesProvider  extends ContentProvider {
 
         String[] selectionArgs = new String[]{episodeSetting};
         String selection = sEpisodesSerieSelection;
-        return sSeriesByIdQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+        return sEpisodesByIdQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder
+        );
+    }
+
+
+    private Cursor getActorsByID(Uri uri, String[] projection, String sortOrder) {
+        String actorSetting = SeriesContract.ActorsEntry.getActorIDFromUri(uri);
+
+        String[] selectionArgs = new String[]{actorSetting};
+        String selection = sActorsIDSelection;
+        return sActorsByIdQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder
+        );
+    }
+
+    private Cursor getActorsBySerie(Uri uri, String[] projection, String sortOrder) {
+        String actorSetting = SeriesContract.ActorsEntry.getSerieIDFromUri(uri);
+
+        String[] selectionArgs = new String[]{actorSetting};
+        String selection = sActorsSerieSelection;
+        return sActorsByIdQueryBuilder.query(mOpenHelper.getReadableDatabase(),
                 projection,
                 selection,
                 selectionArgs,
@@ -168,6 +229,20 @@ public class SeriesProvider  extends ContentProvider {
                 retCursor = getEpisodesBySerie(uri, projection, sortOrder);
                 break;
             }
+            case ACTORS: {
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        SeriesContract.ActorsEntry.TABLE_NAME,
+                        projection, selection, selectionArgs, null, null, sortOrder);
+                break;
+            }
+            case ACTORS_ID: {
+                retCursor = getActorsByID(uri, projection, sortOrder);
+                break;
+            }
+            case ACTORS_SERIEID: {
+                retCursor = getActorsBySerie(uri, projection, sortOrder);
+                break;
+            }
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
 
@@ -200,6 +275,14 @@ public class SeriesProvider  extends ContentProvider {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             }
+            case ACTORS: {
+                long _id = db.insert(SeriesContract.ActorsEntry.TABLE_NAME, null, values);
+                if ( _id > 0 )
+                    returnUri = SeriesContract.ActorsEntry.buildActorsUri(_id);
+                else
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
+            }
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -221,6 +304,10 @@ public class SeriesProvider  extends ContentProvider {
             }
             case EPISODES: {
                 count = db.delete(SeriesContract.EpisodesEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            }
+            case ACTORS: {
+                count = db.delete(SeriesContract.ActorsEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             }
             default:
@@ -249,6 +336,10 @@ public class SeriesProvider  extends ContentProvider {
                 count = db.update(SeriesContract.EpisodesEntry.TABLE_NAME, values, selection, selectionArgs);
                 break;
             }
+            case ACTORS: {
+                count = db.update(SeriesContract.ActorsEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            }
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -257,5 +348,47 @@ public class SeriesProvider  extends ContentProvider {
             getContext().getContentResolver().notifyChange(uri, null);
         return count;
     }
+
+    @Override
+    public int bulkInsert(Uri uri, ContentValues[] values) {
+        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        final int match = sUriMatcher.match(uri);
+        int returnCount = 0;
+        switch (match) {
+            case EPISODES:
+                db.beginTransaction();
+                try {
+                    for (ContentValues value : values) {
+                        long _id = db.insert(SeriesContract.EpisodesEntry.TABLE_NAME, null, value);
+                        if (_id != -1) {
+                            returnCount++;
+                        }
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+                getContext().getContentResolver().notifyChange(uri, null);
+                return returnCount;
+            case ACTORS:
+                db.beginTransaction();
+                try {
+                    for (ContentValues value : values) {
+                        long _id = db.insert(SeriesContract.ActorsEntry.TABLE_NAME, null, value);
+                        if (_id != -1) {
+                            returnCount++;
+                        }
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+                getContext().getContentResolver().notifyChange(uri, null);
+                return returnCount;
+            default:
+                return super.bulkInsert(uri, values);
+        }
+    }
+
 
 }

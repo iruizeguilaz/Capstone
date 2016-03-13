@@ -6,14 +6,14 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import ivan.capstone.com.capstone.Data.SeriesContract.SeriesEntry;
 import ivan.capstone.com.capstone.Data.SeriesContract.EpisodesEntry;
-
+import ivan.capstone.com.capstone.Data.SeriesContract.ActorsEntry;
 /**
  * Created by Ivan on 07/03/2016.
  */
 public class SeriesDbHelper extends SQLiteOpenHelper {
 
     // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
     static final String DATABASE_NAME = "series.db";
 
     public SeriesDbHelper(Context context) {
@@ -37,8 +37,8 @@ public class SeriesDbHelper extends SQLiteOpenHelper {
                 SeriesEntry.COLUMN_REALSED_DATE + " TEXT NOT NULL, " +
                 SeriesEntry.COLUMN_OVERVIEW + " TEXT NOT NULL, " +
                 SeriesEntry.COLUMN_GENRE + " TEXT NOT NULL, " +
-                SeriesEntry.COLUMN_NETWORK + " TEXT NOT NULL " +
-
+                SeriesEntry.COLUMN_NETWORK + " TEXT NOT NULL, " +
+                SeriesEntry.COLUMN_MODIFYDATE + " int NOT NULL " +
                 " );";
 
         final String SQL_CREATE_EPISODES_TABLE = "CREATE TABLE " + EpisodesEntry.TABLE_NAME + " (" +
@@ -53,13 +53,23 @@ public class SeriesDbHelper extends SQLiteOpenHelper {
                 EpisodesEntry.COLUMN_OVERVIEW + " TEXT NOT NULL, " +
                 EpisodesEntry.COLUMN_RATING + " TEXT NOT NULL, " +
                 EpisodesEntry.COLUMN_VOTES + " TEXT NOT NULL, " +
-                EpisodesEntry.COLUMN_IMAGE_URL + " TEXT NOT NULL " +
+                EpisodesEntry.COLUMN_IMAGE_URL + " TEXT NOT NULL, " +
+                EpisodesEntry.COLUMN_VIEWED + " INTEGER NOT NULL DEFAULT 0 " +
+                " );";
 
+
+        final String SQL_CREATE_ACTORS_TABLE = "CREATE TABLE " + ActorsEntry.TABLE_NAME + " (" +
+                ActorsEntry._ID + " INTEGER PRIMARY KEY," +
+                ActorsEntry.COLUMN_ACTOR_ID + " TEXT UNIQUE NOT NULL, " +
+                ActorsEntry.COLUMN_SERIE_ID + " TEXT NOT NULL, " +
+                ActorsEntry.COLUMN_NAME + " TEXT UNIQUE NOT NULL, " +
+                ActorsEntry.COLUMN_ROLE + " TEXT NOT NULL, " +
+                ActorsEntry.COLUMN_IMAGE_URL + " TEXT NOT NULL " +
                 " );";
 
         sqLiteDatabase.execSQL(SQL_CREATE_SERIES_TABLE);
         sqLiteDatabase.execSQL(SQL_CREATE_EPISODES_TABLE);
-
+        sqLiteDatabase.execSQL(SQL_CREATE_ACTORS_TABLE);
     }
 
     @Override
@@ -70,8 +80,9 @@ public class SeriesDbHelper extends SQLiteOpenHelper {
         // It does NOT depend on the version number for your application.
         // If you want to update the schema without wiping data, commenting out the next 2 lines
         // should be your top priority before modifying this method.
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + SeriesEntry.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ActorsEntry.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + EpisodesEntry.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + SeriesEntry.TABLE_NAME);
         onCreate(sqLiteDatabase);
     }
 }

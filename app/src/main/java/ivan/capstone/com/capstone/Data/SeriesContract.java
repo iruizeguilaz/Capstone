@@ -22,6 +22,8 @@ public class SeriesContract {
 
     public static final String PATH_EPISODES = "episodes";
 
+    public static final String PATH_ACTORS = "actors";
+
     // To make it easy to query for the exact date, we normalize all dates that go into
     // the database to the start of the the Julian day at UTC.
     public static long normalizeDate(long startDate) {
@@ -57,6 +59,8 @@ public class SeriesContract {
         public static final String COLUMN_POSTER_URL = "poster";
         public static final String COLUMN_OVERVIEW = "overview";
         public static final String COLUMN_GENRE = "genre";
+
+        public static final String COLUMN_MODIFYDATE = "modifydate";
 
         public static Uri buildSeriesUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
@@ -96,7 +100,7 @@ public class SeriesContract {
         public static final String COLUMN_RATING = "rating";
         public static final String COLUMN_IMAGE_URL = "image_url";
 
-
+        public static final String COLUMN_VIEWED = "viewed";
 
         public static Uri buildEpisodesUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
@@ -111,5 +115,39 @@ public class SeriesContract {
         }
     }
 
+    /* Inner class that defines the table contents of the episodes table */
+    public static final class ActorsEntry implements BaseColumns {
+
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_ACTORS).build();
+
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_ACTORS;
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_ACTORS;
+
+        // Table name
+        public static final String TABLE_NAME = "actors";
+
+        //fields
+        public static final String COLUMN_ACTOR_ID = "actor_id";
+        public static final String COLUMN_SERIE_ID = "serie_id";
+        public static final String COLUMN_NAME = "name";
+        public static final String COLUMN_ROLE = "role";
+        public static final String COLUMN_IMAGE_URL = "image_url";
+
+
+        public static Uri buildActorsUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        public static String getActorIDFromUri(Uri uri) {
+            return uri.getPathSegments().get(1);
+        }
+
+        public static String getSerieIDFromUri(Uri uri) {
+            return uri.getPathSegments().get(2);
+        }
+    }
 
 }

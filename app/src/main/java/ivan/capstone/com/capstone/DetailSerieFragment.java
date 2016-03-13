@@ -41,12 +41,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
+import ivan.capstone.com.capstone.Adapter.ActorsAdapter;
 import ivan.capstone.com.capstone.Adapter.EpisodesAdapter;
-import ivan.capstone.com.capstone.Adapter.SeriesAdapter;
-import ivan.capstone.com.capstone.DataObjects.Episode;
 import ivan.capstone.com.capstone.DataObjects.Serie;
 import ivan.capstone.com.capstone.XML.XMLManager;
 
@@ -74,7 +71,10 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
     ImageButton refresh_button;
 
     EpisodesAdapter episodesAdapter;
-    RecyclerView recyclerView;
+    RecyclerView episodeRecyclerView;
+
+    ActorsAdapter actorsAdapter;
+    RecyclerView actorRecyclerView;
 
     public DetailSerieFragment() {
         // Required empty public constructor
@@ -127,11 +127,25 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
         unsave_text = (TextView)rootView.findViewById(R.id.unsave_serie);
         refresh_button = (ImageButton)rootView.findViewById(R.id.refresh);
         refresh_button.setOnClickListener(this);
-        recyclerView = (RecyclerView) rootView.findViewById(R.id.episodes_recycler);
+        episodeRecyclerView = (RecyclerView) rootView.findViewById(R.id.episodes_recycler);
+        actorRecyclerView = (RecyclerView) rootView.findViewById(R.id.actors_recycler);
+        // si es movil
+        if (getActivity().getClass().getSimpleName().equals(DetailSerieSearchedActivity.class.getSimpleName())){
+            LinearLayoutManager layoutManager
+                    = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+            episodeRecyclerView.setLayoutManager(layoutManager);
 
-        LinearLayoutManager layoutManager
-                = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-        recyclerView.setLayoutManager(layoutManager);
+            LinearLayoutManager layoutManager2
+                   = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+
+            actorRecyclerView.setLayoutManager(layoutManager2);
+        }
+
+
+
+        //LinearLayoutManager layoutManager2
+         //       = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        //actorRecyclerView.setLayoutManager(layoutManager2);
 
         if (savedInstanceState != null && savedInstanceState.getParcelable("Serie")!= null) {
             serie = savedInstanceState.getParcelable("Serie");
@@ -243,8 +257,13 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
 
         // LOAD Episodes
         episodesAdapter = new EpisodesAdapter(serie.getEpisodes(), R.layout.item_list_episodes);
-        recyclerView.setAdapter(episodesAdapter);
+        episodeRecyclerView.setAdapter(episodesAdapter);
         episodesAdapter.notifyDataSetChanged();
+
+        // LOAD Actors
+        actorsAdapter = new ActorsAdapter(serie.getActors(), R.layout.item_list_actors);
+        actorRecyclerView.setAdapter(actorsAdapter);
+        actorsAdapter.notifyDataSetChanged();
 
     }
 
@@ -339,6 +358,24 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
                     parser.setInput(inputStream, null);
                     result = XMLManager.GetSerieFromXML(parser);
                     result.setEpisodes(XMLManager.GetEpisodesFromXML(parser));
+
+                    // bring the actors
+                    final String ACTORS_BASE_URL = "http://thetvdb.com/api/" + API_SERIES_KEY + "/series/" + serie.getId() + "/actors.xml";
+                    builtUri = Uri.parse(ACTORS_BASE_URL).buildUpon()
+                            .build();
+                    url = new URL(builtUri.toString());
+                    urlConnection = (HttpURLConnection) url.openConnection();
+                    urlConnection.setRequestMethod("GET");
+                    urlConnection.connect();
+                    inputStream = urlConnection.getInputStream();
+                    if (inputStream == null) {
+                        return null;
+                    }
+                    pullParserFactory = XmlPullParserFactory.newInstance();
+                    parser = pullParserFactory.newPullParser();
+                    parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+                    parser.setInput(inputStream, null);
+                    result.setActors(XMLManager.GetActorsFromXML(parser, serie.getId()));
                 } catch ( Exception e){
                     Log.e(LOG_TAG, "Error:" + e.getMessage());
                     result = null;

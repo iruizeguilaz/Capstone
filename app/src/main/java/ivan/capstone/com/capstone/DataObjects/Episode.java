@@ -30,6 +30,7 @@ public class Episode implements Parcelable {
     private String rating;
     private String image_url;
 
+    private int viewed;
 
     public Episode(){
         _id = 0;
@@ -44,6 +45,7 @@ public class Episode implements Parcelable {
         votes= "";
         rating= "";
         image_url= "";
+        viewed = 0;
     }
 
     protected Episode(Parcel in) {
@@ -59,9 +61,10 @@ public class Episode implements Parcelable {
         votes= in.readString();
         rating= in.readString();
         image_url= in.readString();
+        viewed = in.readInt();
     }
 
-    public Episode(int _id, String serie_id, String season_id, String episode_id, int sesion_number, int episode_number, String name, String date, String overview, String votes, String rating, String image_url) {
+    public Episode(int _id, String serie_id, String season_id, String episode_id, int sesion_number, int episode_number, String name, String date, String overview, String votes, String rating, String image_url, int viewed) {
         this._id = _id;
         this.serie_id = serie_id;
         this.season_id = season_id;
@@ -74,6 +77,7 @@ public class Episode implements Parcelable {
         this.votes= votes;
         this.rating= rating;
         this.image_url= image_url;
+        this.viewed = viewed;
     }
 
     @Override
@@ -95,6 +99,7 @@ public class Episode implements Parcelable {
         dest.writeString(votes);
         dest.writeString(rating);
         dest.writeString(image_url);
+        dest.writeInt(viewed);
     }
 
     @SuppressWarnings("unused")
@@ -207,6 +212,13 @@ public class Episode implements Parcelable {
         this.image_url = image_url;
     }
 
+    public int getViewed() {
+        return viewed;
+    }
+
+    public void setViewed(int viewed) {
+        this.viewed = viewed;
+    }
 
     public boolean IsSaved() {
         if (episode_id.equals("")) return false;
@@ -237,7 +249,7 @@ public class Episode implements Parcelable {
             locationValues.put(SeriesContract.EpisodesEntry.COLUMN_VOTES, votes);
             locationValues.put(SeriesContract.EpisodesEntry.COLUMN_RATING, rating);
             locationValues.put(SeriesContract.EpisodesEntry.COLUMN_IMAGE_URL, image_url);
-
+            locationValues.put(SeriesContract.EpisodesEntry.COLUMN_VIEWED, viewed);
             // Finally, insert episode data into the database.
             Uri insertedUri = MyApplication.getContext().getContentResolver().insert(
                     SeriesContract.EpisodesEntry.CONTENT_URI,

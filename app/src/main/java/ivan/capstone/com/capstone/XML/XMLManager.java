@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import ivan.capstone.com.capstone.DataObjects.Actor;
 import ivan.capstone.com.capstone.DataObjects.Episode;
 import ivan.capstone.com.capstone.DataObjects.Serie;
 
@@ -189,31 +190,50 @@ public class XMLManager {
         return episodes;
     }
 
-    private static final String TAG_BANNER = "Banner";
-    private static final String TAG_BANNER_TYPE = "BannerType";
-    private static final String TAG_BANNER_PATH = "BannerPath";
-    private static final String BANNER_POSTER = "poster";
+    private static final String TAG_ACTORS = "Actors";
+    private static final String TAG_ACTOR = "Actor";
+    private static final String TAG_ACTOR_ID = "id";
+    private static final String TAG_ACTOR_IMAGE = "Image";
+    private static final String TAG_ACTOR_NAME= "Name";
+    private static final String TAG_ACTOR_ROLE = "Role";
 
     // This method manage the series in XML format that are brought with the query by name
-    public static String GetPosrterFromXML(XmlPullParser parser) throws XmlPullParserException,IOException
+    public static ArrayList<Actor> GetActorsFromXML(XmlPullParser parser, String serie_id) throws XmlPullParserException,IOException
     {
+        ArrayList<Actor> actors = new ArrayList();
         int eventType = parser.getEventType();
-        String path = "";
-        while (eventType != XmlPullParser.END_DOCUMENT){
-            String name = null;
-            switch (eventType){
+        Actor currentActor = null;
+        while (eventType != XmlPullParser.END_DOCUMENT) {
+            String name;
+            switch (eventType) {
                 case XmlPullParser.START_TAG:
                     name = parser.getName();
-                    if (name.equals(TAG_BANNER_PATH) ){
-                        path = parser.nextText();
-                    } else if (name.equals(TAG_BANNER_TYPE)){
-                        if (parser.nextText().equals(BANNER_POSTER)) return path;
+                    if (name.equals(TAG_ACTOR)) {
+                        currentActor = new Actor();
+                        currentActor.setSerie_id(serie_id);
+                    } else if (currentActor != null) {
+                        if (name.equals(TAG_ACTOR_ID)) {
+                            currentActor.setActor_id(parser.nextText());
+                        } else if (name.equals(TAG_ACTOR_NAME)) {
+                            currentActor.setName(parser.nextText());
+                        } else if (name.equals(TAG_ACTOR_ROLE)) {
+                            currentActor.setRole(parser.nextText());
+                        } else if (name.equals(TAG_ACTOR_IMAGE)) {
+                            String image = parser.nextText();
+                            if (!image.equals((""))) currentActor.setImage_url(URL + image);
+                        }
+                    }
+                    break;
+                case XmlPullParser.END_TAG:
+                    name = parser.getName();
+                    if (name.equalsIgnoreCase(TAG_ACTOR) && currentActor != null && !currentActor.getActor_id().equals("")) {
+                        actors.add(currentActor);
                     }
                     break;
             }
             eventType = parser.next();
         }
-        return path;
+        return actors;
     }
 
 }

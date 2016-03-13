@@ -229,20 +229,14 @@
                         android:gravity="center"
                         android:textStyle="bold" />
 
+
+
                     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
                         android:orientation="horizontal"
                         android:paddingTop="@dimen/medium_margin"
                         >
-
-                        <ImageButton
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:contentDescription=""
-                            android:id="@+id/first_season"
-                            android:backgroundTint="@color/light_grey"
-                            android:src="@android:drawable/ic_media_previous" />
 
                         <ImageButton
                             android:layout_width="wrap_content"
@@ -265,7 +259,6 @@
                              />
 
 
-
                             />
                         <ImageButton
                             android:layout_width="wrap_content"
@@ -274,16 +267,6 @@
                             android:backgroundTint="@color/light_grey"
                             android:id="@+id/next_season"
                             android:src="@android:drawable/ic_media_ff"/>
-
-
-
-                        <ImageButton
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:contentDescription=""
-                            android:backgroundTint="@color/light_grey"
-                            android:id="@+id/end_season"
-                            android:src="@android:drawable/ic_media_next"/>
 
                         </LinearLayout>
 
@@ -300,6 +283,45 @@
 
 
                     </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/colorPrimary"/>
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:id="@+id/actors_wrapper">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:id="@+id/text_actors_serie"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/test_title_size"
+                        android:paddingTop="@dimen/medium_margin"
+                        android:text="@string/actors_serie"
+                        android:gravity="center"
+                        android:textStyle="bold" />
+
+
+                    <android.support.v7.widget.RecyclerView
+                        xmlns:android="http://schemas.android.com/apk/res/android"
+                        xmlns:tools="http://schemas.android.com/tools"
+                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/actors_recycler"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:layout_margin="@dimen/small_margin"
+                        app:layoutManager="LinearLayoutManager"
+                        tools:listitem="@layout/item_list_actors" />
+
+
+                </LinearLayout>
+
 
                 <android.support.v7.widget.CardView
                     xmlns:card_view="http://schemas.android.com/apk/res-auto"
