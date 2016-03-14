@@ -4,10 +4,6 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import java.util.ArrayList;
 
 import ivan.capstone.com.capstone.Data.SeriesContract;
 import ivan.capstone.com.capstone.MyApplication;
@@ -15,7 +11,7 @@ import ivan.capstone.com.capstone.MyApplication;
 /**
  * Created by Ivan on 12/03/2016.
  */
-public class Episode implements Parcelable {
+public class Episode {
 
     private long _id;
     private String serie_id;
@@ -49,74 +45,6 @@ public class Episode implements Parcelable {
         image_url= "";
         viewed = 0;
     }
-
-    protected Episode(Parcel in) {
-        _id = in.readLong();
-        serie_id = in.readString();
-        season_id = in.readString();
-        episode_id = in.readString();
-        season_number = in.readInt();
-        episode_number = in.readInt();
-        name = in.readString();
-        date = in.readString();
-        overview= in.readString();
-        votes= in.readString();
-        rating= in.readString();
-        image_url= in.readString();
-        viewed = in.readInt();
-    }
-
-    public Episode(int _id, String serie_id, String season_id, String episode_id, int sesion_number, int episode_number, String name, String date, String overview, String votes, String rating, String image_url, int viewed) {
-        this._id = _id;
-        this.serie_id = serie_id;
-        this.season_id = season_id;
-        this.episode_id = episode_id;
-        this.season_number = sesion_number;
-        this.episode_number = episode_number;
-        this.name = name;
-        this.date = date;
-        this.overview= overview;
-        this.votes= votes;
-        this.rating= rating;
-        this.image_url= image_url;
-        this.viewed = viewed;
-    }
-
-    @Override
-    public int describeContents() {
-        return this.hashCode();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(_id);
-        dest.writeString(serie_id);
-        dest.writeString(season_id);
-        dest.writeString(episode_id);
-        dest.writeInt(season_number);
-        dest.writeInt(episode_number);
-        dest.writeString(name);
-        dest.writeString(date);
-        dest.writeString(overview);
-        dest.writeString(votes);
-        dest.writeString(rating);
-        dest.writeString(image_url);
-        dest.writeInt(viewed);
-    }
-
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Episode> CREATOR = new Parcelable.Creator<Episode>() {
-        @Override
-        public Episode createFromParcel(Parcel in) {
-            return new Episode(in);
-        }
-
-        @Override
-        public Episode[] newArray(int size) {
-            return new Episode[size];
-        }
-    };
-
 
     public long get_id() {
         return _id;

@@ -73,11 +73,13 @@ public class Serie implements Parcelable {
         modify_date = new Date(in.readLong());
         status = in.readString();
         viewed = in.readInt();
-        in.readTypedList(episodes, Episode.CREATOR);
-        in.readTypedList(actors, Actor.CREATOR);
+        LoadEpisodes();
+        LoadActors();
+        //in.readTypedList(episodes, Episode.CREATOR);
+        //in.readTypedList(actors, Actor.CREATOR);
     }
 
-    public Serie(int _id, String id, String name, String image_url, String overView, String dateReleased, String network, String rating, String votes, String genre, String poster_url, Date modify_date, String status, int viewd, ArrayList<Episode> episodes, ArrayList<Actor> actors) {
+    public Serie(int _id, String id, String name, String image_url, String overView, String dateReleased, String network, String rating, String votes, String genre, String poster_url, Date modify_date, String status, int viewd) {
         this._id = _id;
         this.id = id;
         this.name = name;
@@ -92,8 +94,8 @@ public class Serie implements Parcelable {
         this.modify_date = modify_date;
         this.status = status;
         this.viewed = viewd;
-        this.episodes = episodes;
-        this.actors = actors;
+        //this.episodes = episodes;
+        //this.actors = actors;
     }
 
     @Override
@@ -117,8 +119,8 @@ public class Serie implements Parcelable {
         dest.writeLong(modify_date.getTime());
         dest.writeString(status);
         dest.writeInt(viewed);
-        dest.writeTypedList(episodes);
-        dest.writeTypedList(actors);
+        //dest.writeTypedList(episodes);
+        //dest.writeTypedList(actors);
     }
 
     @SuppressWarnings("unused")

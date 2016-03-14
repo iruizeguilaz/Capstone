@@ -4,8 +4,6 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Parcel;
-import android.os.Parcelable;
 
 import ivan.capstone.com.capstone.Data.SeriesContract;
 import ivan.capstone.com.capstone.MyApplication;
@@ -13,7 +11,7 @@ import ivan.capstone.com.capstone.MyApplication;
 /**
  * Created by Ivan on 12/03/2016.
  */
-public class Actor implements Parcelable {
+public class Actor {
 
     private long _id;
     private String serie_id;
@@ -31,53 +29,6 @@ public class Actor implements Parcelable {
         role = "";
         image_url = "";
     }
-
-    protected Actor(Parcel in) {
-        _id = in.readLong();
-        serie_id = in.readString();
-        actor_id = in.readString();
-        name = in.readString();
-        role = in.readString();
-        image_url = in.readString();
-    }
-
-    public Actor(int _id, String serie_id, String actor_id, String name, String role, String image_url) {
-        this._id = _id;
-        this.serie_id = serie_id;
-        this.actor_id = actor_id;
-        this.name = name;
-        this.role = role;
-        this.image_url= image_url;
-    }
-
-    @Override
-    public int describeContents() {
-        return this.hashCode();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(_id);
-        dest.writeString(serie_id);
-        dest.writeString(actor_id);
-        dest.writeString(name);
-        dest.writeString(role);
-        dest.writeString(image_url);
-    }
-
-
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Actor> CREATOR = new Parcelable.Creator<Actor>() {
-        @Override
-        public Actor createFromParcel(Parcel in) {
-            return new Actor(in);
-        }
-
-        @Override
-        public Actor[] newArray(int size) {
-            return new Actor[size];
-        }
-    };
 
     public long get_id() {
         return _id;

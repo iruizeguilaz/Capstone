@@ -54,7 +54,9 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
             SeriesContract.SeriesEntry.COLUMN_OVERVIEW,
             SeriesContract.SeriesEntry.COLUMN_GENRE,
             SeriesContract.SeriesEntry.COLUMN_NETWORK,
-            SeriesContract.SeriesEntry.COLUMN_MODIFYDATE
+            SeriesContract.SeriesEntry.COLUMN_MODIFYDATE,
+            SeriesContract.SeriesEntry.COLUMN_STATUS,
+            SeriesContract.SeriesEntry.COLUMN_VIEWED
     };
     static final int COL__ID = 0;
     static final int COL_ID = 1;
@@ -68,6 +70,8 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
     static final int COL_GENRE = 9;
     static final int COL_NETWORK = 10;
     static final int COL_MODIFYDATE= 11;
+    static final int COL_STATUS = 12;
+    static final int COL_VIEWED= 13;
 
     public MySeriesFragment() {
         // Required empty public constructor
@@ -193,8 +197,8 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
             mySerie.setGenre(data.getString(COL_GENRE));
             mySerie.setNetwork(data.getString(COL_NETWORK));
             mySerie.setModify_date(new Date(data.getLong(COL_MODIFYDATE)*1000));
-            mySerie.LoadEpisodes();
-            mySerie.LoadActors();
+            mySerie.setStatus(data.getString(COL_STATUS));
+            mySerie.setViewed(data.getInt(COL_VIEWED));
             series.add((mySerie));
         }
         seriesAdapter.notifyDataSetChanged();
