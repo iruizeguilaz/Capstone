@@ -1,9 +1,11 @@
 package ivan.capstone.com.capstone.DataObjects;
 
+import android.app.ProgressDialog;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -14,12 +16,15 @@ import java.util.List;
 
 import ivan.capstone.com.capstone.Data.SeriesContract;
 import ivan.capstone.com.capstone.MyApplication;
+import ivan.capstone.com.capstone.R;
 
 /**
  * Data object Serie, it is parcelble, it also has methods to bring data from database, to save, and delete
  * Created by Ivan on 19/02/2016.
  */
 public class Serie implements Parcelable {
+
+    public final String ENDED = "Ended";
 
     private long _id; // databaseID
 
@@ -39,18 +44,18 @@ public class Serie implements Parcelable {
     private ArrayList<Episode> episodes = new ArrayList<Episode>();
     private ArrayList<Actor> actors = new ArrayList<Actor>();
 
-    public Serie(){
+    public Serie() {
         _id = 0;
         id = "";
-        name= "";
-        image_url= "";
-        overView= "";
-        dateReleased= "";
-        network= "";
-        rating= "";
-        votes= "";
-        genre= "";
-        poster_url= "";
+        name = "";
+        image_url = "";
+        overView = "";
+        dateReleased = "";
+        network = "";
+        rating = "";
+        votes = "";
+        genre = "";
+        poster_url = "";
         modify_date = Calendar.getInstance().getTime();
         status = "Continuing";
         viewed = 0;
@@ -75,6 +80,8 @@ public class Serie implements Parcelable {
         viewed = in.readInt();
         LoadEpisodes();
         LoadActors();
+        // instead of stored it, I realod the data. this is because stored for instances 27 seasons
+        // that the simsonps has fail.
         //in.readTypedList(episodes, Episode.CREATOR);
         //in.readTypedList(actors, Actor.CREATOR);
     }
@@ -264,13 +271,13 @@ public class Serie implements Parcelable {
         this.viewed = viewed;
     }
 
-    public int getSeasonsCount(){
+    public int getSeasonsCount() {
         if (episodes.size() == 0) return 0;
-        int seasons = episodes.get(episodes.size() -1).getSeason_number();
+        int seasons = episodes.get(episodes.size() - 1).getSeason_number();
         return seasons;
     }
 
-    public int GetSeasonFistEpisodeNotViewed(){
+    public int GetSeasonFistEpisodeNotViewed() {
         if (episodes.size() == 0) return 0;
         if (episodes.size() == 1) return 1;
         List<Episode> list = episodes;
@@ -281,7 +288,7 @@ public class Serie implements Parcelable {
         return 1;
     }
 
-    public ArrayList<Episode> getSeason(int season){
+    public ArrayList<Episode> getSeason(int season) {
         if (season == 0 || season > getSeasonsCount()) return new ArrayList<>();
         if (episodes.size() == 0) return new ArrayList<>();
         ArrayList<Episode> seasonEpisodes = new ArrayList<>();
@@ -370,7 +377,7 @@ public class Serie implements Parcelable {
     static final int COLUMN_ACTOR_IMAGEURL = 5;
 
     // get the data from the database by id
-    public void LoadData(){
+    public void LoadData() {
         if (id.equals("")) return;
         Cursor data = MyApplication.getContext().getContentResolver().query(
                 SeriesContract.SeriesEntry.CONTENT_URI,
@@ -389,7 +396,7 @@ public class Serie implements Parcelable {
             overView = data.getString(COL_OVERVIEW);
             genre = data.getString(COL_GENRE);
             network = data.getString(COL_NETWORK);
-            modify_date =   new Date(data.getLong(COLUMN_MODIFYDATE)*1000);
+            modify_date = new Date(data.getLong(COLUMN_MODIFYDATE) * 1000);
             status = data.getString(COL_STATUS);
             viewed = data.getInt(COL_VIEWED);
         }
@@ -400,7 +407,7 @@ public class Serie implements Parcelable {
         LoadActors();
     }
 
-    public void LoadEpisodes(){
+    public void LoadEpisodes() {
         if (id.equals("")) return;
         Cursor data = MyApplication.getContext().getContentResolver().query(
                 SeriesContract.EpisodesEntry.CONTENT_URI,
@@ -430,7 +437,7 @@ public class Serie implements Parcelable {
     }
 
 
-    public void LoadActors(){
+    public void LoadActors() {
         if (id.equals("")) return;
         Cursor data = MyApplication.getContext().getContentResolver().query(
                 SeriesContract.ActorsEntry.CONTENT_URI,
@@ -455,11 +462,11 @@ public class Serie implements Parcelable {
     public boolean IsSaved() {
         if (id.equals("")) return false;
         Cursor seriesCursor = MyApplication.getContext().getContentResolver().query(
-                    SeriesContract.SeriesEntry.CONTENT_URI,
-                    new String[]{SeriesContract.SeriesEntry._ID},
-                    SeriesContract.SeriesEntry.COLUMN_ID + " = ?",
-                    new String[]{id},
-                    null);
+                SeriesContract.SeriesEntry.CONTENT_URI,
+                new String[]{SeriesContract.SeriesEntry._ID},
+                SeriesContract.SeriesEntry.COLUMN_ID + " = ?",
+                new String[]{id},
+                null);
         boolean saved = false;
         if (seriesCursor != null && seriesCursor.moveToFirst()) saved = true;
         if (seriesCursor != null) seriesCursor.close();
@@ -506,6 +513,7 @@ public class Serie implements Parcelable {
         }
     }
 
+
     public void Update(boolean isRefresing) {
         // when we refresh the data from the internet, we load again episodes and we neew to get back
         // to the objects that already exists if the were viewed that is smth we have stored.
@@ -529,7 +537,7 @@ public class Serie implements Parcelable {
             // Finally, insert serie data into the database.
             MyApplication.getContext().getContentResolver().update(
                     SeriesContract.SeriesEntry.CONTENT_URI,
-                    values, SeriesContract.SeriesEntry.COLUMN_ID +"=?", new String[]{id}
+                    values, SeriesContract.SeriesEntry.COLUMN_ID + "=?", new String[]{id}
             );
             // The resulting URI contains the ID for the row.  Extract the locationId from the Uri.
             if (episodes != null && episodes.size() > 0) {
@@ -537,12 +545,11 @@ public class Serie implements Parcelable {
                 for (Episode episode : list) {
                     if (episode.IsSaved()) {
                         episode.Update();
-                        if (isRefresing){
+                        if (isRefresing) {
                             // we need to get back the field viewed from database to inflate it properly
                             episode.LoadViewed();
                         }
-                    }
-                    else episode.Save();
+                    } else episode.Save();
                 }
             }
             if (actors != null && actors.size() > 0) {
@@ -559,14 +566,35 @@ public class Serie implements Parcelable {
 
     public void Delete() {
         if (IsSaved()) {
-            if (episodes!= null && episodes.size() > 0) {
-                MyApplication.getContext().getContentResolver().delete(SeriesContract.EpisodesEntry.CONTENT_URI, SeriesContract.EpisodesEntry.COLUMN_SERIE_ID +"=?", new String[]{id});
+            if (episodes != null && episodes.size() > 0) {
+                MyApplication.getContext().getContentResolver().delete(SeriesContract.EpisodesEntry.CONTENT_URI, SeriesContract.EpisodesEntry.COLUMN_SERIE_ID + "=?", new String[]{id});
             }
-            if (actors!= null && actors.size() > 0) {
-                MyApplication.getContext().getContentResolver().delete(SeriesContract.ActorsEntry.CONTENT_URI, SeriesContract.ActorsEntry.COLUMN_SERIE_ID +"=?", new String[]{id});
+            if (actors != null && actors.size() > 0) {
+                MyApplication.getContext().getContentResolver().delete(SeriesContract.ActorsEntry.CONTENT_URI, SeriesContract.ActorsEntry.COLUMN_SERIE_ID + "=?", new String[]{id});
             }
-            MyApplication.getContext().getContentResolver().delete(SeriesContract.SeriesEntry.CONTENT_URI, SeriesContract.SeriesEntry.COLUMN_ID +"=?", new String[]{id});
+            MyApplication.getContext().getContentResolver().delete(SeriesContract.SeriesEntry.CONTENT_URI, SeriesContract.SeriesEntry.COLUMN_ID + "=?", new String[]{id});
             _id = 0;
         }
     }
+
+    public void UpdateVieded() {
+        if (IsSaved()) {
+            // update serie
+            ContentValues values = new ContentValues();
+            values.put(SeriesContract.SeriesEntry.COLUMN_VIEWED, viewed);
+            MyApplication.getContext().getContentResolver().update(SeriesContract.SeriesEntry.CONTENT_URI, values,
+                    SeriesContract.SeriesEntry.COLUMN_ID + "=?", new String[]{id});
+            // update episodes
+            values = new ContentValues();
+            values.put(SeriesContract.EpisodesEntry.COLUMN_VIEWED, viewed);
+            MyApplication.getContext().getContentResolver().update(SeriesContract.EpisodesEntry.CONTENT_URI, values,
+                    SeriesContract.EpisodesEntry.COLUMN_SERIE_ID + "=?", new String[]{id});
+            for (Episode episode : episodes) {
+                episode.setViewed(viewed);
+            }
+        }
+    }
+
+
+
 }

@@ -58,11 +58,22 @@
     <string name="downloading_data">Donwloading data</string>
     <string name="Loading">Loading...</string>
 
+    <!-- Series status endend, continuins -->
+    <string name="endend">ENDED</string>
+    <string name="continuing">CONTINUING</string>
+    <string name="status">Status</string>
+    <string name="serie_viewed">Viewed</string>
+    <string name="serie_no_viewed">Following</string>
+
     <string name="season_series">Seasons</string>
     <!-- This id es por tests puurpose. If the app goes to production mode, then we should change this -->
     <string name="banner_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
 
     <string name="title_activity_detail_serie_searched">Detail serie</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 
 
   </resources>

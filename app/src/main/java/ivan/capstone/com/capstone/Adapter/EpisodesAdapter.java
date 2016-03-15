@@ -24,13 +24,15 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.ViewHo
     private int selectedItem;
     private List<Episode> episodes;
     private int layout;
+    private int serie_viewed;
 
-    public EpisodesAdapter(List<Episode> items, int layoutData)
+    public EpisodesAdapter(List<Episode> items, int layoutData, int serie_viewed)
     {
         episodes = items;
 
         this.layout = layoutData;
         selectedItem = 0;
+        this.serie_viewed = serie_viewed;
     }
 
     @Override
@@ -71,7 +73,7 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.ViewHo
                     .into(holder.viewMiniatura);
         }
 
-        if (holder.item.IsSaved()) {
+        if (holder.item.IsSaved() && serie_viewed == 0) {
             if (holder.item.getViewed() == 0) {
                 holder.viewed.setVisibility(View.GONE);
                 holder.not_viewed.setVisibility(View.VISIBLE);

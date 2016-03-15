@@ -90,6 +90,10 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
     ImageButton no_viewed_season;
     ImageButton viewed_season;
 
+    ImageButton no_viewed_serie;
+    ImageButton viewed_serie;
+    TextView status_serie;
+    TextView viewed_serie_text;
 
 
     public DetailSerieFragment() {
@@ -159,6 +163,13 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
         viewed_season= (ImageButton)rootView.findViewById(R.id.viewed_season);
         viewed_season.setOnClickListener(this);
 
+        no_viewed_serie = (ImageButton)rootView.findViewById(R.id.no_viewed_serie);
+        no_viewed_serie.setOnClickListener(this);
+        viewed_serie = (ImageButton)rootView.findViewById(R.id.viewed_serie);
+        viewed_serie.setOnClickListener(this);
+        status_serie = (TextView)rootView.findViewById(R.id.status_serie);
+        viewed_serie_text = (TextView)rootView.findViewById(R.id.viewed_serie_text);
+
         // si es movil
         if (getActivity().getClass().getSimpleName().equals(DetailSerieSearchedActivity.class.getSimpleName())){
             LinearLayoutManager layoutManager
@@ -181,6 +192,8 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
             Bundle arguments = getArguments();
             if (arguments != null) {
                 serie = arguments.getParcelable("Serie");
+                serie.LoadActors();
+                serie.LoadEpisodes();
                 activityOrigin = arguments.getString("ActivityOrigin");
                 mTwoPane = true;
             }else {
@@ -260,6 +273,14 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
         String network = getResources().getString(R.string.network_serie) + "  " + serie.getNetwork();
         network_text.setText(network);
         scheduleStartPostponedTransition(poster);
+        String status;
+        if (serie.getStatus().equals(serie.ENDED)) {
+            status = getResources().getString(R.string.status)+ " " + getResources().getString(R.string.endend);
+        } else {
+            status = getResources().getString(R.string.status)+ " " +getResources().getString(R.string.continuing);
+        }
+        status_serie.setText(status);
+        CheckViewedSerie();
         if (serie.getPoster_url().equals("")) {
             Picasso.with(getActivity())
                     .load(R.drawable.no_image)
@@ -300,64 +321,30 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
 
     }
 
-    public void LoadEpisodes() {
-        season = serie.GetSeasonFistEpisodeNotViewed();
-        List<Episode> episodeList = serie.getSeason(season);
-        episodesAdapter = new EpisodesAdapter(episodeList, R.layout.item_list_episodes);
-        episodeRecyclerView.setAdapter(episodesAdapter);
-        episodesAdapter.notifyDataSetChanged();
-        if (serie.getEpisodes().size() > 0){
-            episodeRecyclerView.setVisibility(View.VISIBLE);
-            empty_Episodes.setVisibility(View.GONE);
-            actual_season.setVisibility(View.VISIBLE);
-            actual_season.setText(season + "/" + serie.getSeasonsCount() + " " + getResources().getString(R.string.season_series));
-            if (season < serie.getSeasonsCount()) {
-                next_season.setVisibility(View.VISIBLE);
-                next_season_disable.setVisibility(View.GONE);
+    private void CheckViewedSerie(){
+        // if it is saved and the serie has fully released
+        if (serie.getStatus().equals(serie.ENDED) && serie.get_id() != 0) {
+            viewed_serie_text.setVisibility(View.VISIBLE);
+            if (serie.getViewed() == 1) {
+                viewed_serie.setVisibility(View.VISIBLE);
+                no_viewed_serie.setVisibility(View.GONE);
+            } else{
+                no_viewed_serie.setVisibility(View.VISIBLE);
+                viewed_serie.setVisibility(View.GONE);
             }
-            else {
-                next_season.setVisibility(View.GONE);
-                next_season_disable.setVisibility(View.VISIBLE);
-            }
-            if (season > 1){
-                previous_season.setVisibility(View.VISIBLE);
-                previous_season_disable.setVisibility(View.GONE);
-            }else {
-                previous_season.setVisibility(View.GONE);
-                previous_season_disable.setVisibility(View.VISIBLE);
-            }
-            if (serie.IsSaved()){
-                boolean seasonViewd = true;
-                for (Episode episode : episodeList) {
-                    if (episode.getViewed() == 0)
-                        seasonViewd = false;
-                }
-                if (seasonViewd) {
-                    viewed_season.setVisibility(View.VISIBLE);
-                    no_viewed_season.setVisibility(View.GONE);
-                } else{
-                    viewed_season.setVisibility(View.GONE);
-                    no_viewed_season.setVisibility(View.VISIBLE);
-                }
-            }else {
-                viewed_season.setVisibility(View.GONE);
-                no_viewed_season.setVisibility(View.GONE);
-            }
-
         } else {
-            episodeRecyclerView.setVisibility(View.GONE);
-            empty_Episodes.setVisibility(View.VISIBLE);
-            previous_season.setVisibility(View.GONE);
-            previous_season_disable.setVisibility(View.GONE);
-            next_season.setVisibility(View.GONE);
-            next_season_disable.setVisibility(View.GONE);
-            actual_season.setVisibility(View.GONE);
-            viewed_season.setVisibility(View.GONE);
-            no_viewed_season.setVisibility(View.GONE);
+            viewed_serie_text.setVisibility(View.GONE);
+            viewed_serie.setVisibility(View.GONE);
+            no_viewed_serie.setVisibility(View.GONE);
         }
     }
 
-    public void LoadActors(){
+    private void LoadEpisodes() {
+        season = serie.GetSeasonFistEpisodeNotViewed();
+        reloadSeason();
+    }
+
+    private void LoadActors(){
         actorsAdapter = new ActorsAdapter(serie.getActors(), R.layout.item_list_actors);
         actorRecyclerView.setAdapter(actorsAdapter);
         actorsAdapter.notifyDataSetChanged();
@@ -389,95 +376,32 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
         layout_detail.addView(documentView);
     }
 
-    @Override
-    public void onClick(View view) {
-        ImageButton button = (ImageButton)view;
-        //share button
-        if (button.getId() == R.id.share) {
-            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-            sharingIntent.setType("text/plain");
-            String title = getResources().getString(R.string.check_serie) + serie.getName();
-            String shareBody = "https://trakt.tv/search/tvdb/" + serie.getId() + "?id_type=show";
-            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, title);
-            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, title + " " + shareBody);
-            startActivity(Intent.createChooser(sharingIntent, "Share via"));
-        }
-        if (button.getId() == R.id.iv_tick_off) {
-            save_button.setVisibility(View.GONE);
-            save_text.setVisibility(View.GONE);
-            unsave_button.setVisibility(View.VISIBLE);
-            unsave_text.setVisibility(View.VISIBLE);
-            if (serie != null && !serie.getId().equals("")) {
-                serie.Save();
-                sendSaveSerie(); //Analytics
-            }
-            LoadEpisodes();
-        }
-        if (button.getId() == R.id.iv_tick_on) {
-            unsave_button.setVisibility(View.GONE);
-            unsave_text.setVisibility(View.GONE);
-            save_button.setVisibility(View.VISIBLE);
-            save_text.setVisibility(View.VISIBLE);
-            if (serie != null && !serie.getId().equals("")) {
-                serie.Delete();
-                sendDeleteSerie(); //Analytics
-            }
-            LoadEpisodes();
-        }
-        if (button.getId() == R.id.refresh) {
-            if (serie != null && !serie.getId().equals("")) {
-                isRefreshing = true;
-                FetchSerieByIDTask getSerie = new FetchSerieByIDTask();
-                getSerie.execute();
-            }
-        }
-
-        if (button.getId() == R.id.next_season) {
-            season = season + 1;
+    private void reloadSeason(){
+        if (serie.getEpisodes().size() > 0){
+            episodeRecyclerView.setVisibility(View.VISIBLE);
+            empty_Episodes.setVisibility(View.GONE);
+            actual_season.setVisibility(View.VISIBLE);
             List<Episode> episodeList = serie.getSeason(season);
-            episodesAdapter = new EpisodesAdapter(episodeList, R.layout.item_list_episodes);
+            episodesAdapter = new EpisodesAdapter(episodeList, R.layout.item_list_episodes, serie.getViewed());
             episodeRecyclerView.setAdapter(episodesAdapter);
             episodesAdapter.notifyDataSetChanged();
             if (season == serie.getSeasonsCount()) {
                 next_season.setVisibility(View.GONE);
                 next_season_disable.setVisibility(View.VISIBLE);
+            } else {
+                next_season.setVisibility(View.VISIBLE);
+                next_season_disable.setVisibility(View.GONE);
             }
-            previous_season.setVisibility(View.VISIBLE);
-            previous_season_disable.setVisibility(View.GONE);
-            actual_season.setText(season + "/" + serie.getSeasonsCount() + " " + getResources().getString(R.string.season_series));
-            if (serie.IsSaved()){
-                boolean seasonViewd = true;
-                for (Episode episode : episodeList) {
-                    if (episode.getViewed() == 0)
-                        seasonViewd = false;
-                }
-                if (seasonViewd) {
-                    viewed_season.setVisibility(View.VISIBLE);
-                    no_viewed_season.setVisibility(View.GONE);
-                } else{
-                    viewed_season.setVisibility(View.GONE);
-                    no_viewed_season.setVisibility(View.VISIBLE);
-                }
-
-            }else {
-                viewed_season.setVisibility(View.GONE);
-                no_viewed_season.setVisibility(View.GONE);
-            }
-        }
-        if (button.getId() == R.id.previous_season) {
-            season = season - 1;
-            List<Episode> episodeList = serie.getSeason(season);
-            episodesAdapter = new EpisodesAdapter(episodeList, R.layout.item_list_episodes);
-            episodeRecyclerView.setAdapter(episodesAdapter);
-            episodesAdapter.notifyDataSetChanged();
             if (season == 1) {
                 previous_season.setVisibility(View.GONE);
                 previous_season_disable.setVisibility(View.VISIBLE);
+            } else {
+                previous_season.setVisibility(View.VISIBLE);
+                previous_season_disable.setVisibility(View.GONE);
             }
-            next_season.setVisibility(View.VISIBLE);
-            next_season_disable.setVisibility(View.GONE);
             actual_season.setText(season + "/" + serie.getSeasonsCount() + " " + getResources().getString(R.string.season_series));
-            if (serie.IsSaved()){
+            // if the serie is viewed it is not necessary the check of the seasons
+            if (serie.IsSaved() && serie.getViewed() == 0){
                 boolean seasonViewd = true;
                 for (Episode episode : episodeList) {
                     if (episode.getViewed() == 0)
@@ -490,40 +414,118 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
                     viewed_season.setVisibility(View.GONE);
                     no_viewed_season.setVisibility(View.VISIBLE);
                 }
-
             }else {
                 viewed_season.setVisibility(View.GONE);
                 no_viewed_season.setVisibility(View.GONE);
             }
-
-        }
-        if (button.getId() == R.id.viewed_season){
-            List<Episode> episodeList = serie.getSeason(season);
-            for (Episode episode : episodeList) {
-                episode.setViewed(0);
-                episode.UpdateViewed();
-            }
-            episodesAdapter = new EpisodesAdapter(episodeList, R.layout.item_list_episodes);
-            episodeRecyclerView.setAdapter(episodesAdapter);
-            episodesAdapter.notifyDataSetChanged();
+        }else {
+            episodeRecyclerView.setVisibility(View.GONE);
+            empty_Episodes.setVisibility(View.VISIBLE);
+            previous_season.setVisibility(View.GONE);
+            previous_season_disable.setVisibility(View.GONE);
+            next_season.setVisibility(View.GONE);
+            next_season_disable.setVisibility(View.GONE);
+            actual_season.setVisibility(View.GONE);
             viewed_season.setVisibility(View.GONE);
-            no_viewed_season.setVisibility(View.VISIBLE);
-        }
-        if (button.getId() == R.id.no_viewed_season){
-            List<Episode> episodeList = serie.getSeason(season);
-            for (Episode episode : episodeList) {
-                if (episode.getViewed() == 0){
-                    episode.setViewed(1);
-                    episode.UpdateViewed();
-                }
-            }
-            episodesAdapter = new EpisodesAdapter(episodeList, R.layout.item_list_episodes);
-            episodeRecyclerView.setAdapter(episodesAdapter);
-            episodesAdapter.notifyDataSetChanged();
-            viewed_season.setVisibility(View.VISIBLE);
             no_viewed_season.setVisibility(View.GONE);
         }
 
+    }
+
+    @Override
+    public void onClick(View view) {
+        ImageButton button = (ImageButton)view;
+        //share button
+        switch (button.getId()){
+            case R.id.share:
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                String title = getResources().getString(R.string.check_serie) + serie.getName();
+                String shareBody = "https://trakt.tv/search/tvdb/" + serie.getId() + "?id_type=show";
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, title);
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, title + " " + shareBody);
+                startActivity(Intent.createChooser(sharingIntent, "Share via"));
+                break;
+            case R.id.iv_tick_off:
+                save_button.setVisibility(View.GONE);
+                save_text.setVisibility(View.GONE);
+                unsave_button.setVisibility(View.VISIBLE);
+                unsave_text.setVisibility(View.VISIBLE);
+                if (serie != null && !serie.getId().equals("")) {
+                    SaveTask save = new SaveTask();
+                    save.execute();
+                    sendSaveSerie(); //Analytics
+                }
+
+                break;
+            case R.id.iv_tick_on:
+                unsave_button.setVisibility(View.GONE);
+                unsave_text.setVisibility(View.GONE);
+                save_button.setVisibility(View.VISIBLE);
+                save_text.setVisibility(View.VISIBLE);
+                if (serie != null && !serie.getId().equals("")) {
+                    serie.Delete();
+                    sendDeleteSerie(); //Analytics
+                }
+                LoadEpisodes();
+                CheckViewedSerie();
+                break;
+            case  R.id.refresh:
+                if (serie != null && !serie.getId().equals("")) {
+                    isRefreshing = true;
+                    FetchSerieByIDTask getSerie = new FetchSerieByIDTask();
+                    getSerie.execute();
+                }
+                break;
+            case  R.id.next_season:
+                season = season + 1;
+                reloadSeason();
+                break;
+            case  R.id.previous_season:
+                season = season - 1;
+                reloadSeason();
+                break;
+            case  R.id.viewed_season:
+                List<Episode> episodeList = serie.getSeason(season);
+                for (Episode episode : episodeList) {
+                    episode.setViewed(0);
+                    episode.UpdateViewed();
+                }
+                episodesAdapter = new EpisodesAdapter(episodeList, R.layout.item_list_episodes, serie.getViewed());
+                episodeRecyclerView.setAdapter(episodesAdapter);
+                episodesAdapter.notifyDataSetChanged();
+                viewed_season.setVisibility(View.GONE);
+                no_viewed_season.setVisibility(View.VISIBLE);
+                break;
+            case  R.id.no_viewed_season:
+                List<Episode> episodeViewList = serie.getSeason(season);
+                for (Episode episode : episodeViewList) {
+                    if (episode.getViewed() == 0){
+                        episode.setViewed(1);
+                        episode.UpdateViewed();
+                    }
+                }
+                episodesAdapter = new EpisodesAdapter(episodeViewList, R.layout.item_list_episodes, serie.getViewed());
+                episodeRecyclerView.setAdapter(episodesAdapter);
+                episodesAdapter.notifyDataSetChanged();
+                viewed_season.setVisibility(View.VISIBLE);
+                no_viewed_season.setVisibility(View.GONE);
+                break;
+            case  R.id.viewed_serie:
+                serie.setViewed(0);
+                serie.UpdateVieded();
+                season = 1;
+                reloadSeason();
+                CheckViewedSerie();
+                break;
+            case  R.id.no_viewed_serie:
+                serie.setViewed(1);
+                serie.UpdateVieded();
+                season = serie.getSeasonsCount();
+                reloadSeason();
+                CheckViewedSerie();
+                break;
+        }
     }
 
     public class FetchSerieByIDTask extends AsyncTask<String, Void,  Serie> {
@@ -540,7 +542,7 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
             nDialog.setMessage(getActivity().getResources().getString(R.string.Loading));
             nDialog.setTitle(getActivity().getResources().getString(R.string.downloading_data));
             nDialog.setIndeterminate(false);
-            nDialog.setCancelable(true);
+            nDialog.setCancelable(false);
             nDialog.show();
 
         }
@@ -632,6 +634,41 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
             LoadData();
             nDialog.dismiss();
         }
+    }
+
+    // sometime the save could last,  that is why I use this, to show the process dialog
+    private class SaveTask extends AsyncTask<Void, Void, String> {
+
+        private final String LOG_TAG = SaveTask.class.getSimpleName();
+
+
+        private ProgressDialog nDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            nDialog = new ProgressDialog(getActivity());
+            nDialog.setMessage(getResources().getString(R.string.Loading));
+            nDialog.setTitle(getResources().getString(R.string.saving_data));
+            nDialog.setIndeterminate(false);
+            nDialog.setCancelable(false);
+            nDialog.show();
+
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            serie.Save();
+            return "";
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            LoadEpisodes();
+            CheckViewedSerie();
+            nDialog.dismiss();
+        }
+
     }
 
 
