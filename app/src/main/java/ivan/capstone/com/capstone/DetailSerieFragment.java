@@ -472,7 +472,7 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
                 break;
             case  R.id.refresh:
                 if (serie != null && !serie.getId().equals("")) {
-                    isRefreshing = true;
+                    if (serie.get_id() != 0) isRefreshing = true; // if it is saved, update info on database
                     FetchSerieByIDTask getSerie = new FetchSerieByIDTask();
                     getSerie.execute();
                 }
