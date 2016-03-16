@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,15 +25,15 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.ViewHo
     private int selectedItem;
     private List<Episode> episodes;
     private int layout;
-    private int serie_viewed;
+    private Serie serie;
 
-    public EpisodesAdapter(List<Episode> items, int layoutData, int serie_viewed)
+    public EpisodesAdapter(List<Episode> items, int layoutData, OnItemClickListener listener, Serie serie)
     {
         episodes = items;
-
+        this.externalListernetClick = listener;
         this.layout = layoutData;
         selectedItem = 0;
-        this.serie_viewed = serie_viewed;
+        this.serie = serie;
     }
 
     @Override
@@ -73,7 +74,7 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.ViewHo
                     .into(holder.viewMiniatura);
         }
 
-        if (holder.item.IsSaved() && serie_viewed == 0) {
+        if (holder.item.IsSaved()) {
             if (holder.item.getViewed() == 0) {
                 holder.viewed.setVisibility(View.GONE);
                 holder.not_viewed.setVisibility(View.VISIBLE);
@@ -88,6 +89,12 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.ViewHo
                     holder.not_viewed.setVisibility(View.VISIBLE);
                     holder.item.setViewed(0);
                     holder.item.UpdateViewed();
+                    if (serie.getViewed() == 1) {
+                        serie.setViewed(0);
+                        serie.UpdateVieded();
+                    }
+
+                    externalListernetClick.onClick(holder.item);
                 }
             });
 
@@ -98,6 +105,11 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.ViewHo
                     holder.not_viewed.setVisibility(View.GONE);
                     holder.item.setViewed(1);
                     holder.item.UpdateViewed();
+                    if (serie.getStatus().equals(serie.ENDED) && serie.getViewed() == 0 && serie.AreAllEpisodeViewed()) {
+                        serie.setViewed(1);
+                        serie.UpdateVieded();
+                    }
+                    externalListernetClick.onClick(holder.item);
                 }
             });
         } else {
@@ -145,8 +157,11 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.ViewHo
 
     }
 
+    public interface OnItemClickListener {
+        public void onClick(Episode episode);
+    }
 
-
+    private OnItemClickListener externalListernetClick;
 
 
 

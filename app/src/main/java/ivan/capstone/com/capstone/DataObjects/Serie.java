@@ -288,6 +288,16 @@ public class Serie implements Parcelable {
         return 1;
     }
 
+    public boolean AreAllEpisodeViewed() {
+        if (episodes.size() == 0) return true;
+        List<Episode> list = episodes;
+        for (Episode episode : list) {
+            if (episode.getViewed() == 0)
+                return false;
+        }
+        return true;
+    }
+
     public ArrayList<Episode> getSeason(int season) {
         if (season == 0 || season > getSeasonsCount()) return new ArrayList<>();
         if (episodes.size() == 0) return new ArrayList<>();
@@ -577,7 +587,7 @@ public class Serie implements Parcelable {
         }
     }
 
-    public void UpdateVieded() {
+    public void UpdateAllVieded() {
         if (IsSaved()) {
             // update serie
             ContentValues values = new ContentValues();
@@ -595,6 +605,16 @@ public class Serie implements Parcelable {
         }
     }
 
+    public void UpdateVieded() {
+        if (IsSaved()) {
+            // update serie
+            ContentValues values = new ContentValues();
+            values.put(SeriesContract.SeriesEntry.COLUMN_VIEWED, viewed);
+            MyApplication.getContext().getContentResolver().update(SeriesContract.SeriesEntry.CONTENT_URI, values,
+                    SeriesContract.SeriesEntry.COLUMN_ID + "=?", new String[]{id});
+
+        }
+    }
 
 
 }

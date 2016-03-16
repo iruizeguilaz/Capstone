@@ -46,12 +46,13 @@ import java.util.List;
 
 import ivan.capstone.com.capstone.Adapter.ActorsAdapter;
 import ivan.capstone.com.capstone.Adapter.EpisodesAdapter;
+import ivan.capstone.com.capstone.Adapter.SeriesAdapter;
 import ivan.capstone.com.capstone.DataObjects.Episode;
 import ivan.capstone.com.capstone.DataObjects.Serie;
 import ivan.capstone.com.capstone.XML.XMLManager;
 
 
-public class DetailSerieFragment extends Fragment implements View.OnClickListener {
+public class DetailSerieFragment extends Fragment implements View.OnClickListener, EpisodesAdapter.OnItemClickListener {
 
     private static final String API_SERIES_KEY = BuildConfig.API_SERIES_KEY;
     int season = 0;
@@ -254,6 +255,41 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
                 });
     }
 
+
+    @Override
+    public void onClick(Episode episode) {
+        // check it we have to update the rest of  viewed checks after clicking in a check of a episode
+        if (episode.getViewed()== 0){
+            no_viewed_serie.setVisibility(View.VISIBLE);
+            no_viewed_season.setVisibility(View.VISIBLE);
+            viewed_serie.setVisibility(View.GONE);
+            viewed_season.setVisibility(View.GONE);
+        } else {
+            if (serie.getViewed()==1){
+                no_viewed_serie.setVisibility(View.GONE);
+                no_viewed_season.setVisibility(View.GONE);
+                viewed_serie.setVisibility(View.VISIBLE);
+                viewed_season.setVisibility(View.VISIBLE);
+            } else {
+                List<Episode> episodeList = serie.getSeason(season);
+                boolean seasonViewd = true;
+                for (Episode myEpisode : episodeList) {
+                    if (myEpisode.getViewed() == 0)
+                        seasonViewd = false;
+                }
+                if (seasonViewd){
+                    no_viewed_season.setVisibility(View.GONE);
+                    viewed_season.setVisibility(View.VISIBLE);
+                } else {
+                    no_viewed_season.setVisibility(View.VISIBLE);
+                    viewed_season.setVisibility(View.GONE);
+                }
+            }
+
+        }
+
+    }
+
     public void LoadData() {
         String date = serie.getDateReleased();
         if (date != null  && !date.equals("")) {
@@ -382,7 +418,7 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
             empty_Episodes.setVisibility(View.GONE);
             actual_season.setVisibility(View.VISIBLE);
             List<Episode> episodeList = serie.getSeason(season);
-            episodesAdapter = new EpisodesAdapter(episodeList, R.layout.item_list_episodes, serie.getViewed());
+            episodesAdapter = new EpisodesAdapter(episodeList, R.layout.item_list_episodes, this, serie);
             episodeRecyclerView.setAdapter(episodesAdapter);
             episodesAdapter.notifyDataSetChanged();
             if (season == serie.getSeasonsCount()) {
@@ -401,7 +437,7 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
             }
             actual_season.setText(season + "/" + serie.getSeasonsCount() + " " + getResources().getString(R.string.season_series));
             // if the serie is viewed it is not necessary the check of the seasons
-            if (serie.IsSaved() && serie.getViewed() == 0){
+            if (serie.IsSaved()){
                 boolean seasonViewd = true;
                 for (Episode episode : episodeList) {
                     if (episode.getViewed() == 0)
@@ -491,7 +527,12 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
                     episode.setViewed(0);
                     episode.UpdateViewed();
                 }
-                episodesAdapter = new EpisodesAdapter(episodeList, R.layout.item_list_episodes, serie.getViewed());
+                if (serie.getViewed() == 1) {
+                    serie.setViewed(0);
+                    serie.UpdateVieded();
+                    CheckViewedSerie();
+                }
+                episodesAdapter = new EpisodesAdapter(episodeList, R.layout.item_list_episodes, this, serie);
                 episodeRecyclerView.setAdapter(episodesAdapter);
                 episodesAdapter.notifyDataSetChanged();
                 viewed_season.setVisibility(View.GONE);
@@ -505,7 +546,12 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
                         episode.UpdateViewed();
                     }
                 }
-                episodesAdapter = new EpisodesAdapter(episodeViewList, R.layout.item_list_episodes, serie.getViewed());
+                if (serie.getStatus().equals(serie.ENDED) && serie.getViewed() == 0 && serie.AreAllEpisodeViewed()) {
+                    serie.setViewed(1);
+                    serie.UpdateVieded();
+                    CheckViewedSerie();
+                }
+                episodesAdapter = new EpisodesAdapter(episodeViewList, R.layout.item_list_episodes, this, serie);
                 episodeRecyclerView.setAdapter(episodesAdapter);
                 episodesAdapter.notifyDataSetChanged();
                 viewed_season.setVisibility(View.VISIBLE);
@@ -513,14 +559,14 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
                 break;
             case  R.id.viewed_serie:
                 serie.setViewed(0);
-                serie.UpdateVieded();
+                serie.UpdateAllVieded();
                 season = 1;
                 reloadSeason();
                 CheckViewedSerie();
                 break;
             case  R.id.no_viewed_serie:
                 serie.setViewed(1);
-                serie.UpdateVieded();
+                serie.UpdateAllVieded();
                 season = serie.getSeasonsCount();
                 reloadSeason();
                 CheckViewedSerie();
