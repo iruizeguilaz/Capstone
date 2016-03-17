@@ -148,10 +148,8 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
         unsave_text = (TextView)rootView.findViewById(R.id.unsave_serie);
         refresh_button = (ImageButton)rootView.findViewById(R.id.refresh);
         refresh_button.setOnClickListener(this);
-        episodeRecyclerView = (RecyclerView) rootView.findViewById(R.id.episodes_recycler);
-        empty_Episodes = (TextView)rootView.findViewById(R.id.empty_episodes);
-        actorRecyclerView = (RecyclerView) rootView.findViewById(R.id.actors_recycler);
-        empty_Actors = (TextView)rootView.findViewById(R.id.empty_actors);
+
+
         next_season = (ImageButton)rootView.findViewById(R.id.next_season);
         next_season.setOnClickListener(this);
         next_season_disable = (ImageButton)rootView.findViewById(R.id.next_season_disable);
@@ -171,6 +169,10 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
         status_serie = (TextView)rootView.findViewById(R.id.status_serie);
         viewed_serie_text = (TextView)rootView.findViewById(R.id.viewed_serie_text);
 
+        empty_Episodes = (TextView)rootView.findViewById(R.id.empty_episodes);
+        empty_Actors = (TextView)rootView.findViewById(R.id.empty_actors);
+        actorRecyclerView = (RecyclerView) rootView.findViewById(R.id.actors_recycler);
+        episodeRecyclerView = (RecyclerView) rootView.findViewById(R.id.episodes_recycler);
         // si es movil
         if (getActivity().getClass().getSimpleName().equals(DetailSerieSearchedActivity.class.getSimpleName())){
             LinearLayoutManager layoutManager
@@ -178,7 +180,7 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
             episodeRecyclerView.setLayoutManager(layoutManager);
 
             LinearLayoutManager layoutManager2
-                   = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+                    = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
 
             actorRecyclerView.setLayoutManager(layoutManager2);
         }
@@ -260,15 +262,11 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
     public void onClick(Episode episode) {
         // check it we have to update the rest of  viewed checks after clicking in a check of a episode
         if (episode.getViewed()== 0){
-            no_viewed_serie.setVisibility(View.VISIBLE);
             no_viewed_season.setVisibility(View.VISIBLE);
-            viewed_serie.setVisibility(View.GONE);
             viewed_season.setVisibility(View.GONE);
         } else {
             if (serie.getViewed()==1){
-                no_viewed_serie.setVisibility(View.GONE);
                 no_viewed_season.setVisibility(View.GONE);
-                viewed_serie.setVisibility(View.VISIBLE);
                 viewed_season.setVisibility(View.VISIBLE);
             } else {
                 List<Episode> episodeList = serie.getSeason(season);
@@ -285,7 +283,7 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
                     viewed_season.setVisibility(View.GONE);
                 }
             }
-
+            CheckViewedSerie();
         }
 
     }
