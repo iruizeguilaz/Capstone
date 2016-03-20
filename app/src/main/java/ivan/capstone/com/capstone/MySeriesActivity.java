@@ -4,10 +4,13 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
+import android.view.MenuItem;
 import android.widget.ImageView;
 
 
@@ -15,19 +18,26 @@ import ivan.capstone.com.capstone.DataObjects.Serie;
 
 public class MySeriesActivity extends AppCompatActivity implements MySeriesFragment.Callback{
 
-    private Toolbar mToolbar;
     public boolean mTwoPane;
+    private static final String LISTFRAGMENT_TAG = "LFTAG";
     private static final String DETAILFRAGMENT_TAG = "PFTAG";
     public static final String Name = "MySeries";
+
+    // there are 3 types of series:  pending, following, viewed.
+    public int type_list_serie = Serie.FOLLOWING;
+
+    DrawerLayout mDrawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_myseries);
 
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar  mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-
+        final ActionBar ab = getSupportActionBar();
+        ab.setHomeAsUpIndicator(R.drawable.ic_menu);
+        ab.setDisplayHomeAsUpEnabled(true);
 
         if (findViewById(R.id.fragment_detail_serie) != null) {
             mTwoPane = true;
@@ -38,7 +48,72 @@ public class MySeriesActivity extends AppCompatActivity implements MySeriesFragm
             // where one casts a shadow on the other).
             getSupportActionBar().setElevation(0f);
         }
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        if (navigationView != null) {
+            setupDrawerContent(navigationView);
+        }
+        MySeriesFragment fragment = new MySeriesFragment();
+        getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_my_series, fragment, LISTFRAGMENT_TAG)
+                    .commit();
+
+        navigationView.setCheckedItem(R.id.nav_home_viewing);
+        navigationView.getMenu().performIdentifierAction(R.id.nav_home_viewing, 0);
+        //onNavigationItemSelected(navigationView.getMenu().findItem(R.id.nav_home_viewing));
     }
+
+    private void setupDrawerContent(NavigationView navigationView) {
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        menuItem.setChecked(true);
+                        mDrawerLayout.closeDrawers();
+                        MySeriesFragment fragment;
+                        switch (menuItem.getItemId()) {
+                            case R.id.nav_home_saved:
+                                type_list_serie = Serie.PENDING;
+                                fragment = new MySeriesFragment();
+                                getSupportFragmentManager().beginTransaction()
+                                        .replace(R.id.fragment_my_series, fragment, LISTFRAGMENT_TAG)
+                                        .commit();
+                                break;
+                            case R.id.nav_home_viewed:
+                                type_list_serie = Serie.VIEWED;
+                                fragment = new MySeriesFragment();
+                                getSupportFragmentManager().beginTransaction()
+                                        .replace(R.id.fragment_my_series, fragment, LISTFRAGMENT_TAG)
+                                        .commit();
+                                break;
+                            case R.id.nav_home_viewing:
+                                type_list_serie = Serie.FOLLOWING;
+                                fragment = new MySeriesFragment();
+                                getSupportFragmentManager().beginTransaction()
+                                        .replace(R.id.fragment_my_series, fragment, LISTFRAGMENT_TAG)
+                                        .commit();
+                                break;
+                        }
+                        return true;
+                    }
+                });
+    }
+
+
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                mDrawerLayout.openDrawer(GravityCompat.START);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
 
     @Override

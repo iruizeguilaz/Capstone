@@ -265,7 +265,7 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
             no_viewed_season.setVisibility(View.VISIBLE);
             viewed_season.setVisibility(View.GONE);
         } else {
-            if (serie.getViewed()==1){
+            if (serie.getType()==serie.VIEWED){
                 no_viewed_season.setVisibility(View.GONE);
                 viewed_season.setVisibility(View.VISIBLE);
             } else {
@@ -359,7 +359,7 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
         // if it is saved and the serie has fully released
         if (serie.getStatus().equals(serie.ENDED) && serie.get_id() != 0) {
             viewed_serie_text.setVisibility(View.VISIBLE);
-            if (serie.getViewed() == 1) {
+            if (serie.getType()==serie.VIEWED) {
                 viewed_serie.setVisibility(View.VISIBLE);
                 no_viewed_serie.setVisibility(View.GONE);
             } else{
@@ -525,9 +525,14 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
                     episode.setViewed(0);
                     episode.UpdateViewed();
                 }
-                if (serie.getViewed() == 1) {
-                    serie.setViewed(0);
-                    serie.UpdateVieded();
+                if (serie.getType()==serie.VIEWED) {
+                    serie.setType(serie.FOLLOWING);
+                    serie.UpdateType();
+                    CheckViewedSerie();
+                }
+                if (serie.getType()==serie.FOLLOWING && serie.hasNoEpisodeViewed()){
+                    serie.setType(Serie.PENDING);
+                    serie.UpdateType();
                     CheckViewedSerie();
                 }
                 episodesAdapter = new EpisodesAdapter(episodeList, R.layout.item_list_episodes, this, serie);
@@ -544,10 +549,15 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
                         episode.UpdateViewed();
                     }
                 }
-                if (serie.getStatus().equals(serie.ENDED) && serie.getViewed() == 0 && serie.AreAllEpisodeViewed()) {
-                    serie.setViewed(1);
-                    serie.UpdateVieded();
+                if (serie.getStatus().equals(serie.ENDED) && serie.getType() != serie.VIEWED && serie.AreAllEpisodeViewed()) {
+                    serie.setType(serie.VIEWED);
+                    serie.UpdateType();
                     CheckViewedSerie();
+                }else {
+                    if (serie.getType() == serie.PENDING){
+                        serie.setType(serie.FOLLOWING);
+                        serie.UpdateType();
+                    }
                 }
                 episodesAdapter = new EpisodesAdapter(episodeViewList, R.layout.item_list_episodes, this, serie);
                 episodeRecyclerView.setAdapter(episodesAdapter);
@@ -556,15 +566,15 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
                 no_viewed_season.setVisibility(View.GONE);
                 break;
             case  R.id.viewed_serie:
-                serie.setViewed(0);
-                serie.UpdateAllVieded();
+                serie.setType(serie.PENDING);
+                serie.UpdateAllType();
                 season = 1;
                 reloadSeason();
                 CheckViewedSerie();
                 break;
             case  R.id.no_viewed_serie:
-                serie.setViewed(1);
-                serie.UpdateAllVieded();
+                serie.setType(serie.VIEWED);
+                serie.UpdateAllType();
                 season = serie.getSeasonsCount();
                 reloadSeason();
                 CheckViewedSerie();

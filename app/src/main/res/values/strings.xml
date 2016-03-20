@@ -65,6 +65,16 @@
     <string name="serie_viewed">Viewed</string>
     <string name="serie_no_viewed">Following</string>
 
+
+    <string name="serie_vieweds">Vieweds</string>
+    <string name="serie_following">Following</string>
+    <string name="serie_pending">Pendings</string>
+
+    <string name="serie_vieweds_serie">Viewed series</string>
+    <string name="serie_following_serie">Followed series</string>
+    <string name="serie_following_serie_upper">FOLLOWED SERIES</string>
+    <string name="serie_pending_serie">Pending series</string>
+
     <string name="season_series">Seasons</string>
     <!-- This id es por tests puurpose. If the app goes to production mode, then we should change this -->
     <string name="banner_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>

@@ -89,11 +89,14 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.ViewHo
                     holder.not_viewed.setVisibility(View.VISIBLE);
                     holder.item.setViewed(0);
                     holder.item.UpdateViewed();
-                    if (serie.getViewed() == 1) {
-                        serie.setViewed(0);
-                        serie.UpdateVieded();
+                    if (serie.getType() == serie.VIEWED) {
+                        serie.setType(Serie.FOLLOWING);
+                        serie.UpdateType();
                     }
-
+                    if (serie.getType()== serie.FOLLOWING && serie.hasNoEpisodeViewed()){
+                        serie.setType(Serie.PENDING);
+                        serie.UpdateType();
+                    }
                     externalListernetClick.onClick(holder.item);
                 }
             });
@@ -105,9 +108,14 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.ViewHo
                     holder.not_viewed.setVisibility(View.GONE);
                     holder.item.setViewed(1);
                     holder.item.UpdateViewed();
-                    if (serie.getStatus().equals(serie.ENDED) && serie.getViewed() == 0 && serie.AreAllEpisodeViewed()) {
-                        serie.setViewed(1);
-                        serie.UpdateVieded();
+                    if (serie.getStatus().equals(serie.ENDED) && serie.getType() != Serie.VIEWED && serie.AreAllEpisodeViewed()) {
+                        serie.setType(serie.VIEWED);
+                        serie.UpdateType();
+                    } else {
+                        if (serie.getType() == Serie.PENDING){
+                            serie.setType(serie.FOLLOWING);
+                            serie.UpdateType();
+                        }
                     }
                     externalListernetClick.onClick(holder.item);
                 }

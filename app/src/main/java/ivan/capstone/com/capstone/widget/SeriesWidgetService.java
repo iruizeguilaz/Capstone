@@ -13,6 +13,8 @@ import android.widget.RemoteViewsService;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.util.Date;
+
 import ivan.capstone.com.capstone.Data.SeriesContract;
 import ivan.capstone.com.capstone.DataObjects.Serie;
 import ivan.capstone.com.capstone.R;
@@ -36,7 +38,10 @@ public class SeriesWidgetService extends RemoteViewsService {
             SeriesContract.SeriesEntry.COLUMN_REALSED_DATE,
             SeriesContract.SeriesEntry.COLUMN_OVERVIEW,
             SeriesContract.SeriesEntry.COLUMN_GENRE,
-            SeriesContract.SeriesEntry.COLUMN_NETWORK
+            SeriesContract.SeriesEntry.COLUMN_NETWORK,
+            SeriesContract.SeriesEntry.COLUMN_MODIFYDATE,
+            SeriesContract.SeriesEntry.COLUMN_STATUS,
+            SeriesContract.SeriesEntry.COLUMN_TYPE
     };
     static final int COL__ID = 0;
     static final int COL_ID = 1;
@@ -49,6 +54,10 @@ public class SeriesWidgetService extends RemoteViewsService {
     static final int COL_OVERVIEW = 8;
     static final int COL_GENRE = 9;
     static final int COL_NETWORK = 10;
+    static final int COL_MODIFYDATE= 11;
+    static final int COL_STATUS = 12;
+    static final int COL_TYPE= 13;
+
 
 
     @Override
@@ -80,8 +89,8 @@ public class SeriesWidgetService extends RemoteViewsService {
                 data = getContentResolver().query(
                         serieUri,
                         SERIES_COLUMNS,
-                        null,
-                        null,
+                        SeriesContract.SeriesEntry.COLUMN_TYPE + " = ? ",
+                        new String[]{String.valueOf(Serie.FOLLOWING)},
                         sortOrder);
             } finally {
                 Binder.restoreCallingIdentity(token);
@@ -110,6 +119,9 @@ public class SeriesWidgetService extends RemoteViewsService {
             mySerie.setOverView(data.getString(COL_OVERVIEW));
             mySerie.setGenre(data.getString(COL_GENRE));
             mySerie.setNetwork(data.getString(COL_NETWORK));
+            mySerie.setModify_date(new Date(data.getLong(COL_MODIFYDATE)*1000));
+            mySerie.setStatus(data.getString(COL_STATUS));
+            mySerie.setType(data.getInt(COL_TYPE));
 
             Intent fillInIntent = new Intent();
             fillInIntent.putExtra("EXTRA_ITEM", position);

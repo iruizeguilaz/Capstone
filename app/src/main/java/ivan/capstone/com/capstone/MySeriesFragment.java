@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -32,6 +34,9 @@ import ivan.capstone.com.capstone.DataObjects.Serie;
 
 public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SeriesAdapter.OnItemClickListener {
 
+  // where params (
+
+
     private SeriesAdapter seriesAdapter;
     List<Serie> series;
     RecyclerView recyclerView;
@@ -56,7 +61,7 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
             SeriesContract.SeriesEntry.COLUMN_NETWORK,
             SeriesContract.SeriesEntry.COLUMN_MODIFYDATE,
             SeriesContract.SeriesEntry.COLUMN_STATUS,
-            SeriesContract.SeriesEntry.COLUMN_VIEWED
+            SeriesContract.SeriesEntry.COLUMN_TYPE
     };
     static final int COL__ID = 0;
     static final int COL_ID = 1;
@@ -71,7 +76,7 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
     static final int COL_NETWORK = 10;
     static final int COL_MODIFYDATE= 11;
     static final int COL_STATUS = 12;
-    static final int COL_VIEWED= 13;
+    static final int COL_TYPE= 13;
 
     public MySeriesFragment() {
         // Required empty public constructor
@@ -112,6 +117,7 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
             Intent intent = getActivity().getIntent();
             if (intent!= null) {
                 serie = intent.getParcelableExtra("Serie");
+                intent.removeExtra("Serie");
                 if (serie != null) {
                     sendWidgetSerie(serie.getName()); //analytics, if come from widget
                     widgetSource = true;
@@ -163,21 +169,46 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
         LoadBannerRunnable loadView = new LoadBannerRunnable();
         loadView.run();
         if (widgetSource)((Callback) getActivity()).onItemSelected(serie, null);
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        ActionBar actionBar = activity.getSupportActionBar();
+        if (actionBar != null && serie != null && !serie.getName().equals("")) {
+            switch (((MySeriesActivity)getActivity()).type_list_serie){
+                case  Serie.FOLLOWING:
+                    actionBar.setTitle( getActivity().getResources().getString(R.string.serie_following_serie));
+                    break;
+                case  Serie.VIEWED:
+                    actionBar.setTitle( getActivity().getResources().getString(R.string.serie_vieweds_serie));
+                    break;
+                case  Serie.PENDING:
+                    actionBar.setTitle( getActivity().getResources().getString(R.string.serie_pending_serie));
+                    break;
+                default:
+                    actionBar.setTitle( getActivity().getResources().getString(R.string.app_name));
+                    break;
+            }
+        }
         super.onActivityCreated(savedInstanceState);
     }
 
+    public void refresh(){
+        getLoaderManager().restartLoader(SERIES_LOADER, null, this);
+    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        String sortOrder = SeriesContract.SeriesEntry.COLUMN_NAME + " ASC";
+        // series are ordered first if the are not viewed and name, and aterwards those which have been viewed
+        String sortOrder =  SeriesContract.SeriesEntry.COLUMN_NAME + " ASC";
+        String where = SeriesContract.SeriesEntry.COLUMN_TYPE + " = ? ";
         Uri serieUri = SeriesContract.SeriesEntry.CONTENT_URI;
         return new CursorLoader(getActivity(),
                 serieUri,
                 SERIES_COLUMNS,
-                null,
-                null,
+                where ,
+                new String[]{String.valueOf((((MySeriesActivity)getActivity()).type_list_serie))},
                 sortOrder);
     }
+
+
 
 
     @Override
@@ -198,7 +229,7 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
             mySerie.setNetwork(data.getString(COL_NETWORK));
             mySerie.setModify_date(new Date(data.getLong(COL_MODIFYDATE)*1000));
             mySerie.setStatus(data.getString(COL_STATUS));
-            mySerie.setViewed(data.getInt(COL_VIEWED));
+            mySerie.setType(data.getInt(COL_TYPE));
             series.add((mySerie));
         }
         seriesAdapter.notifyDataSetChanged();

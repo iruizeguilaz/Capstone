@@ -62,7 +62,7 @@ public class SeriesContract {
 
         public static final String COLUMN_MODIFYDATE = "modifydate";
         public static final String COLUMN_STATUS = "status";
-        public static final String COLUMN_VIEWED = "viewed";
+        public static final String COLUMN_TYPE = "type";
 
         public static Uri buildSeriesUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);

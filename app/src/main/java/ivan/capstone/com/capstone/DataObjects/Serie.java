@@ -26,6 +26,10 @@ public class Serie implements Parcelable {
 
     public final String ENDED = "Ended";
 
+    public static final int PENDING = 0;
+    public static final int FOLLOWING = 1;
+    public static final int VIEWED = 2;
+
     private long _id; // databaseID
 
     private String id;  // server series id
@@ -40,7 +44,7 @@ public class Serie implements Parcelable {
     private String poster_url;
     private Date modify_date;
     private String status; // Ended or Continuing
-    private int viewed;
+    private int type; // Viewing or Following, Viewed, Pending
     private ArrayList<Episode> episodes = new ArrayList<Episode>();
     private ArrayList<Actor> actors = new ArrayList<Actor>();
 
@@ -58,7 +62,7 @@ public class Serie implements Parcelable {
         poster_url = "";
         modify_date = Calendar.getInstance().getTime();
         status = "Continuing";
-        viewed = 0;
+        type = PENDING;
         episodes = new ArrayList<Episode>();
         actors = new ArrayList<Actor>();
     }
@@ -77,7 +81,7 @@ public class Serie implements Parcelable {
         poster_url = in.readString();
         modify_date = new Date(in.readLong());
         status = in.readString();
-        viewed = in.readInt();
+        type = in.readInt();
         LoadEpisodes();
         LoadActors();
         // instead of stored it, I realod the data. this is because stored for instances 27 seasons
@@ -86,7 +90,7 @@ public class Serie implements Parcelable {
         //in.readTypedList(actors, Actor.CREATOR);
     }
 
-    public Serie(int _id, String id, String name, String image_url, String overView, String dateReleased, String network, String rating, String votes, String genre, String poster_url, Date modify_date, String status, int viewd) {
+    public Serie(int _id, String id, String name, String image_url, String overView, String dateReleased, String network, String rating, String votes, String genre, String poster_url, Date modify_date, String status, int type) {
         this._id = _id;
         this.id = id;
         this.name = name;
@@ -100,7 +104,7 @@ public class Serie implements Parcelable {
         this.poster_url = poster_url;
         this.modify_date = modify_date;
         this.status = status;
-        this.viewed = viewd;
+        this.type = type;
         //this.episodes = episodes;
         //this.actors = actors;
     }
@@ -125,7 +129,7 @@ public class Serie implements Parcelable {
         dest.writeString(poster_url);
         dest.writeLong(modify_date.getTime());
         dest.writeString(status);
-        dest.writeInt(viewed);
+        dest.writeInt(type);
         //dest.writeTypedList(episodes);
         //dest.writeTypedList(actors);
     }
@@ -263,12 +267,12 @@ public class Serie implements Parcelable {
         this.status = status;
     }
 
-    public int getViewed() {
-        return viewed;
+    public int getType() {
+        return type;
     }
 
-    public void setViewed(int viewed) {
-        this.viewed = viewed;
+    public void setType(int type) {
+        this.type = type;
     }
 
     public int getSeasonsCount() {
@@ -293,6 +297,16 @@ public class Serie implements Parcelable {
         List<Episode> list = episodes;
         for (Episode episode : list) {
             if (episode.getViewed() == 0)
+                return false;
+        }
+        return true;
+    }
+
+    public boolean hasNoEpisodeViewed() {
+        if (episodes.size() == 0) return true;
+        List<Episode> list = episodes;
+        for (Episode episode : list) {
+            if (episode.getViewed() == 1)
                 return false;
         }
         return true;
@@ -324,7 +338,7 @@ public class Serie implements Parcelable {
             SeriesContract.SeriesEntry.COLUMN_NETWORK,
             SeriesContract.SeriesEntry.COLUMN_MODIFYDATE,
             SeriesContract.SeriesEntry.COLUMN_STATUS,
-            SeriesContract.SeriesEntry.COLUMN_VIEWED
+            SeriesContract.SeriesEntry.COLUMN_TYPE
     };
     static final int COL__ID = 0;
     static final int COL_ID = 1;
@@ -339,7 +353,7 @@ public class Serie implements Parcelable {
     static final int COL_NETWORK = 10;
     static final int COLUMN_MODIFYDATE = 11;
     static final int COL_STATUS = 12;
-    static final int COL_VIEWED = 13;
+    static final int COL_TYPE = 13;
 
     private static final String[] EPISODES_COLUMNS = {
             SeriesContract.EpisodesEntry._ID,
@@ -408,7 +422,7 @@ public class Serie implements Parcelable {
             network = data.getString(COL_NETWORK);
             modify_date = new Date(data.getLong(COLUMN_MODIFYDATE) * 1000);
             status = data.getString(COL_STATUS);
-            viewed = data.getInt(COL_VIEWED);
+            type = data.getInt(COL_TYPE);
         }
         if (data != null) data.close();
         // Load episodes
@@ -500,7 +514,7 @@ public class Serie implements Parcelable {
             values.put(SeriesContract.SeriesEntry.COLUMN_GENRE, genre);
             values.put(SeriesContract.SeriesEntry.COLUMN_MODIFYDATE, modify_date.getTime());
             values.put(SeriesContract.SeriesEntry.COLUMN_STATUS, status);
-            values.put(SeriesContract.SeriesEntry.COLUMN_VIEWED, viewed);
+            values.put(SeriesContract.SeriesEntry.COLUMN_TYPE, type);
             // Finally, insert serie data into the database.
             Uri insertedUri = MyApplication.getContext().getContentResolver().insert(
                     SeriesContract.SeriesEntry.CONTENT_URI,
@@ -587,15 +601,17 @@ public class Serie implements Parcelable {
         }
     }
 
-    public void UpdateAllVieded() {
+    public void UpdateAllType() {
         if (IsSaved()) {
             // update serie
             ContentValues values = new ContentValues();
-            values.put(SeriesContract.SeriesEntry.COLUMN_VIEWED, viewed);
+            values.put(SeriesContract.SeriesEntry.COLUMN_TYPE, type);
             MyApplication.getContext().getContentResolver().update(SeriesContract.SeriesEntry.CONTENT_URI, values,
                     SeriesContract.SeriesEntry.COLUMN_ID + "=?", new String[]{id});
             // update episodes
             values = new ContentValues();
+            int viewed = 0;
+            if (type == VIEWED) viewed = 1;
             values.put(SeriesContract.EpisodesEntry.COLUMN_VIEWED, viewed);
             MyApplication.getContext().getContentResolver().update(SeriesContract.EpisodesEntry.CONTENT_URI, values,
                     SeriesContract.EpisodesEntry.COLUMN_SERIE_ID + "=?", new String[]{id});
@@ -605,11 +621,11 @@ public class Serie implements Parcelable {
         }
     }
 
-    public void UpdateVieded() {
+    public void UpdateType() {
         if (IsSaved()) {
             // update serie
             ContentValues values = new ContentValues();
-            values.put(SeriesContract.SeriesEntry.COLUMN_VIEWED, viewed);
+            values.put(SeriesContract.SeriesEntry.COLUMN_TYPE, type);
             MyApplication.getContext().getContentResolver().update(SeriesContract.SeriesEntry.CONTENT_URI, values,
                     SeriesContract.SeriesEntry.COLUMN_ID + "=?", new String[]{id});
 
