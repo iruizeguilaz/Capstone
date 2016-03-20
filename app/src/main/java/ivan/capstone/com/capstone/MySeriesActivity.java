@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -55,14 +56,10 @@ public class MySeriesActivity extends AppCompatActivity implements MySeriesFragm
         if (navigationView != null) {
             setupDrawerContent(navigationView);
         }
-        MySeriesFragment fragment = new MySeriesFragment();
-        getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_my_series, fragment, LISTFRAGMENT_TAG)
-                    .commit();
+
 
         navigationView.setCheckedItem(R.id.nav_home_viewing);
         navigationView.getMenu().performIdentifierAction(R.id.nav_home_viewing, 0);
-        //onNavigationItemSelected(navigationView.getMenu().findItem(R.id.nav_home_viewing));
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
@@ -73,8 +70,11 @@ public class MySeriesActivity extends AppCompatActivity implements MySeriesFragm
                         menuItem.setChecked(true);
                         mDrawerLayout.closeDrawers();
                         MySeriesFragment fragment;
+                        Fragment detailFragment = getSupportFragmentManager().findFragmentByTag(DETAILFRAGMENT_TAG);
                         switch (menuItem.getItemId()) {
                             case R.id.nav_home_saved:
+                                if(detailFragment != null)
+                                    getSupportFragmentManager().beginTransaction().remove(detailFragment).commit();
                                 type_list_serie = Serie.PENDING;
                                 fragment = new MySeriesFragment();
                                 getSupportFragmentManager().beginTransaction()
@@ -82,6 +82,8 @@ public class MySeriesActivity extends AppCompatActivity implements MySeriesFragm
                                         .commit();
                                 break;
                             case R.id.nav_home_viewed:
+                                if(detailFragment != null)
+                                    getSupportFragmentManager().beginTransaction().remove(detailFragment).commit();
                                 type_list_serie = Serie.VIEWED;
                                 fragment = new MySeriesFragment();
                                 getSupportFragmentManager().beginTransaction()
@@ -89,6 +91,8 @@ public class MySeriesActivity extends AppCompatActivity implements MySeriesFragm
                                         .commit();
                                 break;
                             case R.id.nav_home_viewing:
+                                if(detailFragment != null)
+                                    getSupportFragmentManager().beginTransaction().remove(detailFragment).commit();
                                 type_list_serie = Serie.FOLLOWING;
                                 fragment = new MySeriesFragment();
                                 getSupportFragmentManager().beginTransaction()

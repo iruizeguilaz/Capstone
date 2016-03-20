@@ -171,7 +171,7 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
         if (widgetSource)((Callback) getActivity()).onItemSelected(serie, null);
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         ActionBar actionBar = activity.getSupportActionBar();
-        if (actionBar != null && serie != null && !serie.getName().equals("")) {
+        if (actionBar != null) {
             switch (((MySeriesActivity)getActivity()).type_list_serie){
                 case  Serie.FOLLOWING:
                     actionBar.setTitle( getActivity().getResources().getString(R.string.serie_following_serie));
