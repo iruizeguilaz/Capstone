@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,7 +38,7 @@ import ivan.capstone.com.capstone.DataObjects.Serie;
 import ivan.capstone.com.capstone.XML.XMLManager;
 
 
-public class SearchFragment extends Fragment implements SeriesAdapter.OnItemClickListener{
+public class SearchFragment extends Fragment implements  View.OnClickListener,SeriesAdapter.OnItemClickListener{
 
     EditText inputSearch;
     RecyclerView recyclerView;
@@ -45,6 +46,7 @@ public class SearchFragment extends Fragment implements SeriesAdapter.OnItemClic
     SeriesAdapter seriesAdapter;
     List<Serie> series;
     AdView mAdView;
+    ImageButton searchButton;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -70,6 +72,8 @@ public class SearchFragment extends Fragment implements SeriesAdapter.OnItemClic
         View rootView =  inflater.inflate(R.layout.fragment_search, container, false);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.search_recycler);
         recyclerView.setNestedScrollingEnabled(false);
+        searchButton = (ImageButton)rootView.findViewById(R.id.search_imageview);
+        searchButton.setOnClickListener(this);
 
         if (savedInstanceState != null && savedInstanceState.getParcelableArrayList("ListSeries") != null) {
             series = savedInstanceState.getParcelableArrayList("ListSeries");
@@ -143,6 +147,25 @@ public class SearchFragment extends Fragment implements SeriesAdapter.OnItemClic
     @Override
     public void onClick(SeriesAdapter.ViewHolder viewHolder, int position, ImageView imageView ) {
         ((Callback) getActivity()).onItemSelected(series.get(position), imageView);
+    }
+
+    @Override
+    public void onClick(View view) {
+        ImageButton button = (ImageButton) view;
+        switch (button.getId()){
+            case R.id.search_imageview:
+                if (serieByNameTask != null) serieByNameTask.cancel(true);
+                if (!inputSearch.getText().toString().equals("")) {
+                    serieByNameTask = new FetchSerieByNameTask();
+                    serieByNameTask.execute(inputSearch.getText().toString());
+                    sendSearchSerie(inputSearch.getText().toString());
+                } else {
+                    series.clear();
+                    seriesAdapter.notifyDataSetChanged();
+                }
+                break;
+
+        }
     }
 
 

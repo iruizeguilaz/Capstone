@@ -292,6 +292,17 @@ public class Serie implements Parcelable {
         return 1;
     }
 
+    public int GetFistEpisodeNotViewed() {
+        if (episodes.size() == 0) return 0;
+        if (episodes.size() == 1) return 1;
+        List<Episode> list = episodes;
+        for (Episode episode : list) {
+            if (episode.getViewed() == 0)
+                return episode.getEpisode_number();
+        }
+        return 1;
+    }
+
     public boolean AreAllEpisodeViewed() {
         if (episodes.size() == 0) return true;
         List<Episode> list = episodes;

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.net.sip.SipSession;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -49,6 +50,7 @@ import ivan.capstone.com.capstone.Adapter.EpisodesAdapter;
 import ivan.capstone.com.capstone.Adapter.SeriesAdapter;
 import ivan.capstone.com.capstone.DataObjects.Episode;
 import ivan.capstone.com.capstone.DataObjects.Serie;
+import ivan.capstone.com.capstone.LinearLayoutManager.SnappingLinearLayoutManager;
 import ivan.capstone.com.capstone.XML.XMLManager;
 
 
@@ -96,6 +98,7 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
     TextView status_serie;
     TextView viewed_serie_text;
 
+    SnappingLinearLayoutManager layoutManagerEpisodes;
 
     public DetailSerieFragment() {
         // Required empty public constructor
@@ -175,14 +178,17 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
         episodeRecyclerView = (RecyclerView) rootView.findViewById(R.id.episodes_recycler);
         // si es movil
         if (getActivity().getClass().getSimpleName().equals(DetailSerieSearchedActivity.class.getSimpleName())){
-            LinearLayoutManager layoutManager
-                    = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-            episodeRecyclerView.setLayoutManager(layoutManager);
+            layoutManagerEpisodes
+                    = new SnappingLinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
 
-            LinearLayoutManager layoutManager2
-                    = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+            episodeRecyclerView.setLayoutManager(layoutManagerEpisodes);
 
-            actorRecyclerView.setLayoutManager(layoutManager2);
+            SnappingLinearLayoutManager layoutManagerActors
+                    = new SnappingLinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+
+            actorRecyclerView.setLayoutManager(layoutManagerActors);
+
+            
         }
 
 
@@ -418,7 +424,22 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
             List<Episode> episodeList = serie.getSeason(season);
             episodesAdapter = new EpisodesAdapter(episodeList, R.layout.item_list_episodes, this, serie);
             episodeRecyclerView.setAdapter(episodesAdapter);
+            // encontrar proximo episodio
+            int position = 0;
+            if (episodeList.size() > 0) position = episodeList.size() - 1;
+            int counter = 0;
+            while (counter < episodeList.size()){
+                Episode episode = episodeList.get(counter);
+                if (episode.getViewed() == 0){
+                    position = episode.getEpisode_number() - 1;
+                    counter = episodeList.size();
+                }
+                counter++;
+            }
             episodesAdapter.notifyDataSetChanged();
+            // scroll to the next episode
+            layoutManagerEpisodes.smoothScrollToPosition(episodeRecyclerView, null, position);
+
             if (season == serie.getSeasonsCount()) {
                 next_season.setVisibility(View.GONE);
                 next_season_disable.setVisibility(View.VISIBLE);
