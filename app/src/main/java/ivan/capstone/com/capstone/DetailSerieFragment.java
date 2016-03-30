@@ -176,20 +176,19 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
         empty_Actors = (TextView)rootView.findViewById(R.id.empty_actors);
         actorRecyclerView = (RecyclerView) rootView.findViewById(R.id.actors_recycler);
         episodeRecyclerView = (RecyclerView) rootView.findViewById(R.id.episodes_recycler);
-        // si es movil
-        if (getActivity().getClass().getSimpleName().equals(DetailSerieSearchedActivity.class.getSimpleName())){
-            layoutManagerEpisodes
-                    = new SnappingLinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
 
-            episodeRecyclerView.setLayoutManager(layoutManagerEpisodes);
+        layoutManagerEpisodes
+                = new SnappingLinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
 
-            SnappingLinearLayoutManager layoutManagerActors
-                    = new SnappingLinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        episodeRecyclerView.setLayoutManager(layoutManagerEpisodes);
 
-            actorRecyclerView.setLayoutManager(layoutManagerActors);
+        SnappingLinearLayoutManager layoutManagerActors
+                = new SnappingLinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+
+        actorRecyclerView.setLayoutManager(layoutManagerActors);
 
             
-        }
+
 
 
         if (savedInstanceState != null && savedInstanceState.getParcelable("Serie")!= null) {
