@@ -105,12 +105,12 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
         widgetSource = false;
         if (savedInstanceState != null && savedInstanceState.getParcelableArrayList("ListSeries") != null) {
             series = savedInstanceState.getParcelableArrayList("ListSeries");
+            isFirstLoad = false;
             seriesAdapter = new SeriesAdapter(series, this, R.layout.item_list_myseries);
             recyclerView.setAdapter(seriesAdapter);
             seriesAdapter.notifyDataSetChanged();
             getLoaderManager().restartLoader(SERIES_LOADER, null, this);
         } else {
-
             isFirstLoad = true;
             // check if we come from the widget (to load the serie, even if we come from widget, we have to load
             // from the database if we are in a tablet mode (because we show both framents, list and detai)
@@ -233,16 +233,14 @@ public class MySeriesFragment extends Fragment implements LoaderManager.LoaderCa
             series.add((mySerie));
         }
         seriesAdapter.notifyDataSetChanged();
-        // load the firs item on the rigt side if we have a tablet version parent detail
-        if (((MySeriesActivity)getActivity()).mTwoPane && series.size() > 0 && !widgetSource) {
+        // load the firts item on the rigth side if we have a tablet version parent detail
+        if (isFirstLoad && ((MySeriesActivity)getActivity()).mTwoPane && series.size() > 0 && !widgetSource) {
             // I only want to do the first time because I want to avoid realad the detailfragment if
             // the user unsave the serie... because the serie would dissaper, on the rigth side
             // and it could be an error of the user... so I prefer to mantein it... that is why I only
             // do this on the first time.
-            if (isFirstLoad) {
-                ((Callback) getActivity()).onItemSelected(series.get(0), null);
-                isFirstLoad = false;
-            }
+            isFirstLoad = false;
+            ((Callback) getActivity()).onItemSelected(series.get(0), null);
         }
     }
 

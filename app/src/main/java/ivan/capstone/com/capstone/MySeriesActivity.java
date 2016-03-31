@@ -24,6 +24,7 @@ public class MySeriesActivity extends AppCompatActivity implements MySeriesFragm
     private static final String DETAILFRAGMENT_TAG = "PFTAG";
     public static final String Name = "MySeries";
 
+
     // there are 3 types of series:  pending, following, viewed.
     public int type_list_serie = Serie.FOLLOWING;
 
@@ -57,9 +58,16 @@ public class MySeriesActivity extends AppCompatActivity implements MySeriesFragm
             setupDrawerContent(navigationView);
         }
 
+        if (savedInstanceState != null){
+            type_list_serie = savedInstanceState.getInt("Type_list_serie");
 
-        navigationView.setCheckedItem(R.id.nav_home_viewing);
-        navigationView.getMenu().performIdentifierAction(R.id.nav_home_viewing, 0);
+        }else {
+            // initialite by default the viewing page if it is not coming from savedInstence
+            navigationView.setCheckedItem(R.id.nav_home_viewing);
+            navigationView.getMenu().performIdentifierAction(R.id.nav_home_viewing, 0);
+        }
+
+
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
@@ -71,10 +79,13 @@ public class MySeriesActivity extends AppCompatActivity implements MySeriesFragm
                         mDrawerLayout.closeDrawers();
                         MySeriesFragment fragment;
                         Fragment detailFragment = getSupportFragmentManager().findFragmentByTag(DETAILFRAGMENT_TAG);
+                        Fragment parentFragment = getSupportFragmentManager().findFragmentByTag(LISTFRAGMENT_TAG);
                         switch (menuItem.getItemId()) {
                             case R.id.nav_home_saved:
                                 if(detailFragment != null)
                                     getSupportFragmentManager().beginTransaction().remove(detailFragment).commit();
+                                if(parentFragment != null)
+                                    getSupportFragmentManager().beginTransaction().remove(parentFragment).commit();
                                 type_list_serie = Serie.PENDING;
                                 fragment = new MySeriesFragment();
                                 getSupportFragmentManager().beginTransaction()
@@ -84,6 +95,8 @@ public class MySeriesActivity extends AppCompatActivity implements MySeriesFragm
                             case R.id.nav_home_viewed:
                                 if(detailFragment != null)
                                     getSupportFragmentManager().beginTransaction().remove(detailFragment).commit();
+                                if(parentFragment != null)
+                                    getSupportFragmentManager().beginTransaction().remove(parentFragment).commit();
                                 type_list_serie = Serie.VIEWED;
                                 fragment = new MySeriesFragment();
                                 getSupportFragmentManager().beginTransaction()
@@ -93,6 +106,8 @@ public class MySeriesActivity extends AppCompatActivity implements MySeriesFragm
                             case R.id.nav_home_viewing:
                                 if(detailFragment != null)
                                     getSupportFragmentManager().beginTransaction().remove(detailFragment).commit();
+                                if(parentFragment != null)
+                                    getSupportFragmentManager().beginTransaction().remove(parentFragment).commit();
                                 type_list_serie = Serie.FOLLOWING;
                                 fragment = new MySeriesFragment();
                                 getSupportFragmentManager().beginTransaction()
@@ -156,6 +171,13 @@ public class MySeriesActivity extends AppCompatActivity implements MySeriesFragm
                 startActivity(intent);
             }
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        outState.putInt("Type_list_serie", type_list_serie);
+        super.onSaveInstanceState(outState);
     }
 
 }

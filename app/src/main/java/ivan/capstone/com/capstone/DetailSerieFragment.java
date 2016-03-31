@@ -187,10 +187,6 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
 
         actorRecyclerView.setLayoutManager(layoutManagerActors);
 
-            
-
-
-
         if (savedInstanceState != null && savedInstanceState.getParcelable("Serie")!= null) {
             serie = savedInstanceState.getParcelable("Serie");
             season = savedInstanceState.getInt("Season");
