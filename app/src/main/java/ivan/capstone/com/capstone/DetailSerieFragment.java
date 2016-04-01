@@ -594,7 +594,7 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
                         episode.UpdateViewed();
                     }
                 }
-                if (serie.getStatus().equals(Serie.ENDED) && serie.getType() != Serie.VIEWED && serie.AreAllEpisodeViewed()) {
+                if (serie.getStatus().equals(serie.ENDED) && serie.getType() != Serie.VIEWED && serie.AreAllEpisodeViewed()) {
                     serie.setType(Serie.VIEWED);
                     serie.UpdateType();
                     CheckViewedSerie();
