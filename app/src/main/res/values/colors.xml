@@ -10,6 +10,8 @@
     <color name="red">#F44336</color>
     <color name="grey">#E0E0E0</color>
     <color name="light_grey">#EEEEEE</color>
+    <color name="grey_semitransparent">#50E0E0E0</color>
+    <color name="black_semitransparen">#40000000</color>
 
     <color name="red100">#FF8A80</color>
     <color name="red700">#D32F2F</color>

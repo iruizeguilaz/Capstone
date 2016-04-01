@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
-import android.net.sip.SipSession;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -47,7 +46,6 @@ import java.util.List;
 
 import ivan.capstone.com.capstone.Adapter.ActorsAdapter;
 import ivan.capstone.com.capstone.Adapter.EpisodesAdapter;
-import ivan.capstone.com.capstone.Adapter.SeriesAdapter;
 import ivan.capstone.com.capstone.DataObjects.Episode;
 import ivan.capstone.com.capstone.DataObjects.Serie;
 import ivan.capstone.com.capstone.LinearLayoutManager.SnappingLinearLayoutManager;
@@ -72,7 +70,7 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
     ImageButton unsave_button;
     TextView unsave_text;
     LinearLayout layout_detail;
-    private String activityOrigin;
+    String activityOrigin;
     boolean isRefreshing;
     ImageButton refresh_button;
 
@@ -83,6 +81,7 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
     ActorsAdapter actorsAdapter;
     RecyclerView actorRecyclerView;
     TextView empty_Actors;
+    ImageButton actors_right_nav;
 
     ImageButton previous_season;
     ImageButton previous_season_disable;
@@ -99,6 +98,7 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
     TextView viewed_serie_text;
 
     SnappingLinearLayoutManager layoutManagerEpisodes;
+    SnappingLinearLayoutManager layoutManagerActors;
 
     public DetailSerieFragment() {
         // Required empty public constructor
@@ -182,10 +182,29 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
 
         episodeRecyclerView.setLayoutManager(layoutManagerEpisodes);
 
-        SnappingLinearLayoutManager layoutManagerActors
+        layoutManagerActors
                 = new SnappingLinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
 
         actorRecyclerView.setLayoutManager(layoutManagerActors);
+        actorRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                LinearLayoutManager linearLayoutManager1 = (LinearLayoutManager) recyclerView.getLayoutManager();
+                int displayedPosition = linearLayoutManager1.findFirstCompletelyVisibleItemPosition();
+                if(displayedPosition > 0){
+                    //Is this the place where top position of first item is reached ?
+                    actors_right_nav.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        actors_right_nav = (ImageButton)rootView.findViewById(R.id.actors_right_nav);
+        actors_right_nav.setOnClickListener(this);
 
         if (savedInstanceState != null && savedInstanceState.getParcelable("Serie")!= null) {
             serie = savedInstanceState.getParcelable("Serie");
@@ -266,7 +285,7 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
             no_viewed_season.setVisibility(View.VISIBLE);
             viewed_season.setVisibility(View.GONE);
         } else {
-            if (serie.getType()==serie.VIEWED){
+            if (serie.getType()==Serie.VIEWED){
                 no_viewed_season.setVisibility(View.GONE);
                 viewed_season.setVisibility(View.VISIBLE);
             } else {
@@ -360,7 +379,7 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
         // if it is saved and the serie has fully released
         if (serie.getStatus().equals(serie.ENDED) && serie.get_id() != 0) {
             viewed_serie_text.setVisibility(View.VISIBLE);
-            if (serie.getType()==serie.VIEWED) {
+            if (serie.getType()==Serie.VIEWED) {
                 viewed_serie.setVisibility(View.VISIBLE);
                 no_viewed_serie.setVisibility(View.GONE);
             } else{
@@ -387,9 +406,19 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
         if (serie.getActors().size() > 0){
             actorRecyclerView.setVisibility(View.VISIBLE);
             empty_Actors.setVisibility(View.GONE);
+            if (serie.getActors().size() > 1) {
+                //Tocheck if  recycler is on top
+                LinearLayoutManager linearLayoutManager1 = (LinearLayoutManager) actorRecyclerView.getLayoutManager();
+                int displayedPosition = linearLayoutManager1.findFirstCompletelyVisibleItemPosition();
+                if(displayedPosition==0){
+                    actors_right_nav.setVisibility(View.VISIBLE);
+                }
+
+            }
         } else {
             actorRecyclerView.setVisibility(View.GONE);
             empty_Actors.setVisibility(View.VISIBLE);
+            actors_right_nav.setVisibility(View.GONE);
         }
     }
 
@@ -541,12 +570,12 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
                     episode.setViewed(0);
                     episode.UpdateViewed();
                 }
-                if (serie.getType()==serie.VIEWED) {
-                    serie.setType(serie.FOLLOWING);
+                if (serie.getType()==Serie.VIEWED) {
+                    serie.setType(Serie.FOLLOWING);
                     serie.UpdateType();
                     CheckViewedSerie();
                 }
-                if (serie.getType()==serie.FOLLOWING && serie.hasNoEpisodeViewed()){
+                if (serie.getType()==Serie.FOLLOWING && serie.hasNoEpisodeViewed()){
                     serie.setType(Serie.PENDING);
                     serie.UpdateType();
                     CheckViewedSerie();
@@ -565,13 +594,13 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
                         episode.UpdateViewed();
                     }
                 }
-                if (serie.getStatus().equals(serie.ENDED) && serie.getType() != serie.VIEWED && serie.AreAllEpisodeViewed()) {
-                    serie.setType(serie.VIEWED);
+                if (serie.getStatus().equals(Serie.ENDED) && serie.getType() != Serie.VIEWED && serie.AreAllEpisodeViewed()) {
+                    serie.setType(Serie.VIEWED);
                     serie.UpdateType();
                     CheckViewedSerie();
                 }else {
-                    if (serie.getType() == serie.PENDING){
-                        serie.setType(serie.FOLLOWING);
+                    if (serie.getType() == Serie.PENDING){
+                        serie.setType(Serie.FOLLOWING);
                         serie.UpdateType();
                     }
                 }
@@ -582,18 +611,26 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
                 no_viewed_season.setVisibility(View.GONE);
                 break;
             case  R.id.viewed_serie:
-                serie.setType(serie.PENDING);
+                serie.setType(Serie.PENDING);
                 serie.UpdateAllType();
                 season = 1;
                 reloadSeason();
                 CheckViewedSerie();
                 break;
             case  R.id.no_viewed_serie:
-                serie.setType(serie.VIEWED);
+                serie.setType(Serie.VIEWED);
                 serie.UpdateAllType();
                 season = serie.getSeasonsCount();
                 reloadSeason();
                 CheckViewedSerie();
+                break;
+            case R.id.actors_right_nav:
+                // move a little bit the recycler to show the posibility of scrolling
+                int count = serie.getActors().size() - 1;
+                actorRecyclerView.fling(1,1);
+                if (5 < count) layoutManagerActors.smoothScrollToPosition(actorRecyclerView, null, 5);
+                else  layoutManagerActors.smoothScrollToPosition(actorRecyclerView, null, count);
+                actors_right_nav.setVisibility(View.GONE);
                 break;
         }
     }
@@ -708,9 +745,6 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
 
     // sometime the save could last,  that is why I use this, to show the process dialog
     private class SaveTask extends AsyncTask<Void, Void, String> {
-
-        private final String LOG_TAG = SaveTask.class.getSimpleName();
-
 
         private ProgressDialog nDialog;
 
