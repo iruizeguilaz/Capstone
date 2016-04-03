@@ -6,8 +6,8 @@
     android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    card_view:cardCornerRadius="5dp"
-    card_view:cardElevation="10dp"
+    card_view:cardCornerRadius="2dp"
+    card_view:cardElevation="5dp"
     android:layout_marginRight="@dimen/small_margin"
     android:layout_marginLeft="@dimen/small_margin"
     android:layout_marginTop="@dimen/small_margin"
@@ -29,7 +29,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             card_view:cardCornerRadius="5dp"
-            card_view:cardElevation="15dp">
+
+            card_view:cardElevation="8dp">
 
 
             <ImageView
