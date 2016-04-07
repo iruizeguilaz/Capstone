@@ -33,7 +33,7 @@
     <string name="data_not_found">No data found.</string>
     <string name="series_widget" translatable="false">My Series</string>
 
-    <string name="content_authority">ivan.capstone.com.capstone</string>
+
     <string name="transition_photo">transition_photo</string>
 
     <string name="poster_description">The poster of the serie</string>
@@ -85,5 +85,8 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <!-- SyncAdapter related -->
+    <string name="sync_account_type">ivan.capstone.com</string>
+    <string name="content_authority">ivan.capstone.com.capstone</string>
 
   </resources>
