@@ -2,15 +2,23 @@ package ivan.capstone.com.capstone.Sync;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SyncRequest;
 import android.content.SyncResult;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 
+import ivan.capstone.com.capstone.MyApplication;
+import ivan.capstone.com.capstone.MySeriesActivity;
 import ivan.capstone.com.capstone.R;
 
 /**
@@ -20,12 +28,16 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     // Interval at which to sync with the weather, in seconds.
     // 60 seconds (1 minute) * 60 = 1 hours
-    public static final int SYNC_INTERVAL = 60 * 60;
+    public static final int SYNC_INTERVAL = 60 ; //* 60;
     public static final int SYNC_FLEXTIME = SYNC_INTERVAL/3;
 
     // Global variables
     // Define a variable to contain a content resolver instance
     ContentResolver mContentResolver;
+
+    final int NOTIFICATION_ID = 1;
+    NotificationManager mNotificationManager;
+    Notification mNotification = null;
 
     /**
      * Set up the sync adapter
@@ -72,7 +84,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             SyncResult syncResult) {
 
         // TODO
-
+        launchNotification();
         // Llamar al content Resolver para traer todas las series, episodios Viewing
         // mostrar notificaciones proximos episodios
 
@@ -89,6 +101,39 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         //}
 
     }
+
+    private void launchNotification(){
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(MyApplication.getContext())
+                        .setSmallIcon(R.drawable.tv_icon)
+                        .setContentTitle("My notification")
+                        .setContentText("Hello World!");
+        // Creates an explicit intent for an Activity in your app
+        Intent resultIntent = new Intent(MyApplication.getContext(), MySeriesActivity.class);
+
+        // The stack builder object will contain an artificial back stack for the
+        // started Activity.
+        // This ensures that navigating backward from the Activity leads out of
+        // your application to the Home screen.
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(MyApplication.getContext());
+        // Adds the back stack for the Intent (but not the Intent itself)
+        stackBuilder.addParentStack(MySeriesActivity.class);
+        // Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        mBuilder.setContentIntent(resultPendingIntent);
+        mNotificationManager =
+                (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        // mId allows you to update the notification later on.
+        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+    }
+
+
 
     /**
      * Helper method to have the sync adapter sync immediately

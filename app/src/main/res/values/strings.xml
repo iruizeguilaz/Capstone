@@ -86,7 +86,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <!-- SyncAdapter related -->
-    <string name="sync_account_type">ivan.capstone.com</string>
+    <string name="sync_account_type">ivan.capstone.com.capstone</string>
     <string name="content_authority">ivan.capstone.com.capstone</string>
 
   </resources>

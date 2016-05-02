@@ -16,6 +16,7 @@ import android.widget.ImageView;
 
 
 import ivan.capstone.com.capstone.DataObjects.Serie;
+import ivan.capstone.com.capstone.Sync.SyncAdapter;
 
 public class MySeriesActivity extends AppCompatActivity implements MySeriesFragment.Callback{
 
@@ -66,8 +67,8 @@ public class MySeriesActivity extends AppCompatActivity implements MySeriesFragm
             navigationView.setCheckedItem(R.id.nav_home_viewing);
             navigationView.getMenu().performIdentifierAction(R.id.nav_home_viewing, 0);
         }
-
-
+// here fails
+        SyncAdapter.initializeSyncAdapter(this);
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
