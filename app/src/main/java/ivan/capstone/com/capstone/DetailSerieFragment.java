@@ -73,6 +73,10 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
     String activityOrigin;
     boolean isRefreshing;
     ImageButton refresh_button;
+    ImageButton discard_button;
+    TextView discard_text;
+    ImageButton getback_button;
+    TextView getback_text;
 
     EpisodesAdapter episodesAdapter;
     RecyclerView episodeRecyclerView;
@@ -152,6 +156,12 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
         refresh_button = (ImageButton)rootView.findViewById(R.id.refresh);
         refresh_button.setOnClickListener(this);
 
+        discard_button = (ImageButton)rootView.findViewById(R.id.iv_discard_off);
+        discard_button.setOnClickListener(this);
+        discard_text = (TextView)rootView.findViewById(R.id.discard_serie);
+        getback_button = (ImageButton)rootView.findViewById(R.id.iv_discard_on);
+        getback_button.setOnClickListener(this);
+        getback_text = (TextView)rootView.findViewById(R.id.getback_serie);
 
         next_season = (ImageButton)rootView.findViewById(R.id.next_season);
         next_season.setOnClickListener(this);
@@ -342,6 +352,8 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
             .into(poster);
         }
         else {
+
+            //Picasso.with(getActivity()).setLoggingEnabled(true);
             Picasso.with(getActivity())
                     .load(serie.getPoster_url())
                     .fit().centerCrop()
@@ -364,6 +376,14 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
             unsave_button.setVisibility(View.VISIBLE);
             unsave_text.setVisibility(View.VISIBLE);
         }
+        if (serie.getType() == Serie.ABANDON){
+            discard_button.setVisibility(View.GONE);
+            discard_text.setVisibility(View.GONE);
+            getback_button.setVisibility(View.VISIBLE);
+            getback_text.setVisibility(View.VISIBLE);
+        }
+
+
 
         // LOAD Episodes
         // we are going to the first episode without been viewed to get the season
@@ -372,6 +392,8 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
 
         // LOAD Actors
         LoadActors();
+
+
 
     }
 
@@ -535,6 +557,34 @@ public class DetailSerieFragment extends Fragment implements View.OnClickListene
                     save.execute();
                     sendSaveSerie(); //Analytics
                 }
+
+                break;
+            case R.id.iv_discard_off:
+                discard_button.setVisibility(View.GONE);
+                discard_text.setVisibility(View.GONE);
+                getback_button.setVisibility(View.VISIBLE);
+                getback_text.setVisibility(View.VISIBLE);
+                serie.setType(Serie.ABANDON);
+                serie.UpdateType();
+
+                break;
+            case R.id.iv_discard_on:
+                discard_button.setVisibility(View.VISIBLE);
+                discard_text.setVisibility(View.VISIBLE);
+                getback_button.setVisibility(View.GONE);
+                getback_text.setVisibility(View.GONE);
+                if (serie.hasNoEpisodeViewed()){
+                    serie.setType(Serie.PENDING);
+                }else{
+                    if (serie.getStatus().equals(serie.ENDED) && serie.AreAllEpisodeViewed()) {
+                        serie.setType(Serie.VIEWED);
+                    }else{
+                        serie.setType(Serie.FOLLOWING);
+                    }
+
+
+                }
+                serie.UpdateType();
 
                 break;
             case R.id.iv_tick_on:

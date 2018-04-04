@@ -16,6 +16,10 @@
 
     <string name="save_serie">Save the serie</string>
     <string name="unsave_serie">Unsave the serie</string>
+    <string name="discard_serie">Discard</string>
+    <string name="getback_serie">Get it back</string>
+
+
     <string name="votes_serie">votes</string>
     <string name="rating_serie">/10</string>
     <string name="year_serie">Year</string>
@@ -39,6 +43,8 @@
     <string name="poster_description">The poster of the serie</string>
     <string name="save_description">The save image button</string>
     <string name="unsave_description">The delete image button</string>
+    <string name="discard_description">The discard image button</string>
+    <string name="getback_description">The get back image button</string>
     <string name="share_description">The share image button</string>
     <string name="refresh_description">Refresh data from internet</string>
     <string name="banner_description">The banner of the serie</string>
@@ -69,6 +75,7 @@
     <string name="serie_vieweds">Vieweds</string>
     <string name="serie_following">Following</string>
     <string name="serie_pending">Pendings</string>
+    <string name="serie_abandon">Discards</string>
 
     <string name="serie_vieweds_serie">Viewed series</string>
     <string name="serie_following_serie">Followed series</string>

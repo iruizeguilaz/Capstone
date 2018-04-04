@@ -63,7 +63,7 @@ public class Actor {
     }
 
     public String getImage_url() {
-        return image_url;
+        return image_url.replace("http", "https");
     }
 
     public void setImage_url(String image_url) {

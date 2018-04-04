@@ -16,7 +16,6 @@ import android.widget.ImageView;
 
 
 import ivan.capstone.com.capstone.DataObjects.Serie;
-import ivan.capstone.com.capstone.Sync.SyncAdapter;
 
 public class MySeriesActivity extends AppCompatActivity implements MySeriesFragment.Callback{
 
@@ -68,7 +67,7 @@ public class MySeriesActivity extends AppCompatActivity implements MySeriesFragm
             navigationView.getMenu().performIdentifierAction(R.id.nav_home_viewing, 0);
         }
 // here fails
-        SyncAdapter.initializeSyncAdapter(this);
+
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
@@ -110,6 +109,17 @@ public class MySeriesActivity extends AppCompatActivity implements MySeriesFragm
                                 if(parentFragment != null)
                                     getSupportFragmentManager().beginTransaction().remove(parentFragment).commit();
                                 type_list_serie = Serie.FOLLOWING;
+                                fragment = new MySeriesFragment();
+                                getSupportFragmentManager().beginTransaction()
+                                        .replace(R.id.fragment_my_series, fragment, LISTFRAGMENT_TAG)
+                                        .commit();
+                                break;
+                            case R.id.nav_home_trash:
+                                if(detailFragment != null)
+                                    getSupportFragmentManager().beginTransaction().remove(detailFragment).commit();
+                                if(parentFragment != null)
+                                    getSupportFragmentManager().beginTransaction().remove(parentFragment).commit();
+                                type_list_serie = Serie.ABANDON;
                                 fragment = new MySeriesFragment();
                                 getSupportFragmentManager().beginTransaction()
                                         .replace(R.id.fragment_my_series, fragment, LISTFRAGMENT_TAG)

@@ -16,6 +16,11 @@
             android:icon="@drawable/tv_icon"
             android:title="@string/serie_viewed" />
 
+        <item
+            android:id="@+id/nav_home_trash"
+            android:icon="@drawable/tv_icon"
+            android:title="@string/serie_abandon" />
+
         <!--<item
             android:id="@+id/nav_options"
             android:icon="@drawable/options"

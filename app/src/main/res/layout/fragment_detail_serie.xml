@@ -38,7 +38,7 @@
 
                     <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_weight=".30"
+                        android:layout_weight=".15"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
@@ -55,57 +55,106 @@
                     </LinearLayout>
 
                     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="0dp"
+                    android:layout_weight=".35"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+                    <ImageButton
+                        android:id="@+id/iv_tick_off"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible"
+                        android:gravity="center"
+                        android:contentDescription="@string/save_description"
+                        android:background="@drawable/touch_detail_selector"
+                        android:src="@android:drawable/star_big_off"/>
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:id="@+id/save_serie"
+                        android:textSize="@dimen/test_normal_size"
+                        android:gravity="center"
+                        android:text="@string/save_serie" />
+
+                    <ImageButton
+                        android:id="@+id/iv_tick_on"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:gravity="center"
+                        android:contentDescription="@string/unsave_description"
+                        android:background="@drawable/touch_detail_selector"
+                        android:src="@android:drawable/btn_star_big_on" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:id="@+id/unsave_serie"
+                        android:visibility="gone"
+                        android:textSize="@dimen/test_normal_size"
+                        android:gravity="center"
+                        android:text="@string/unsave_serie" />
+
+                </LinearLayout>
+
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                         android:layout_width="0dp"
-                        android:layout_weight=".40"
+                        android:layout_weight=".35"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
 
                         <ImageButton
-                            android:id="@+id/iv_tick_off"
+                            android:id="@+id/iv_discard_off"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:visibility="visible"
                             android:gravity="center"
-                            android:contentDescription="@string/save_description"
+                            android:contentDescription="@string/discard_description"
                             android:background="@drawable/touch_detail_selector"
-                            android:src="@android:drawable/star_big_off"/>
+                            android:src="@android:drawable/ic_delete"/>
 
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:textAppearanceMedium"
-                            android:id="@+id/save_serie"
+                            android:id="@+id/discard_serie"
                             android:textSize="@dimen/test_normal_size"
                             android:gravity="center"
-                            android:text="@string/save_serie" />
+                            android:text="@string/discard_serie" />
 
                         <ImageButton
-                            android:id="@+id/iv_tick_on"
+                            android:id="@+id/iv_discard_on"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:visibility="gone"
                             android:gravity="center"
-                            android:contentDescription="@string/unsave_description"
+                            android:contentDescription="@string/getback_description"
                             android:background="@drawable/touch_detail_selector"
-                            android:src="@android:drawable/btn_star_big_on" />
+                            android:src="@android:drawable/ic_input_add" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:textAppearanceMedium"
-                            android:id="@+id/unsave_serie"
+                            android:id="@+id/getback_serie"
                             android:visibility="gone"
                             android:textSize="@dimen/test_normal_size"
                             android:gravity="center"
-                            android:text="@string/unsave_serie" />
+                            android:text="@string/getback_serie" />
 
                     </LinearLayout>
 
                     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                         android:layout_width="0dp"
-                        android:layout_weight=".30"
+                        android:layout_weight=".15"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
@@ -206,6 +255,7 @@
                     </LinearLayout>
 
                 </LinearLayout>
+
 
 
                 <TextView

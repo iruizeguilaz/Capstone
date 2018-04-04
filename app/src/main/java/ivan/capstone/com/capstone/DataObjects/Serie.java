@@ -29,6 +29,7 @@ public class Serie implements Parcelable {
     public static final int PENDING = 0;
     public static final int FOLLOWING = 1;
     public static final int VIEWED = 2;
+    public static final int ABANDON = 3;
 
     private long _id; // databaseID
 
@@ -172,7 +173,7 @@ public class Serie implements Parcelable {
     }
 
     public String getImage_url() {
-        return image_url;
+        return image_url.replace("http", "https");
     }
 
     public void setImage_url(String image_url) {
@@ -228,7 +229,7 @@ public class Serie implements Parcelable {
     }
 
     public String getPoster_url() {
-        return poster_url;
+        return poster_url.replace("http", "https");
     }
 
     public void setPoster_url(String poster_url) {
